@@ -3,7 +3,7 @@
 Router::route('/api/v1/upload', function() {
 	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
 		http_response_code(401);
-		echo json_encode(['error' => '401 unauthorized'])
+		echo json_encode(['error' => '401 unauthorized']);
 		return;
 	}
 
@@ -48,7 +48,7 @@ Router::route('/api/v1/upload', function() {
 Router::route('/api/v1/link', function() {
 	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
 		http_response_code(401);
-		echo json_encode(['error' => '401 unauthorized'])
+		echo json_encode(['error' => '401 unauthorized']);
 		return;
 	}
 
