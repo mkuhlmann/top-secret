@@ -1,7 +1,11 @@
 <?php
 
 Router::route('/api/v1/upload', function() {
-	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') return;
+	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
+		http_response_code(401);
+		echo json_encode(['error' => '401 unauthorized'])
+		return;
+	}
 
 	global $publicPath;
 
@@ -29,6 +33,11 @@ Router::route('/api/v1/upload', function() {
 
 		// type
 		if(strpos($item->mime, 'image/') === 0) $item->type = 'image';
+		if(strpos($item->mime, 'text/') === 0) $item->type = 'text';
+
+		if(!$item->type) {
+			$item->type = 'binary';
+		}
 
 		R::store($item);
 
@@ -36,17 +45,43 @@ Router::route('/api/v1/upload', function() {
 	}
 });
 
+Router::route('/api/v1/link', function() {
+	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
+		http_response_code(401);
+		echo json_encode(['error' => '401 unauthorized'])
+		return;
+	}
+
+	if(!isset($_POST['url'])) return;
+
+	$item = R::dispense('item');
+	$item->slug = generateRandomString(6);
+	$item->type = 'url';
+	$item->path = $_POST['url'];
+	$item->created_at = date('Y-m-d H:i:s');
+
+	R::store($item);
+
+	echo json_encode(['slug' => $item->slug]);
+});
+
 Router::route('/([\w]*)(/.*)?', function($slug) {
 	$item = R::findOne('item', 'slug = ?', [$slug]);
 	if($item == null) {
 		http_response_code(404);
-		echo '404';
+		echo json_encode(['error' => '404 file not found']);
 		return;
 	}
 
-	if($item->type == 'image') {
+	if($item->type == 'url') {
+		header('Location: ' . $item->path);
+	} else if(true) {
 		header('Location: ' . $item->path);
 	}
 });
 
-Router::execute($_SERVER['PATH_INFO']);
+$r = explode('?', $_SERVER['REQUEST_URI'])[0];
+if(isset($_GET['r'])) {
+	$r = $_GET['r'];
+}
+Router::execute($r);
