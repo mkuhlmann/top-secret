@@ -2,7 +2,7 @@
 date_default_timezone_set('UTC');
 
 require 'router.php';
-require 'r.php';
+require 'rb.php';
 
 $appPath = dirname(__FILE__);
 $publicPath = $appPath . '/public';
