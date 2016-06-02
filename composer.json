@@ -1,0 +1,14 @@
+{
+    "require": {
+        "illuminate/container": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Areus\\": "src/Areus",
+            "TopSecret\\": "src/TopSecret"
+        },
+        "files": [
+            "rb.php"
+        ]
+    }
+}

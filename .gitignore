@@ -2,3 +2,5 @@ composer.phar
 composer.lock
 database.db
 public/20*
+vendor
+composer.phar

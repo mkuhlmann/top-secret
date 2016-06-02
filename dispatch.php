@@ -1,5 +1,46 @@
 <?php
 
+function doUpload($path) {
+	global $publicPath;
+
+	$pathInfo = pathinfo($path);
+
+	$uploadDir = date('Y/m').'/';
+	$uploadPath = $publicPath.'/'.$uploadDir;
+	if(!file_exists($uploadDir)) {
+		mkdir($uploadPath, 0777, true);
+	}
+
+	$fileName = $pathInfo['basename'];
+	for($i = 1; file_exists($uploadPath.$fileName); $i++) {
+		$fileName = $i . '_' . $pathInfo['basename'];
+	}
+	$uploadPath .= '/'.$fileName;
+
+	rename($path, $uploadPath);
+
+	$item = R::dispense('item');
+	$item->slug = generateRandomString(6);
+	$item->title = $pathInfo['basename'];
+	$item->name = $fileName;
+	$item->path = '/'.$uploadDir;
+	$item->size = filesize($uploadPath);
+	$item->mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $uploadPath);
+	$item->created_at = date('Y-m-d H:i:s');
+
+	// type
+	if(strpos($item->mime, 'image/') === 0) $item->type = 'image';
+	if(strpos($item->mime, 'text/') === 0) $item->type = 'text';
+
+	if(!$item->type) {
+		$item->type = 'binary';
+	}
+
+	R::store($item);
+
+	return $item;
+}
+
 Router::route('/api/v1/upload', function() {
 	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
 		http_response_code(401);
@@ -7,41 +48,33 @@ Router::route('/api/v1/upload', function() {
 		return;
 	}
 
-	global $publicPath;
-
+	global $appPath;
 	if(!isset($_FILES['file'])) return;
 
-	$uploadDir = $publicPath.'/'.date('Y/m').'/';
-	if(!file_exists($uploadDir)) {
-		mkdir($uploadDir, 0777, true);
-	}
-
-	$fileName = $_FILES['file']['name'];
-	for($i = 1; file_exists($uploadDir.$fileName); $i++) {
-		$fileName = $i . '_' . $_FILES['file']['name'];
-	}
-
-	if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadDir.$fileName)) {
-		$item = R::dispense('item');
-		$item->slug = generateRandomString(6);
-		$item->title = $_FILES['file']['name'];
-		$item->name = $fileName;
-		$item->path = '/'.date('Y/m').'/'.$fileName;
-		$item->size = filesize($uploadDir.$fileName);
-		$item->mime = $_FILES['file']['type'];
-		$item->created_at = date('Y-m-d H:i:s');
-
-		// type
-		if(strpos($item->mime, 'image/') === 0) $item->type = 'image';
-		if(strpos($item->mime, 'text/') === 0) $item->type = 'text';
-
-		if(!$item->type) {
-			$item->type = 'binary';
-		}
-
-		R::store($item);
-
+	if (move_uploaded_file($_FILES['file']['tmp_name'], $appPath.'/'.$_FILES['file']['name'])) {
+		$item = doUpload($appPath.'/'.$_FILES['file']['name']);
 		echo json_encode(['slug' => $item->slug, 'title' => $item->title]);
+	}
+});
+
+Router::route('/api/v1/tasker', function() {
+	if(!isset($_GET['key']) && $_GET['key'] != '259dae02edeb362c272fd65dfccef66e') {
+		http_response_code(401);
+		echo json_encode(['error' => '401 unauthorized']);
+		return;
+	}
+
+	global $appPath;
+	if(isset($_GET['fileName'])) {
+		$fileName = basename($_GET['fileName']);
+		$targetPath = $appPath.'/'.$fileName;
+
+		$input = fopen('php://input', 'r');
+		file_put_contents($targetPath, $input);
+
+		$item = doUpload($targetPath);
+
+		echo 'http://s.top-secret.xyz/'.$item->slug;
 	}
 });
 
@@ -75,7 +108,7 @@ Router::route('/([\w]*)(/.*)?', function($slug) {
 
 	if($item->type == 'url') {
 		header('Location: ' . $item->path);
-	} else if(true) {
+	} else if(true || isset($_GET['raw'])) {
 		header('Location: ' . $item->path);
 	}
 });
