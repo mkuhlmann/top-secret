@@ -2,7 +2,7 @@
 
 namespace TopSecret;
 
-class ApiController {
+class ApiController extends \Areus\ApplicationModule {
 
 	private function generateRandomString($length = 10) {
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -31,7 +31,7 @@ class ApiController {
 	public function postUpload($res) {
 		if(!isset($_FILES['file'])) return;
 
-		if (move_uploaded_file($_FILES['file']['tmp_name'], $appPath.'/'.$_FILES['file']['name'])) {
+		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/'.$_FILES['file']['name'])) {
 			$item = $this->handleUpload($this->app->appPath.'/'.$_FILES['file']['name']);
 			$res->json(['slug' => $item->slug, 'title' => $item->title]);
 		}
@@ -69,10 +69,10 @@ class ApiController {
 		rename($path, $uploadPath);
 
 		$item = \R::dispense('item');
-		$item->slug = generateRandomString(6);
+		$item->slug = $this->generateRandomString(6);
 		$item->title = $pathInfo['basename'];
 		$item->name = $fileName;
-		$item->path = '/'.$uploadDir;
+		$item->path = '/'.$uploadDir.$fileName;
 		$item->size = filesize($uploadPath);
 		$item->mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $uploadPath);
 		$item->created_at = date('Y-m-d H:i:s');
