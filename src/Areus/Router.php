@@ -67,20 +67,39 @@ class Router extends \Areus\ApplicationModule {
 		return trim($url, '/');
 	}
 
+	private function callFilter($filter) {
+		$continue = true;
+
+		// handle multiple filters
+		if(is_array($filter)) {
+			foreach($filter as $f) {
+				$continue = $continue && $this->callFilter($f);
+			}
+			return $continue;
+		}
+
+		// execute single filter
+		if(!isset($this->filters[$route['before']])) {
+			throw new \RuntimeException('Could not find filter: '.$route['before']);
+		}
+		$filter = $this->filters[$route['before']];
+
+		$reflection = new \ReflectionFunction($filter);
+		$filterResult = call_user_func_array($filter, $this->prepareArguments($reflection));
+
+		if($filterResult !== null && $filterResult !== true) {
+			$continue = false;
+		}
+		return $continue;
+	}
+
 	private function callRoute($route, $args = []) {
 		//check filters
 		$abort = false;
 		if(isset($route['before'])) {
-			if(!isset($this->filters[$route['before']]))
-				throw new \RuntimeException('Could not find filter: '.$route['before']);
-			$filter = $this->filters[$route['before']];
-			$reflection = new \ReflectionFunction($filter);
-			$filterResult = call_user_func_array($filter, $this->prepareArguments($reflection, $args));
-
-			if($filterResult !== null && $filterResult !== true) {
+			if(!$this->callFilter($route['before'])) {
 				$abort = true;
 			}
-			unset($filterResult);
 		}
 
 		//finally call the route
@@ -108,7 +127,7 @@ class Router extends \Areus\ApplicationModule {
 		}
 	}
 
-	private function prepareArguments($reflection, $args) {
+	private function prepareArguments($reflection, $args = []) {
 		$fargs = [];
 		foreach($reflection->getParameters() as $param) {
 			$key = $param->getName();
@@ -135,9 +154,13 @@ class Router extends \Areus\ApplicationModule {
 
 	public function run($path = null) {
 		if($path == null) {
-			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : '';
-			$path = '/'.trim($path, '/');
+			if(isset($_SERVER['PATH_INFO'])) {
+				$path = $_SERVER['PATH_INFO'];
+			} else {
+				$path = explode('?', $_SERVER['REQUEST_URI'])[0];
+			}
 		}
+		$path = '/'.trim($path, '/');
 
 		$missing = true;
 		foreach($this->routes as $id => $route) {
@@ -153,8 +176,9 @@ class Router extends \Areus\ApplicationModule {
 			}
 		}
 
-		if($missing)
+		if($missing) {
 			$this->call404();
+		}
 	}
 
 	public function dump() {
