@@ -130,7 +130,7 @@ class Router extends \Areus\ApplicationModule {
 		if(isset($this->routes['404']))
 			$this->callRoute($this->routes['404']);
 		else
-			throw new \RuntimeException('No action found for request: ' . $path);
+			throw new \RuntimeException('No action found for request: 404');
 	}
 
 	public function run($path = null) {
