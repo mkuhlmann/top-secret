@@ -79,10 +79,10 @@ class Router extends \Areus\ApplicationModule {
 		}
 
 		// execute single filter
-		if(!isset($this->filters[$route['before']])) {
-			throw new \RuntimeException('Could not find filter: '.$route['before']);
+		if(!isset($this->filters[$filter])) {
+			throw new \RuntimeException('Could not find filter: '.$filter);
 		}
-		$filter = $this->filters[$route['before']];
+		$filter = $this->filters[$filter];
 
 		$reflection = new \ReflectionFunction($filter);
 		$filterResult = call_user_func_array($filter, $this->prepareArguments($reflection));
