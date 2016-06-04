@@ -2,7 +2,7 @@
 
 namespace TopSecret;
 
-class FrontendController {
+class FrontendController extends \Areus\ApplicationModule {
 	public function handleSlug($slug, $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
@@ -15,5 +15,9 @@ class FrontendController {
 		} else if(true || isset($_GET['raw'])) {
 			header('Location: ' . $item->path);
 		}
+	}
+
+	public function index() {
+		include $this->app->appPath.'/views/index.php';
 	}
 }

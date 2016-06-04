@@ -33,7 +33,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/'.$_FILES['file']['name'])) {
 			$item = $this->handleUpload($this->app->appPath.'/'.$_FILES['file']['name']);
-			$res->json(['slug' => $item->slug, 'title' => $item->title]);
+			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension]);
 		}
 	}
 
@@ -75,6 +75,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$item->path = '/'.$uploadDir.$fileName;
 		$item->size = filesize($uploadPath);
 		$item->mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $uploadPath);
+		$item->extension = strtolower($pathInfo['extension']);
 		$item->created_at = date('Y-m-d H:i:s');
 
 		// type
