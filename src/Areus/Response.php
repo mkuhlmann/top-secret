@@ -8,6 +8,10 @@ class Response {
 		return $this;
 	}
 
+	public function redirect($path) {
+		header('Location: ' . $path);
+	}
+
 	public function json($arr) {
 		header('Content-Type: application/json; charset=utf-8;');
 		echo json_encode($arr);
