@@ -2,5 +2,6 @@ composer.phar
 composer.lock
 database.db
 public/20*
+public/thumb
 vendor
 composer.phar
