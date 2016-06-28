@@ -17,13 +17,13 @@
 						<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="{{ item.path }}">{{ item.title }}</a>
 					</span>
 					<span v-if="item.type == 'binary' || item.type == 'url'">
-						<a href="{{ item.path }}">{{ item.title }}</a><span v-if="item.type == 'url'">[...]</span>
+						<a href="{{ item.path }}">{{ item.title }} [...]</a><span v-if="item.type == 'url'"></span>
 					</span>
 				</td>
 				<td><span style="font-family: monospace;"><?php echo app()->config->baseUrl; ?>/{{item.slug}}</span></td>
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
-				<td>{{ item.created_at }}</td>
+				<td>{{ item.created_at }} <a v-on:click="itemDelete(item)">D</a></td>
 			</tr>
 		</tbody>
 	</table>

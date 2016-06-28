@@ -4,6 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.css" />
 	<style type="text/css">
 	body { top: 0; left: 0; }
+	a { cursor: pointer; }
 	</style>
 	<title>TopSecret Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,6 +43,12 @@
 			},
 			imageMouseLeave: function() {
 				this.imageThumbPath = null;
+			},
+			itemDelete: function(item) {
+				this.$http.post('/api/v1/item/'+item.slug+'/delete').then(function(repsonse) {
+
+				});
+				this.items.splice(this.items.indexOf(item), 1);
 			}
 		}
 	});

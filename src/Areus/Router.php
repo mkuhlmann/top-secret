@@ -20,10 +20,14 @@ class Router extends \Areus\ApplicationModule {
 	}
 
 	public function get($route, $options) {
+		if(!is_array($options))	$options = ['uses' => $options];
+		$options['method'] = 'get';
 		$this->any($route, $options);
 	}
 
 	public function post($route, $options) {
+		if(!is_array($options))	$options = ['uses' => $options];
+		$options['method'] = 'post';
 		$this->any($route, $options);
 	}
 
@@ -165,6 +169,9 @@ class Router extends \Areus\ApplicationModule {
 		$missing = true;
 		foreach($this->routes as $id => $route) {
 			$pattern = $route['pattern'];
+			if(isset($route['method']) && $route['method'] != strtolower($_SERVER['REQUEST_METHOD'])) {
+				continue;
+			}
 			if($path == $pattern) {
 				$this->callRoute($route);
 				$missing = false;
