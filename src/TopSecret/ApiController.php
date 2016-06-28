@@ -14,6 +14,12 @@ class ApiController extends \Areus\ApplicationModule {
 		return $randomString;
 	}
 
+	public function items($req, $res) {
+		$items = \R::findAll('item');
+
+		$res->json(\R::exportAll($items));
+	}
+
 	public function postLink() {
 		if(!isset($_POST['url'])) return;
 

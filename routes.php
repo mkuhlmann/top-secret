@@ -1,6 +1,9 @@
 <?php
 
 $app->router->get('/', 'TopSecret\FrontendController@index');
+$app->router->get('/admin', 'TopSecret\FrontendController@admin');
+
+$app->router->post('/api/v1/items', ['uses' => 'TopSecret\ApiController@items']);
 $app->router->post('/api/v1/link', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postLink']);
 $app->router->post('/api/v1/upload', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postUpload']);
 $app->router->post('/api/v1/tasker', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@taskerUpload']);

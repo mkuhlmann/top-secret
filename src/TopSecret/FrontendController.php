@@ -39,6 +39,10 @@ class FrontendController extends \Areus\ApplicationModule {
 		$res->redirect('/thumb/'.$item->slug.'.jpg');
 	}
 
+	public function admin() {
+		include $this->app->appPath.'/views/admin.php';
+	}
+
 	public function index() {
 		include $this->app->appPath.'/views/index.php';
 	}
