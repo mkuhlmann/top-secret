@@ -5,3 +5,4 @@ public/20*
 public/thumb
 vendor
 composer.phar
+config/default.php

@@ -2,7 +2,10 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.css" />
-
+	<style type="text/css">
+	body { top: 0; left: 0; }
+	</style>
+	<title>TopSecret Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.js"></script>
@@ -24,11 +27,22 @@
 	var app = {};
 	app.IndexCtrl = Vue.extend({
 		template: '#tpl-index',
-		data: _ => { items: [] }
-		created: _ => {
-			this.$http.get('/api/v1/items').then(repsonse => {
+		data: _ => { return {
+			items: [],
+			imageThumbPath: null
+		} },
+		created: function() {
+			this.$http.get('/api/v1/items').then(function(response) {
 				this.items = response.data;
 			});
+		},
+		methods: {
+			imageMouseOver: function(item) {
+				this.imageThumbPath = '/thumb/'+item.slug;
+			},
+			imageMouseLeave: function() {
+				this.imageThumbPath = null;
+			}
 		}
 	});
 

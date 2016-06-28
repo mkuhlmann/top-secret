@@ -15,18 +15,25 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function items($req, $res) {
-		$items = \R::findAll('item');
-
-		$res->json(\R::exportAll($items));
+		list($sql, $params) = \TopSecret\Helper::buildQuery([
+			['SELECT * FROM item'],
+			[$req->query->type, 'WHERE', 'type = ?'],
+			['ORDER BY created_at DESC']
+		]);
+		$items = \R::getAll($sql, $params);
+		$res->json($items);
 	}
 
 	public function postLink() {
 		if(!isset($_POST['url'])) return;
 
+		$url = $_POST['url'];
+		$p = parse_url($url);
 		$item = \R::dispense('item');
 		$item->slug = $this->generateRandomString(6);
+		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
-		$item->path = $_POST['url'];
+		$item->path = $url;
 		$item->created_at = date('Y-m-d H:i:s');
 
 		\R::store($item);

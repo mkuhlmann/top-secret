@@ -46,4 +46,39 @@ class Helper {
  		$targetImage = null;
  		$originalImage = null;
 	}
+
+	static function getAdminCookie() {
+		$str = date('Y-m-d') . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . app()->config->loginSecret;
+		return hash('sha256', $str);
+	}
+
+	static function buildQuery($pieces) {
+		$sql = '';
+		$glue = NULL;
+		$params = [];
+		foreach( $pieces as $piece ) {
+			$n = count( $piece );
+			switch( $n ) {
+				case 1:
+				$sql .= " {$piece[0]} ";
+				break;
+				case 2:
+				$glue = NULL;
+				if (!is_null($piece[0])) {
+					$params[] = $piece[0];
+					$sql .= " {$piece[1]} ";
+				}
+				break;
+				case 3:
+				$glue = ( is_null( $glue ) ) ? $piece[1] : $glue;
+				if (!is_null($piece[0])) {
+					$params[] = $piece[0];
+					$sql .= " {$glue} {$piece[2]} ";
+					$glue = NULL;
+				}
+				break;
+			}
+		}
+		return [$sql, $params];
+	}
 }

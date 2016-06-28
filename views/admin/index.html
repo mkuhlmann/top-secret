@@ -3,13 +3,27 @@
 		<thead>
 			<tr>
 				<th>Datei</th>
+				<th>Link</th>
 				<th>Typ</th>
 				<th>Hochgeladen</th>
 			</tr>
 		</thead>
 
 		<tbody>
-			
+			<tr v-for="item in items">
+				<td>
+					<span v-if="item.type == 'image'">
+						<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="{{ item.path }}">{{ item.title }}</a>
+					</span>
+					<span v-if="item.type == 'binary' || item.type == 'url'">
+						<a href="{{ item.path }}">{{ item.title }}</a><span v-if="item.type == 'url'">[...]</span>
+					</span>
+				</td>
+				<td>https://top-secret.xyz/{{item.slug}}</td>
+				<td>{{ item.type }}</td>
+				<td>{{ item.created_at }}</td>
+			</tr>
 		</tbody>
 	</table>
+	<div style="position: absolute; top: 0; left: 0;"><img v-bind:src="imageThumbPath"></div>
 </template>

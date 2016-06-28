@@ -7,6 +7,7 @@ class Request {
 
 	public function __get($name) {
 		if($name == 'query') return (object) $_GET;
+		else if($name == 'cookies' || $name == 'cookie') return (object) $_COOKIE;
 
 		if(!isset($this->props[$name])) {
 			$this->props[$name] = $this->$name();
@@ -33,6 +34,17 @@ class Request {
 
 	public function query($key, $default = null) {
 		return $_GET[$key] ?? $default;
+	}
+
+	public function cookie($key, $default = null) {
+		return $this->cookies($key, $default);
+	}
+	public function cookies($key, $default = null) {
+		return $_COOKIE[$key] ?? $default;
+	}
+
+	public function post($key, $default = null) {
+		return $_POST[$key] ?? $default;
 	}
 
 	public function protocol() {

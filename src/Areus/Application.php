@@ -3,20 +3,10 @@
 namespace Areus;
 
 class Application extends \Illuminate\Container\Container {
-	//private static $instance = null;
-
-	public static function getInstance($key = null) {
-		if($key == null)
-			return static::$instance;
-		else if(isset(static::$instance[$key]))
-			return static::$instance[$key];
-		else
-			return null;
-	}
 
 	public function __construct() {
 		if(static::$instance == null)
-			static::$instance = $this;
+			static::setInstance($this);
 
 		$this->instance('Areus\Application', $this);
 		$this->alias('Areus\Application', 'app');

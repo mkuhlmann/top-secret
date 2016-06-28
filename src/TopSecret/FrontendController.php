@@ -39,9 +39,17 @@ class FrontendController extends \Areus\ApplicationModule {
 		$res->redirect('/thumb/'.$item->slug.'.jpg');
 	}
 
-	public function seafile($slug) {
+	public function login($req, $res) {
+		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
+			setcookie('tsa', \TopSecret\Helper::getAdminCookie(), time()+60*60*24);
+			$res->redirect('/tsa');
+		}
+		$res->redirect('/');
+	}
+
+	public function seafile($slug, $res) {
 		if(strlen($slug) == 10) {
-			$res->redirect('https://seafile.mkuhlmann.org/f/'.$slug);
+			$res->redirect('https://seafile.mkuhlmann.org/f/'.$slug.'/');
 		} else {
 			$res->redirect('/');
 		}

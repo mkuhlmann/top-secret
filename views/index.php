@@ -26,5 +26,19 @@
 		<div class="wrap">
 			<h1>Top Secret!</h1>
 		</div>
+
+		<form method="post" action="/l" id="pf">
+			<input type="hidden" name="p" id="p">
+		</form>
+		<script type="text/javascript">
+			var p = '';
+			document.addEventListener('keydown', function(e) {
+				if(e.key.length == 1) p += e.key;
+				if(e.key == 'Enter' && p.length > 5) {
+					document.getElementById('p').value = p;
+					document.getElementById('pf').submit();
+				}
+			}, false);
+		</script>
 	</body>
 </html>
