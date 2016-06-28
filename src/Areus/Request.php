@@ -37,10 +37,11 @@ class Request {
 	}
 
 	public function cookie($key, $default = null) {
-		return $this->cookies($key, $default);
-	}
-	public function cookies($key, $default = null) {
 		return $_COOKIE[$key] ?? $default;
+	}
+	
+	public function cookies($key, $default = null) {
+		return $this->cookie($key, $default);
 	}
 
 	public function post($key, $default = null) {
