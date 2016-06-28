@@ -1,3 +1,6 @@
 <?php
 
-return [];
+return [
+	'baseUrl' => 'https://top-secret.xyz',
+	'rbfluid' => false
+];

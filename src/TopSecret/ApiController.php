@@ -51,17 +51,30 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function taskerUpload($res) {
+		header('Content-Type: text/html; charset=utf-8;');
 		if(isset($_GET['fileName'])) {
-			$fileName = basename($_GET['fileName']);
-			$targetPath = $this->app->appPath.'/'.$fileName;
+			$pathInfo = pathinfo($_GET['fileName']);
+			$targetPath = $this->app->appPath.'/'.$pathInfo['basename'];
 
-			$input = fopen('php://input', 'r');
+			$input = file_get_contents('php://input', 'r');
 			file_put_contents($targetPath, $input);
+
+			if($pathInfo['extension'] == 'png' && filesize($targetPath) > 200*1000) {
+				$newTarget = $this->app->appPath.'/'.$pathInfo['filename'].'.jpg';
+				\TopSecret\Helper::resizeImage($targetPath, $newTarget, 100000);
+				unlink($targetPath);
+				$targetPath = $newTarget;
+			}
 
 			$item = $this->handleUpload($targetPath);
 
-			echo 'http://s.top-secret.xyz/'.$item->slug;
+			echo $this->app->config->baseUrl.'/'.$item->slug;
 		}
+	}
+
+	public function taskerLast($res) {
+		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
+		echo $this->app->config->baseUrl.'/'.$item->slug;
 	}
 
 	private function handleUpload($path) {

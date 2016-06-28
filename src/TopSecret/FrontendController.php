@@ -10,6 +10,11 @@ class FrontendController extends \Areus\ApplicationModule {
 			return;
 		}
 
+		if(!isset($item->clicks)) $item->clicks = 0;
+		$item->clicks++;
+		$item->last_hit_at = date('Y-m-d H:i:s');
+		\R::store($item);
+
 		if($item->type == 'url') {
 			header('Location: ' . $item->path);
 		} else if(true || isset($_GET['raw'])) {
@@ -43,6 +48,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
 			setcookie('tsa', \TopSecret\Helper::getAdminCookie(), time()+60*60*24);
 			$res->redirect('/tsa');
+			return;
 		}
 		$res->redirect('/');
 	}

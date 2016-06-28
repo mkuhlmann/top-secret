@@ -17,7 +17,7 @@ $app->registerSingleton('req', 'Areus\Request');
 $app->registerSingleton('res', 'Areus\Response');
 $app->registerSingleton('router', 'Areus\Router');
 
-R::setup('sqlite:'.$appPath.'/database.db');
+\R::setup('sqlite:'.$appPath.'/database.db');
 
 function app() {
 	return \Areus\Application::getInstance();

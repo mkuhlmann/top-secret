@@ -9,7 +9,12 @@ class Helper {
 			self::resizeImageGd($srcPath, $dstPath, $maxSize, $jpegQuality);
 			return;
 		}
-		shell_exec('convert '.escapeshellarg($srcPath).' -resize "'.(int)$maxSize.'>" -quality '.(int)$jpegQuality.' '.escapeshellarg($dstPath));
+		if($maxSize == null || $maxSize == 100000) {
+			shell_exec('convert '.escapeshellarg($srcPath).' -quality '.(int)$jpegQuality.' '.escapeshellarg($dstPath));
+		} else {
+			shell_exec('convert '.escapeshellarg($srcPath).' -resize "'.(int)$maxSize.'>" -quality '.(int)$jpegQuality.' '.escapeshellarg($dstPath));
+		}
+
 	}
 
 	static function resizeImageGd($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
@@ -26,25 +31,28 @@ class Helper {
  		$ratio = $originalWidth / $originalHeight;
 
  		$targetWidth = $targetHeight = min($maxSize, max($originalWidth, $originalHeight));
+		if($targetWidth == $maxSize) {
+			if ($ratio < 1) {
+	 			$targetWidth = $targetHeight * $ratio;
+	 		} else {
+	 			$targetHeight = $targetWidth / $ratio;
+	 		}
 
- 		if ($ratio < 1) {
- 			$targetWidth = $targetHeight * $ratio;
- 		} else {
- 			$targetHeight = $targetWidth / $ratio;
- 		}
+	 		$srcWidth = $originalWidth;
+	 		$srcHeight = $originalHeight;
+	 		$srcX = $srcY = 0;
 
- 		$srcWidth = $originalWidth;
- 		$srcHeight = $originalHeight;
- 		$srcX = $srcY = 0;
+	 		$targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
+	 		imagecopyresampled($targetImage, $originalImage, 0, 0, $srcX, $srcY, $targetWidth, $targetHeight, $srcWidth, $srcHeight);
 
- 		$targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
- 		imagecopyresampled($targetImage, $originalImage, 0, 0, $srcX, $srcY, $targetWidth, $targetHeight, $srcWidth, $srcHeight);
-
- 		imagejpeg($targetImage, $dstPath, $jpegQuality);
- 		imagedestroy($targetImage);
- 		imagedestroy($originalImage);
- 		$targetImage = null;
- 		$originalImage = null;
+	 		imagejpeg($targetImage, $dstPath, $jpegQuality);
+	 		imagedestroy($targetImage);
+	 		$targetImage = null;
+		} else {
+			imagejpeg($originalImage, $dstPath, $jpegQuality);
+		}
+		imagedestroy($originalImage);
+		$originalImage = null;
 	}
 
 	static function getAdminCookie() {

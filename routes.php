@@ -7,6 +7,7 @@ $app->router->post('/api/v1/items', ['before' => 'auth.api', 'uses' => 'TopSecre
 $app->router->post('/api/v1/link', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postLink']);
 $app->router->post('/api/v1/upload', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postUpload']);
 $app->router->post('/api/v1/tasker', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@taskerUpload']);
+$app->router->get('/api/v1/taskerLast', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@taskerLast']);
 
 $app->router->get('/f/{slug}', ['uses' => 'TopSecret\FrontendController@seafile']);
 $app->router->get('/thumbs?/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleThumbSlug']);

@@ -4,6 +4,7 @@
 			<tr>
 				<th>Datei</th>
 				<th>Link</th>
+				<th>Hits</th>
 				<th>Typ</th>
 				<th>Hochgeladen</th>
 			</tr>
@@ -19,11 +20,12 @@
 						<a href="{{ item.path }}">{{ item.title }}</a><span v-if="item.type == 'url'">[...]</span>
 					</span>
 				</td>
-				<td>https://top-secret.xyz/{{item.slug}}</td>
+				<td><span style="font-family: monospace;"><?php echo app()->config->baseUrl; ?>/{{item.slug}}</span></td>
+				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
 			</tr>
 		</tbody>
 	</table>
-	<div style="position: absolute; top: 0; left: 0;"><img v-bind:src="imageThumbPath"></div>
+	<div style="position: fixed; top: 0; right: 0;"><img v-bind:src="imageThumbPath"></div>
 </template>
