@@ -39,6 +39,14 @@ class FrontendController extends \Areus\ApplicationModule {
 		$res->redirect('/thumb/'.$item->slug.'.jpg');
 	}
 
+	public function seafile($slug) {
+		if(strlen($slug) == 10) {
+			$res->redirect('https://seafile.mkuhlmann.org/f/'.$slug);
+		} else {
+			$res->redirect('/');
+		}
+	}
+
 	public function admin() {
 		include $this->app->appPath.'/views/admin.php';
 	}
