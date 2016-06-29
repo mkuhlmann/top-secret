@@ -5,7 +5,7 @@
 ///
 $app->router->get('/', 'TopSecret\FrontendController@index');
 $app->router->get('/tsa', ['before' => 'auth.admin', 'uses' => 'TopSecret\FrontendController@admin']);
-$app->router->get('/l', 'TopSecret\FrontendController@login');
+$app->router->post('/l', 'TopSecret\FrontendController@login');
 
 //
 // API
