@@ -24,7 +24,7 @@
 
 	<body>
 		<div class="wrap">
-			<h1>Top Secret!</h1>
+			<h1><?php echo app()->config->pageName; ?></h1>
 		</div>
 
 		<form method="post" action="/l" id="pf">
