@@ -34,7 +34,7 @@ class ApiController extends \Areus\ApplicationModule {
 	public function items($req, $res) {
 		list($sql, $params) = \TopSecret\Helper::buildQuery([
 			['SELECT * FROM item'],
-			[$req->query->type, 'WHERE', 'type = ?'],
+			[$req->query('type'), 'WHERE', 'type = ?'],
 			['ORDER BY created_at DESC']
 		]);
 		$items = \R::getAll($sql, $params);

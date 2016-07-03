@@ -33,19 +33,19 @@ class Request {
 	}
 
 	public function query($key, $default = null) {
-		return $_GET[$key] ?? $default;
+		return (isset($_GET[$key])) ? $_GET['key'] : $default;
 	}
 
 	public function cookie($key, $default = null) {
-		return $_COOKIE[$key] ?? $default;
+		return (isset($_COOKIE[$key])) ? $_COOKIE[$key] : $default;
 	}
-	
+
 	public function cookies($key, $default = null) {
 		return $this->cookie($key, $default);
 	}
 
 	public function post($key, $default = null) {
-		return $_POST[$key] ?? $default;
+		return (isset($_POST[$key])) ? $_GET['key'] : $default;
 	}
 
 	public function protocol() {

@@ -5,6 +5,7 @@
 	<style type="text/css">
 	body { top: 0; left: 0; }
 	a { cursor: pointer; }
+	#app { padding: 40px; }
 	</style>
 	<title>TopSecret Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +16,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 </head>
 <body>
-	<div class="ui container" id="app">
+	<div class="ui page main-wrap" id="app">
 		<router-view></router-view>
 	</div>
 	<!-- vue.js templates here -->
