@@ -45,7 +45,7 @@ class Request {
 	}
 
 	public function post($key, $default = null) {
-		return (isset($_POST[$key])) ? $_GET[$key] : $default;
+		return (isset($_POST[$key])) ? $_POST[$key] : $default;
 	}
 
 	public function protocol() {
