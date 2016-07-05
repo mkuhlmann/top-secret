@@ -1,6 +1,6 @@
 ## Installing
 
-Clone the repository, and ether install composer dependenies manually or simply run `php install.php`. Then create a `config/local.php` file and with the same structure as the `config/default.php` file to configure the service.
+Clone the repository, and ether install composer dependencies manually or simply run `php update.php`. Then create a `config/local.php` file and with the same structure as the `config/default.php` file to configure the service.
 
 Updating is as simple as running a `git clone`.
 

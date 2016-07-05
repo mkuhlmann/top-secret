@@ -3,9 +3,12 @@
 namespace TopSecret;
 
 class Helper {
+	static function isWin() {
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
 
 	static function resizeImage($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+		if (app()->config->imageLibrary != 'imagemagick') {
 			self::resizeImageGd($srcPath, $dstPath, $maxSize, $jpegQuality);
 			return;
 		}

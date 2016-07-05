@@ -10,13 +10,26 @@
 	<title>TopSecret Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.9.1/vue-resource.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/0.7.13/vue-router.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 </head>
 <body>
 	<div class="ui page main-wrap" id="app">
+		<div class="ui top attached menu">
+			<a class="ui item">
+				<i class="wrench icon"></i> Einstellungen
+			</a>
+			<div class="right menu">
+				<div class="ui right aligned category search item">
+					<div class="ui transparent icon input">
+						<input class="prompt" type="text" placeholder="Suche ...">
+						<i class="search link icon"></i>
+					</div>
+					<div class="results"></div>
+				</div>
+			</div>
+		</div>
+		<!--<div class="ui bottom attached segment hidden">
+
+		</div>-->
 		<router-view></router-view>
 	</div>
 	<!-- vue.js templates here -->
@@ -25,7 +38,15 @@
 		include $file; // full path
 	} ?>
 
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.9.1/vue-resource.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/0.7.13/vue-router.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.js"></script>
 	<script type="text/javascript">
+	$('.ui.dropdown').dropdown();
 	var app = {};
 	app.IndexCtrl = Vue.extend({
 		template: '#tpl-index',
