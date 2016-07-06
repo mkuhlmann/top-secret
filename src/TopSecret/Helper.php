@@ -7,7 +7,18 @@ class Helper {
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 	}
 
-	static function resizeImage($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
+
+	public static function generateRandomString($length = 10) {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
+
+	public static function resizeImage($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
 		if (app()->config->imageLibrary != 'imagemagick') {
 			self::resizeImageGd($srcPath, $dstPath, $maxSize, $jpegQuality);
 			return;
@@ -20,7 +31,7 @@ class Helper {
 
 	}
 
-	static function resizeImageGd($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
+	public static function resizeImageGd($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
 		$extension = pathinfo($srcPath, PATHINFO_EXTENSION);
 		if($extension == 'jpg' || $extension == 'jpeg') {
 	 		$originalImage = imagecreatefromjpeg($srcPath);
@@ -58,12 +69,12 @@ class Helper {
 		$originalImage = null;
 	}
 
-	static function getAdminCookie() {
+	public static function getAdminCookie() {
 		$str = date('Y-m-d') . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . app()->config->loginSecret;
 		return hash('sha256', $str);
 	}
 
-	static function buildQuery($pieces) {
+	public static function buildQuery($pieces) {
 		$sql = '';
 		$glue = NULL;
 		$params = [];

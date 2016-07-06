@@ -4,15 +4,6 @@ namespace TopSecret;
 
 class ApiController extends \Areus\ApplicationModule {
 
-	private function generateRandomString($length = 10) {
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$charactersLength = strlen($characters);
-		$randomString = '';
-		for ($i = 0; $i < $length; $i++) {
-			$randomString .= $characters[rand(0, $charactersLength - 1)];
-		}
-		return $randomString;
-	}
 
 	public function itemDelete($slug, $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
@@ -47,7 +38,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$url = $_POST['url'];
 		$p = parse_url($url);
 		$item = \R::dispense('item');
-		$item->slug = $this->generateRandomString(6);
+		$item->slug = \TopSecret\Helper::generateRandomString(6);
 		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
 		$item->path = $url;
@@ -61,7 +52,7 @@ class ApiController extends \Areus\ApplicationModule {
 	public function postUpload($res) {
 		if(!isset($_FILES['file'])) return;
 
-		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/'.$_FILES['file']['name'])) {
+		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
 			$item = $this->handleUpload($this->app->appPath.'/'.$_FILES['file']['name']);
 			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension]);
 		}
@@ -71,13 +62,13 @@ class ApiController extends \Areus\ApplicationModule {
 		header('Content-Type: text/html; charset=utf-8;');
 		if(isset($_GET['fileName'])) {
 			$pathInfo = pathinfo($_GET['fileName']);
-			$targetPath = $this->app->appPath.'/'.$pathInfo['basename'];
+			$targetPath = $this->app->appPath.'/storage/'.$pathInfo['basename'];
 
 			$input = file_get_contents('php://input', 'r');
 			file_put_contents($targetPath, $input);
 
 			if($pathInfo['extension'] == 'png' && filesize($targetPath) > 200*1000) {
-				$newTarget = $this->app->appPath.'/'.$pathInfo['filename'].'.jpg';
+				$newTarget = $this->app->appPath.'/storage/'.$pathInfo['filename'].'.jpg';
 				\TopSecret\Helper::resizeImage($targetPath, $newTarget, 100000);
 				unlink($targetPath);
 				$targetPath = $newTarget;
@@ -112,7 +103,7 @@ class ApiController extends \Areus\ApplicationModule {
 		rename($path, $uploadPath);
 
 		$item = \R::dispense('item');
-		$item->slug = $this->generateRandomString(6);
+		$item->slug = \TopSecret\Helper::generateRandomString(6);
 		$item->title = $pathInfo['basename'];
 		$item->name = $fileName;
 		$item->path = '/'.$uploadDir.$fileName;

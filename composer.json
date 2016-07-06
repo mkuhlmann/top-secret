@@ -1,6 +1,7 @@
 {
     "require": {
-        "illuminate/container": "^5.2"
+        "illuminate/container": "^5.2",
+        "illuminate/encryption": "^5.2"
     },
     "autoload": {
         "psr-4": {
