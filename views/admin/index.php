@@ -16,7 +16,10 @@
 					<span v-if="item.type == 'image'">
 						<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="{{ item.path }}">{{ item.title }}</a>
 					</span>
-					<span v-if="item.type == 'binary' || item.type == 'url' || item.type == 'text'">
+					<span v-if="item.type == 'text'">
+						<a href="/{{ item.slug }}">{{ item.title }}</a>
+					</span>
+					<span v-if="item.type == 'binary' || item.type == 'url'">
 						<a href="{{ item.path }}">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
 					</span>
 				</td>

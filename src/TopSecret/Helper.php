@@ -7,7 +7,6 @@ class Helper {
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 	}
 
-
 	public static function generateRandomString($length = 10) {
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$charactersLength = strlen($characters);
