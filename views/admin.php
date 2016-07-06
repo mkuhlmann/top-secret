@@ -7,13 +7,21 @@
 	a { cursor: pointer; }
 	#app { padding: 40px; }
 	</style>
-	<title>TopSecret Admin</title>
+	<title><?php echo app()->config->pageName; ?> Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 </head>
 <body>
 	<div class="ui page main-wrap" id="app">
+		<div id="loader" v-if="loading">
+			<div class="ui active inverted dimmer">
+				<div class="ui text large loader"><?php echo app()->config->pageName; ?> wird geladen ...</div>
+			</div>
+		</div>
 		<div class="ui top attached menu">
+			<a class="ui item" v-on:click="logout()">
+				<i class="sign out icon"></i> Logout
+			</a>
 			<a class="ui item" v-on:click="switchMenu('settings')">
 				<i class="wrench icon"></i> Einstellungen
 			</a>
@@ -68,12 +76,17 @@
 
 		app.Root = Vue.extend({
 			data: function() { return {
-				menu: null
+				menu: null,
+				loading: false
 			} },
 			created: function() {},
 			methods: {
 				switchMenu: function(key) {
 					this.menu = (this.menu == key) ? null : key;
+				},
+				logout: function() {
+					document.cookie = 'tsa=asdf;';
+					document.location.href = '/';
 				}
 			}
 		});
