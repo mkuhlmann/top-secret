@@ -33,7 +33,7 @@ class Request {
 	}
 
 	public function query($key, $default = null) {
-		return (isset($_GET[$key])) ? $_GET['key'] : $default;
+		return (isset($_GET[$key])) ? $_GET[$key] : $default;
 	}
 
 	public function cookie($key, $default = null) {

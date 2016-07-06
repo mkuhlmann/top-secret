@@ -31,7 +31,7 @@ server {
                 try_files $uri $uri/ /index.php$is_args$args;
         }
 
-        location ~ \.php$ {
+        location ~ ^/index.php$ {
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
                 fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
                 fastcgi_index index.php;

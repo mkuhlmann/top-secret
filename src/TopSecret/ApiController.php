@@ -53,8 +53,8 @@ class ApiController extends \Areus\ApplicationModule {
 		if(!isset($_FILES['file'])) return;
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
-			$item = $this->handleUpload($this->app->appPath.'/'.$_FILES['file']['name']);
-			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension]);
+			$item = $this->handleUpload($this->app->appPath.'/storage/'.$_FILES['file']['name']);
+			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'']);
 		}
 	}
 

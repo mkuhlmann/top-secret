@@ -3,7 +3,7 @@
 namespace TopSecret;
 
 class FrontendController extends \Areus\ApplicationModule {
-	public function handleSlug($slug, $res) {
+	public function handleSlug($slug, $req, $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			$res->status(404)->json(['error' => '404 file not found']);
@@ -16,8 +16,19 @@ class FrontendController extends \Areus\ApplicationModule {
 		\R::store($item);
 
 		if($item->type == 'url') {
-			header('Location: ' . $item->path);
-		} else if(true || isset($_GET['raw'])) {
+			$res->redirect($item->path);
+		} else if($item->type == 'text') {
+			if($req->query('raw')) {
+				header('Content-Type: text/plain');
+				readfile($this->app->publicPath.$item->path);
+			} else if($req->query('dl')) {
+				header('Content-Type: text/plain');
+				header('Content-Disposition: attachment; filename="'.$item->title.'";');
+				readfile($this->app->publicPath.$item->path);
+			} else {
+				include $this->app->appPath.'/views/code.php';
+			}
+		} else {
 			header('Location: ' . $item->path);
 		}
 	}
@@ -51,14 +62,6 @@ class FrontendController extends \Areus\ApplicationModule {
 			return;
 		}
 		$res->redirect('/');
-	}
-
-	public function seafile($slug, $res) {
-		if(strlen($slug) == 10) {
-			$res->redirect('https://seafile.mkuhlmann.org/f/'.$slug.'/');
-		} else {
-			$res->redirect('/');
-		}
 	}
 
 	public function admin() {
