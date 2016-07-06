@@ -14,8 +14,11 @@
 <body>
 	<div class="ui page main-wrap" id="app">
 		<div class="ui top attached menu">
-			<a class="ui item">
+			<a class="ui item" v-on:click="switchMenu('settings')">
 				<i class="wrench icon"></i> Einstellungen
+			</a>
+			<a class="ui item" v-on:click="switchMenu('howto')">
+				<i class="help circle icon"></i> Anleitung
 			</a>
 			<div class="right menu">
 				<div class="ui right aligned category search item">
@@ -27,17 +30,30 @@
 				</div>
 			</div>
 		</div>
-		<!--<div class="ui bottom attached segment hidden">
-
-		</div>-->
-		<router-view></router-view>
+		<div class="ui bottom attached segment hidden" v-if="menu != null">
+			<div v-if="menu == 'howto'">
+				<h2>ShareX</h2>
+				<div class="ui grid">
+					<div class="six wide column">
+						<div class="ui form">
+							<div class="field">
+								<label>Upload URL</label>
+								<input type="text" value="<?php echo app()->config->baseUrl . '/api/v1/upload?key='.app()->config->apiKey; ?>">
+							</div>
+							<div class="field">
+								<label>JSON Result</label>
+								<input type="text" value="<?php echo app()->config->baseUrl . '/$json:slug$.$json.extension$'; ?>">
+							</div>
+						</div>
+					</div>
+					<div class="six wide column">
+						<img v-bind:src="'https://top-secret.xyz/j2oMS6.png'" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<index-ctrl></index-ctrl>
 	</div>
-	<!-- vue.js templates here -->
-	<?php $files = glob(dirname(__FILE__).'/admin/*.{html,php}', GLOB_BRACE);
-	foreach($files as $file) {
-		include $file; // full path
-	} ?>
-
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.js"></script>
@@ -46,52 +62,29 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.js"></script>
 	<script type="text/javascript">
-	$('.ui.dropdown').dropdown();
-	var app = {};
-	app.IndexCtrl = Vue.extend({
-		template: '#tpl-index',
-		data: _ => { return {
-			items: [],
-			imageThumbPath: null
-		} },
-		created: function() {
-			this.$http.get('/api/v1/items').then(function(response) {
-				this.items = response.data;
-			});
-		},
-		methods: {
-			imageMouseOver: function(item) {
-				this.imageThumbPath = '/thumb/'+item.slug;
-			},
-			imageMouseLeave: function() {
-				this.imageThumbPath = null;
-			},
-			itemDelete: function(item) {
-				this.$http.post('/api/v1/item/'+item.slug+'/delete').then(function(repsonse) {
+		$('.ui.dropdown').dropdown();
+		var app = {};
 
-				});
-				this.items.splice(this.items.indexOf(item), 1);
+		app.Root = Vue.extend({
+			data: function() { return {
+				menu: null
+			} },
+			created: function() {},
+			methods: {
+				switchMenu: function(key) {
+					this.menu = (this.menu == key) ? null : key;
+				}
 			}
+		});
+
+		window.onload = function() {
+			new app.Root({ el: '#app' });
 		}
-	});
-
-	app.Root = Vue.extend({
-		data: function() {
-			return {
-			}
-		},
-		created: function() {}
-	});
-
-	app.router = new VueRouter({
-		linkActiveClass: 'active'
-	});
-	app.router.map({
-		'/': { component: app.IndexCtrl }
-	});
-	window.onload = function() {
-		app.router.start(app.Root, '#app');
-	}
 	</script>
+	<!-- vue.js templates here -->
+	<?php $files = glob(dirname(__FILE__).'/admin/*.{html,php}', GLOB_BRACE);
+	foreach($files as $file) {
+		include $file; // full path
+	} ?>
 </body>
 </html>

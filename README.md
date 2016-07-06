@@ -40,7 +40,3 @@ server {
         }
 }
 ```
-
-ShareX Configuration should look like this:
-
-![ShareX Config](https://top-secret.xyz/j2oMS6.png)

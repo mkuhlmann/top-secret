@@ -65,7 +65,11 @@ class FrontendController extends \Areus\ApplicationModule {
 		include $this->app->appPath.'/views/admin.php';
 	}
 
-	public function index() {
-		include $this->app->appPath.'/views/index.php';
+	public function index($req, $res) {
+		if($req->cookie('tsa') != null && $req->cookie('tsa') == \TopSecret\Helper::getAdminCookie()) {
+			$res->redirect('/tsa');
+		} else {
+			include $this->app->appPath.'/views/index.php';
+		}
 	}
 }

@@ -29,3 +29,33 @@
 	</table>
 	<div style="position: fixed; top: 0; right: 0;"><img v-bind:src="imageThumbPath"></div>
 </template>
+<!------------------------------------------>
+<script type="text/javascript">
+app.IndexCtrl = Vue.extend({
+	template: '#tpl-index',
+	data: _ => { return {
+		items: [],
+		imageThumbPath: null
+	} },
+	created: function() {
+		this.$http.get('/api/v1/items').then(function(response) {
+			this.items = response.data;
+		});
+	},
+	methods: {
+		imageMouseOver: function(item) {
+			this.imageThumbPath = '/thumb/'+item.slug;
+		},
+		imageMouseLeave: function() {
+			this.imageThumbPath = null;
+		},
+		itemDelete: function(item) {
+			this.$http.post('/api/v1/item/'+item.slug+'/delete').then(function(repsonse) {
+
+			});
+			this.items.splice(this.items.indexOf(item), 1);
+		}
+	}
+});
+Vue.component('index-ctrl', app.IndexCtrl);
+</script>
