@@ -30,7 +30,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="ui bottom attached segment hidden" v-if="menu != null">
+		<div class="ui bottom attached segment hidden" v-show="menu != null">
+			<div v-show="menu == 'settings'"><settings-ctrl></settings-ctrl></div>
 			<div v-if="menu == 'howto'">
 				<h2>ShareX</h2>
 				<div class="ui grid">

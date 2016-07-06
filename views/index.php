@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
+		<link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet" type="text/css">
+		<title><?php echo app()->config->pageName; ?></title>
 		<style type="text/css">
 			body {
 				top: 0;
