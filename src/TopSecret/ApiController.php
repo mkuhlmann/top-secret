@@ -90,7 +90,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$uploadDir = date('Y/m').'/';
 		$uploadPath = $this->app->storagePath.'/uploads/'.$uploadDir;
 		if(!file_exists($uploadDir)) {
-			mkdir($uploadPath, 0760, true);
+			mkdir($uploadPath, 0766, true);
 		}
 
 		$fileName = $pathInfo['basename'];

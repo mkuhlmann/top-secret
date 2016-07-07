@@ -38,5 +38,10 @@ server {
                 include fastcgi_params;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         }
+
+        location /protected_uploads {
+            internal;
+            alias /var/www/YOUR_DOMAIN/storage/uploads;
+        }
 }
 ```

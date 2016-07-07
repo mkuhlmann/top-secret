@@ -14,12 +14,12 @@
 			<tr v-for="item in items">
 				<td>
 					<span v-if="item.type == 'image'">
-						<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="{{ item.path }}">{{ item.title }}</a>
+						<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="/{{ item.slug }}/{{ item.title }}">{{ item.title }}</a>
 					</span>
-					<span v-if="item.type == 'text'">
-						<a href="/{{ item.slug }}">{{ item.title }}</a>
+					<span v-if="item.type == 'text' || item.type == 'binary'">
+						<a href="/{{ item.slug }}/{{ item.title }}">{{ item.title }}</a>
 					</span>
-					<span v-if="item.type == 'binary' || item.type == 'url'">
+					<span v-if="item.type == 'url'">
 						<a href="{{ item.path }}">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
 					</span>
 				</td>

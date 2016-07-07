@@ -7,7 +7,7 @@ exec('php composer.phar install');
 $appPath = dirname(__FILE__);
 
 if(!file_exists("$appPath/storage/uploads")) {
-	mkdir("$appPath/storage/uploads", 0760, true);
+	mkdir("$appPath/storage/uploads", 0766, true);
 }
 
 if(file_exists("$appPath/public/2016")) {
