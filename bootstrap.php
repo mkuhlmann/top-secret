@@ -11,6 +11,7 @@ $app = new \Areus\Application();
 
 $app->instance('appPath', $appPath);
 $app->instance('publicPath', $publicPath);
+$app->instance('storagePath', $appPath.'/storage');
 
 $app->instance('config', new \Areus\Config($app->appPath.'/config'));
 $app->registerSingleton('req', 'Areus\Request');

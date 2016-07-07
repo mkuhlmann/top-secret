@@ -4,7 +4,6 @@ namespace TopSecret;
 
 class ApiController extends \Areus\ApplicationModule {
 
-
 	public function itemDelete($slug, $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
@@ -89,9 +88,9 @@ class ApiController extends \Areus\ApplicationModule {
 		$pathInfo = pathinfo($path);
 
 		$uploadDir = date('Y/m').'/';
-		$uploadPath = $this->app->publicPath.'/'.$uploadDir;
+		$uploadPath = $this->app->storagePath.'/uploads/'.$uploadDir;
 		if(!file_exists($uploadDir)) {
-			mkdir($uploadPath, 0777, true);
+			mkdir($uploadPath, 0760, true);
 		}
 
 		$fileName = $pathInfo['basename'];

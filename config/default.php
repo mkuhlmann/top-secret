@@ -6,6 +6,7 @@ return [
 	'rbfluid' => false,
 	'adminPassword' => 'generate with password_hash("xyz", PASSWORD_BCRYPT)', // then just enter this on the index page and the admin interface will magically open
 
+	'serveMethod' => 'php', // php or nginx
 	'imageLibrary' => 'gd', // gd or imagemagick
 	'loginSecret' => 'qwertzuiop', // used internally to forge admin cookie
 	'apiKey' => '12457890qwertzuiop' // i think you use this to protect the upload api

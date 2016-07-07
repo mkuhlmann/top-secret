@@ -24,12 +24,18 @@ class FrontendController extends \Areus\ApplicationModule {
 			} else if($req->query('dl')) {
 				header('Content-Type: text/plain');
 				header('Content-Disposition: attachment; filename="'.$item->title.'";');
-				readfile($this->app->publicPath.$item->path);
+				readfile($this->app->storagePath.'/uploads'.$item->path);
 			} else {
 				include $this->app->appPath.'/views/code.php';
 			}
 		} else {
-			header('Location: ' . $item->path);
+			header('Content-Type: '. $item->mime);
+			header('Content-Disposition: inline; filename="'.$item->title.'"');
+			if($this->app->config->serveMethod == 'nginx') {
+				header('X-Accel-Redirect: /protected_uploads'.$item->path);
+			} else {
+				readfile($this->app->storagePath.'/uploads'.$item->path);
+			}
 		}
 	}
 
@@ -50,7 +56,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			if(!file_exists($this->app->publicPath.'/thumb')) {
 				mkdir($this->app->publicPath.'/thumb', 0777, true);
 			}
-			\TopSecret\Helper::resizeImage($this->app->publicPath.$item->path, $thumbPath, 300);
+			\TopSecret\Helper::resizeImage($this->app->storagePath.'/uploads'.$item->path, $thumbPath, 300);
 		}
 		$res->redirect('/thumb/'.$item->slug.'.jpg');
 	}
