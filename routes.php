@@ -22,7 +22,6 @@ $app->router->get('/api/v1/taskerLast', ['before' => 'auth.api', 'uses' => 'TopS
 ///
 /// Frontend
 ///
-$app->router->get('/f/{slug}', ['uses' => 'TopSecret\FrontendController@seafile']);
 $app->router->get('/thumbs?/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleThumbSlug']);
 $app->router->get('/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleSlug']);
 

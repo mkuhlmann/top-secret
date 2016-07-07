@@ -24,6 +24,10 @@ class Request {
 		return $_SERVER['REQUEST_METHOD'];
 	}
 
+	public function isMethod($method) {
+		return strtolower($this->method()) == strtolower($method);
+	}
+
 	public function path() {
 		$r = explode('?', $_SERVER['REQUEST_URI'])[0];
 		if(isset($_GET['r'])) {

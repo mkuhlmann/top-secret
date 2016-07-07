@@ -19,22 +19,22 @@ class FrontendController extends \Areus\ApplicationModule {
 			$res->redirect($item->path);
 		} else if($item->type == 'text') {
 			if($req->query('raw')) {
-				header('Content-Type: text/plain');
-				readfile($this->app->storagePath.'/uploads'.$item->path);
+				$res->header('Content-Type', 'text/plain')
+					->readfile($this->app->storagePath.'/uploads'.$item->path);
 			} else if($req->query('dl')) {
-				header('Content-Type: text/plain');
-				header('Content-Disposition: attachment; filename="'.$item->title.'";');
-				readfile($this->app->storagePath.'/uploads'.$item->path);
+				$res->header('Content-Type', 'text/plain')
+					->header('Content-Disposition', 'attachment; filename="'.$item->title.'";')
+					->readfile($this->app->storagePath.'/uploads'.$item->path);
 			} else {
 				include $this->app->appPath.'/views/code.php';
 			}
 		} else {
-			header('Content-Type: '. $item->mime);
-			header('Content-Disposition: inline; filename="'.$item->title.'"');
+			$res->header('Content-Type', $item->mime)
+				->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
 			if($this->app->config->serveMethod == 'nginx') {
-				header('X-Accel-Redirect: /protected_uploads'.$item->path);
+				$res->header('X-Accel-Redirect', '/protected_uploads'.$item->path);
 			} else {
-				readfile($this->app->storagePath.'/uploads'.$item->path);
+				$res->readfile($this->app->storagePath.'/uploads'.$item->path);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 
 		if($item->type != 'image') {
-			$res->redirect('Location: /' . $item->slug);
+			$res->redirect('/' . $item->slug);
 			return;
 		}
 
@@ -78,6 +78,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		if($req->cookie('tsa') != null && $req->cookie('tsa') == \TopSecret\Helper::getAdminCookie()) {
 			$res->redirect('/tsa');
 		} else {
+			$res->beginContent();
 			include $this->app->appPath.'/views/index.php';
 		}
 	}
