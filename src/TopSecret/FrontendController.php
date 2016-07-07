@@ -20,7 +20,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		} else if($item->type == 'text') {
 			if($req->query('raw')) {
 				header('Content-Type: text/plain');
-				readfile($this->app->publicPath.$item->path);
+				readfile($this->app->storagePath.'/uploads'.$item->path);
 			} else if($req->query('dl')) {
 				header('Content-Type: text/plain');
 				header('Content-Disposition: attachment; filename="'.$item->title.'";');
