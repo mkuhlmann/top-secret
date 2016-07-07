@@ -9,7 +9,7 @@ class ApiController extends \Areus\ApplicationModule {
 		if($item != null) {
 			// delete physical files
 			if(isset($item->path) && file_exists($this->app->publicPath.$item->path)) {
-				unlink($this->app->publicPath.$item->path);
+				unlink($this->app->storagePath.'/uploads'.$item->path);
 				if(file_exists($this->app->publicPath.'/thumb/'.$item->slug.'.jpg')) {
 					unlink($this->app->publicPath.'/thumb/'.$item->slug.'.jpg');
 				}
