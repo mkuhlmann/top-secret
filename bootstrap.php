@@ -1,6 +1,8 @@
 <?php
 
 date_default_timezone_set('UTC');
+umask(0);
+
 require 'vendor/autoload.php';
 
 $appPath = dirname(__FILE__);
