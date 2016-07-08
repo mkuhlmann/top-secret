@@ -3,26 +3,38 @@
 namespace Areus;
 
 class Application extends \Illuminate\Container\Container {
+	protected $basePath;
 
-	public function __construct() {
-		if(static::$instance == null)
+	public function __construct($basePath) {
+		if(static::$instance == null) {
 			static::setInstance($this);
+		}
+
+		$this->basePath = rtrim($basePath, '\/');
+
+		$this->instance('appPath', $this->appPath());
+		$this->instance('publicPath', $this->publicPath());
+		$this->instance('storagePath', $this->storagePath());
+		$this->instance('configPath', $this->configPath());
 
 		$this->instance('Areus\Application', $this);
 		$this->alias('Areus\Application', 'app');
 	}
 
-	public function register($abstract, $concrete = null, $shared = false) {
-		if($concrete == null) {
-			$this->bind($abstract, $concrete, $shared);
-		} else {
-			$this->bind($concrete, null, $shared);
-			$this->alias($concrete, $abstract, $shared);
-		}
+	public function appPath() {
+		return $this->basePath;
 	}
 
-	public function registerSingleton($abstract, $concrete = null) {
-		$this->register($abstract, $concrete, true);
+	public function publicPath() {
+		return $this->basePath.'/public';
+	}
+
+	public function storagePath() {
+		return $this->basePath.'/storage';
+	}
+
+	public function configPath() {
+		return $this->basePath.'/config';
 	}
 
 	public function abort($statusCode = null) {

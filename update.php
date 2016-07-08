@@ -13,3 +13,7 @@ if(!file_exists("$appPath/storage/uploads")) {
 if(file_exists("$appPath/public/2016")) {
 	rename("$appPath/public/2016", "$appPath/storage/uploads/2016");
 }
+
+if(file_exists("$appPath/public/thumbs")) {
+	rename("$appPath/public/thumbs", "$appPath/storage/thumbs");
+}

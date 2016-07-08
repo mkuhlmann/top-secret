@@ -12,7 +12,7 @@ class Helper {
 		$charactersLength = strlen($characters);
 		$randomString = '';
 		for ($i = 0; $i < $length; $i++) {
-			$randomString .= $characters[rand(0, $charactersLength - 1)];
+			$randomString .= $characters[mt_rand(0, $charactersLength - 1)];
 		}
 		return $randomString;
 	}
@@ -27,7 +27,6 @@ class Helper {
 		} else {
 			shell_exec('convert '.escapeshellarg($srcPath).' -resize "'.(int)$maxSize.'>" -quality '.(int)$jpegQuality.' '.escapeshellarg($dstPath));
 		}
-
 	}
 
 	public static function resizeImageGd($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {

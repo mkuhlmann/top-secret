@@ -31,7 +31,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		} else {
 			$res->header('Content-Type', $item->mime)
 				->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
-			if($this->app->config->serveMethod == 'nginx') {
+			if(false && $this->app->config->serveMethod == 'nginx') {
 				$res->header('X-Accel-Redirect', '/protected_uploads'.$item->path);
 			} else {
 				$res->readfile($this->app->storagePath.'/uploads'.$item->path);
@@ -54,11 +54,18 @@ class FrontendController extends \Areus\ApplicationModule {
 		$thumbPath = $this->app->storagePath.'/thumb/'.$item->slug.'.jpg';
 		if(!file_exists($thumbPath)) {
 			if(!file_exists($this->app->storagePath.'/thumb')) {
-				mkdir($this->app->storagePath.'/thumb', 0777, true);
+				mkdir($this->app->storagePath.'/thumb', $this->app->config->defaultChmod, true);
 			}
 			\TopSecret\Helper::resizeImage($this->app->storagePath.'/uploads'.$item->path, $thumbPath, 300);
 		}
-		$res->redirect('/thumb/'.$item->slug.'.jpg');
+
+		$res->header('Content-Type', 'image/jpeg')
+			->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
+		if($this->app->config->serveMethod == 'nginx') {
+			$res->header('X-Accel-Redirect', '/protected_thumbs'.$item->path);
+		} else {
+			$res->readfile($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
+		}
 	}
 
 	public function login($req, $res) {
@@ -68,10 +75,6 @@ class FrontendController extends \Areus\ApplicationModule {
 			return;
 		}
 		$res->redirect('/');
-	}
-
-	public function admin() {
-		include $this->app->appPath.'/views/admin.php';
 	}
 
 	public function index($req, $res) {
