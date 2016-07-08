@@ -39,7 +39,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		} else {
 			$res->header('Content-Type', $item->mime)
 				->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
-			if(false && $this->app->config->serveMethod == 'nginx') {
+			if($this->app->config->serveMethod == 'nginx') {
 				$res->header('X-Accel-Redirect', '/protected_uploads'.$item->path);
 			} else {
 				$res->readfile($this->app->storagePath.'/uploads'.$item->path);
@@ -69,7 +69,7 @@ class FrontendController extends \Areus\ApplicationModule {
 
 		$res->header('Content-Type', 'image/jpeg')
 			->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
-		if($this->app->config->serveMethod == 'nginx') {
+		if(false && $this->app->config->serveMethod == 'nginx') {
 			$res->header('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
 			$res->readfile($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
