@@ -51,10 +51,10 @@ class FrontendController extends \Areus\ApplicationModule {
 			return;
 		}
 
-		$thumbPath = $this->app->publicPath.'/thumb/'.$item->slug.'.jpg';
+		$thumbPath = $this->app->storagePath.'/thumb/'.$item->slug.'.jpg';
 		if(!file_exists($thumbPath)) {
-			if(!file_exists($this->app->publicPath.'/thumb')) {
-				mkdir($this->app->publicPath.'/thumb', 0777, true);
+			if(!file_exists($this->app->storagePath.'/thumb')) {
+				mkdir($this->app->storagePath.'/thumb', 0777, true);
 			}
 			\TopSecret\Helper::resizeImage($this->app->storagePath.'/uploads'.$item->path, $thumbPath, 300);
 		}
