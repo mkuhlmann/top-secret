@@ -8,6 +8,9 @@ class AdminController extends \Areus\ApplicationModule {
 	}
 
 	public function getConfig($res) {
-		$res->json($this->app->config->asArray());
+		$config = $this->app->config->asArray();
+		$config['defaultChmod'] = decoct($config['defaultChmod']);
+		unset($config['adminPassword'], $config['loginSecret']);
+		$res->json($config);
 	}
 }

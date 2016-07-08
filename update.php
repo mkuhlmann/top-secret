@@ -19,5 +19,5 @@ if(file_exists("$appPath/public/thumbs")) {
 }
 
 if(file_exists("$appPath/database.db")) {
-	rename("$appPath/databse.db", "$appPath/storage/database.db");
+	rename("$appPath/database.db", "$appPath/storage/database.db");
 }
