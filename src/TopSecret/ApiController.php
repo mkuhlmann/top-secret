@@ -8,10 +8,10 @@ class ApiController extends \Areus\ApplicationModule {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			// delete physical files
-			if(isset($item->path) && file_exists($this->app->publicPath.$item->path)) {
+			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
 				unlink($this->app->storagePath.'/uploads'.$item->path);
-				if(file_exists($this->app->publicPath.'/thumb/'.$item->slug.'.jpg')) {
-					unlink($this->app->publicPath.'/thumb/'.$item->slug.'.jpg');
+				if(file_exists($this->app->storagePath.'/thumb/'.$item->slug.'.jpg')) {
+					unlink($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
 				}
 			}
 			\R::trash($item);
@@ -89,7 +89,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		$uploadDir = date('Y/m').'/';
 		$uploadPath = $this->app->storagePath.'/uploads/'.$uploadDir;
-		if(!file_exists($uploadDir)) {
+		if(!file_exists($uploadPath)) {
 			mkdir($uploadPath, 0766, true);
 		}
 
