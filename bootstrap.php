@@ -13,7 +13,7 @@ $app->singleton('req', 'Areus\Request');
 $app->singleton('res', 'Areus\Response');
 $app->singleton('router', 'Areus\Router');
 
-\R::setup('sqlite:'.$appPath.'/database.db');
+\R::setup('sqlite:'.$appPath.'/storage/database.db');
 
 require 'helpers.php';
 require 'filters.php';

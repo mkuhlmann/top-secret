@@ -17,3 +17,7 @@ if(file_exists("$appPath/public/2016")) {
 if(file_exists("$appPath/public/thumbs")) {
 	rename("$appPath/public/thumbs", "$appPath/storage/thumbs");
 }
+
+if(file_exists("$appPath/database.db")) {
+	rename("$appPath/databse.db", "$appPath/storage/database.db");
+}
