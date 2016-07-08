@@ -10,6 +10,14 @@ class FrontendController extends \Areus\ApplicationModule {
 			return;
 		}
 
+		if($item->type != 'url' && $this->app->config->redirectFileName) {
+			$url = '/'.$item->slug.'/'.$item->title;
+			if($req->path() != $url) {
+				$res->redirect($url);
+				return;
+			}
+		}
+
 		if(!isset($item->clicks)) $item->clicks = 0;
 		$item->clicks++;
 		$item->last_hit_at = date('Y-m-d H:i:s');

@@ -10,5 +10,7 @@ return [
 
 	'defaultChmod' => '0766',
 	'serveMethod' => 'php', // php or nginx
-	'imageLibrary' => 'gd' // gd or imagemagick
+	'imageLibrary' => 'gd', // gd or imagemagick
+
+	'redirectFileName' => false
 ];
