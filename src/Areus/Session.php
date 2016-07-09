@@ -32,10 +32,8 @@ class Session {
 	public function start() {
 		$this->id = $this->app->request->cookie($this->app->config->get('areus.session.cookie'));
 
-		if($this->id) {
+		if($this->id !== null) {
 			$this->attributes = unserialize($this->sessionHandler->read($this->id));
-		} else {
-			$this->id = sha1(uniqid('', true));
 		}
 
 		if($this->attributes == null || !is_array($this->attributes)) {
@@ -52,15 +50,22 @@ class Session {
 	}
 
 	public function put($key, $value) {
+		$this->modified = true;
 		$this->attributes[$key] = $value;
 	}
 
 	public function save() {
+		if($this->id === null) {
+			$this->id = sha1(uniqid('', true));
+		}
+
 		$this->sessionHandler->write($this->id, serialize($this->attributes));
 	}
 
 	public function sendCookie() {
-		if($this->cookieSent) return;
+		if($this->cookieSent || (!$this->modified && $this->id === null)) {
+			return;
+		}
 
 		$this->save();
 
