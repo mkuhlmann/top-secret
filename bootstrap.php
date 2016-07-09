@@ -25,6 +25,5 @@ require 'helpers.php';
 require 'filters.php';
 require 'routes.php';
 
-$app->session->set('test', 'hallo');
 $app->router->run();
 $app->res->end();

@@ -53,7 +53,7 @@ app.IndexCtrl = Vue.extend({
 			this.imageThumbPath = null;
 		},
 		itemDelete: function(item) {
-			this.$http.post('/api/v1/item/'+item.slug+'/delete').then(function(repsonse) {
+			this.$http.post('/api/v1/item/'+item.slug+'/delete', {'_csrf': app._csrf}).then(function(repsonse) {
 
 			});
 			this.items.splice(this.items.indexOf(item), 1);

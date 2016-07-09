@@ -21,9 +21,6 @@ class Session {
 					$app->config->get('areus.session.lifetime')
 				);
 				break;
-			case 'cookie':
-				// cookiehandler
-				break;
 			default:
 				$this->sessionHandler = $app->make($app->config->get('areus.session.driver'));
 				break;
@@ -54,7 +51,7 @@ class Session {
 		return $this->has($key) ? $this->attributes[$key] : $default;
 	}
 
-	public function set($key, $value) {
+	public function put($key, $value) {
 		$this->attributes[$key] = $value;
 	}
 

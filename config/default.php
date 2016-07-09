@@ -21,7 +21,7 @@ return [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
 		'session' => [
 			'driver' => 'file',
-			'lifetime' => 120,
+			'lifetime' => 24 * 60, // in minutes
 			'cookie' => 'areus_session',
 			'path' => '/',
 			'domain' => null,

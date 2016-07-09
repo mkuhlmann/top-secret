@@ -57,8 +57,8 @@ class Response extends \Areus\ApplicationModule {
 	}
 
 	public function json($arr) {
-		$this->header('Content-Type', 'application/json; charset=utf-8;');
-		$this->beginContent();
+		$this->header('Content-Type', 'application/json; charset=utf-8;')
+			->beginContent();
 		echo json_encode($arr);
 		return $this;
 	}
