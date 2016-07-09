@@ -2,7 +2,7 @@
 
 namespace Areus;
 
-class Response {
+class Response extends \Areus\ApplicationModule {
 	protected $headers = [];
 	private $headersSent = false;
 	private $dataSent = false;
@@ -16,11 +16,24 @@ class Response {
 		return $this;
 	}
 
+	public function beginContent() {
+		if($this->app->resolved('session')) {
+			$this->app->session->sendCookie();
+		}
+
+		if(!$this->headersSent) {
+			$this->sendHeaders();
+		}
+		$this->dataSent = true;
+		return $this;
+	}
+
 	public function sendHeaders() {
 		if($this->dataSent) {
 			new \Exception('Cannot set headers after data has been sent.');
 			return false;
 		}
+
 		$this->headersSent = true;
 		foreach($this->headers as $header => $value) {
 			header($header . ': ' . $value);
@@ -53,14 +66,6 @@ class Response {
 	public function readfile($path) {
 		$this->beginContent();
 		readfile($path);
-		return $this;
-	}
-
-	public function beginContent() {
-		if(!$this->headersSent) {
-			$this->sendHeaders();
-		}
-		$this->dataSent = true;
 		return $this;
 	}
 

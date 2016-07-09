@@ -4,6 +4,7 @@ namespace TopSecret;
 
 class AdminController extends \Areus\ApplicationModule {
 	public function index() {
+		$this->app->res->beginContent();
 		include $this->app->appPath.'/views/admin.php';
 	}
 

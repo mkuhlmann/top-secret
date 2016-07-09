@@ -2,11 +2,14 @@
 
 namespace Areus;
 
-class SessionHandlerFilesystem implements SessionHandlerInterface {
+class SessionHandlerFilesystem implements \SessionHandlerInterface {
 	protected $path;
 	protected $lifetime;
 
 	public function __construct($path, $lifetime = 120) {
+		if(!file_exists($path)) {
+			mkdir($path, 0777, true);
+		}
 		$this->path = $path;
 		$this->lifetime = $lifetime;
 	}
@@ -36,5 +39,9 @@ class SessionHandlerFilesystem implements SessionHandlerInterface {
 		if(file_exists($this->path.'/'.$sessionId)) {
 			unlink($this->path.'/'.$sessionId);
 		}
+	}
+
+	public function gc($lifetime) {
+
 	}
 }

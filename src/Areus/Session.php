@@ -7,7 +7,7 @@ class Session {
 	protected $app;
 
 	protected $modified = false;
-	protected $cookieSet = false;
+	protected $cookieSent = false;
 
 	protected $id;
 	protected $attributes;
@@ -20,6 +20,9 @@ class Session {
 					$app->storagePath.'/sessions',
 					$app->config->get('areus.session.lifetime')
 				);
+				break;
+			case 'cookie':
+				// cookiehandler
 				break;
 			default:
 				$this->sessionHandler = $app->make($app->config->get('areus.session.driver'));
@@ -56,10 +59,15 @@ class Session {
 	}
 
 	public function save() {
-		$config = $this->app->config->get('areus.session');
-
 		$this->sessionHandler->write($this->id, serialize($this->attributes));
+	}
 
+	public function sendCookie() {
+		if($this->cookieSent) return;
+
+		$this->save();
+
+		$config = $this->app->config->get('areus.session');
 		$this->app->response->withCookie(
 			$config['cookie'],
 			$this->id,
