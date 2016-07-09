@@ -6,7 +6,8 @@
 $app->router->get('/', 'TopSecret\FrontendController@index');
 $app->router->get('/tsa', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@index']);
 $app->router->get('/tsa/getConfig', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@getConfig']);
-$app->router->post('/l', 'TopSecret\FrontendController@login');
+$app->router->post('/tsa/saveConfig', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@saveConfig']);
+$app->router->post('/l', 'TopSecret\AdminController@login');
 
 //
 // API

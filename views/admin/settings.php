@@ -37,7 +37,7 @@
 				</div>
 			</div>
 			<div class="field">
-				<button class="ui primary button">Speichern</button>
+				<button class="ui primary button" v-on:click="save()">Speichern</button>
 			</div>
 		</div>
 	</div>
@@ -51,12 +51,21 @@ app.SettingsCtrl = Vue.extend({
 		config: {}
 	} },
 	created: function() {
-		this.$http.get('/tsa/getConfig').then(function(response) {
-			this.config = response.data;
-			this.loading = false;
-		});
+		this.load();
 	},
 	methods: {
+		load: function() {
+			this.$http.get('/tsa/getConfig').then(function(response) {
+				this.config = response.data;
+				this.loading = false;
+			});
+		},
+		save: function() {
+			this.loading = true;
+			this.$http.post('/tsa/saveConfig', {_csrf: app._csrf, config: this.config}).then(function(response) {
+				this.load();
+			});
+		}
 	}
 });
 Vue.component('settings-ctrl', app.SettingsCtrl);
