@@ -32,7 +32,7 @@ class SessionHandlerFilesystem implements \SessionHandlerInterface {
 	}
 
 	public function write($sessionId, $data) {
-		file_put_contents($this->path.'/'.$sessionId, $data);
+		return file_put_contents($this->path.'/'.$sessionId, $data) === true;
 	}
 
 	public function destroy($sessionId) {
@@ -42,6 +42,11 @@ class SessionHandlerFilesystem implements \SessionHandlerInterface {
 	}
 
 	public function gc($lifetime) {
-
+		foreach (glob($this->path.'/*') as $file) {
+			if (filemtime($file) + $this->lifetime * 60 < time()) {
+				unlink($file);
+			}
+		}
+		return true;
 	}
 }
