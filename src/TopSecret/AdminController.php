@@ -14,4 +14,14 @@ class AdminController extends \Areus\ApplicationModule {
 		unset($config['adminPassword'], $config['loginSecret']);
 		$res->json($config);
 	}
+
+
+	public function login($req, $res) {
+		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
+			$this->app->session->set('user_id', 1);
+			$res->redirect('/tsa');
+			return;
+		}
+		$res->redirect('/');
+	}
 }

@@ -78,17 +78,8 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function login($req, $res) {
-		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
-			setcookie('tsa', \TopSecret\Helper::getAdminCookie(), time()+60*60*24);
-			$res->redirect('/tsa');
-			return;
-		}
-		$res->redirect('/');
-	}
-
 	public function index($req, $res) {
-		if($req->cookie('tsa') != null && $req->cookie('tsa') == \TopSecret\Helper::getAdminCookie()) {
+		if($req->cookie('tsa') != null && $this->app->session->get('user_id') === 1) {
 			$res->redirect('/tsa');
 		} else {
 			$res->beginContent();
