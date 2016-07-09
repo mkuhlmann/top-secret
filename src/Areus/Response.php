@@ -7,6 +7,10 @@ class Response {
 	private $headersSent = false;
 	private $dataSent = false;
 
+	public function withCookie($key, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = false) {
+		setcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+	}
+
 	public function header($header, $value) {
 		$this->headers[$header] = $value;
 		return $this;

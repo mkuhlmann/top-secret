@@ -11,15 +11,15 @@ class SessionHandlerFilesystem implements SessionHandlerInterface {
 		$this->lifetime = $lifetime;
 	}
 
-	public function open($savePath, $sessionName)
+	public function open($savePath, $sessionId)
 	{
 		return true;
 	}
 
 	public function close()
-    {
-        return true;
-    }
+	{
+		return true;
+	}
 
 	public function read($sessionId) {
 		if(file_exists($this->path.'/'.$sessionId) && filemtime($this->path.'/'.$sessionId) >= time() - $this->lifetime * 60) {
