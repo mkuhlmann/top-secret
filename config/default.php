@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * PLEASE DO NOT MODIFY THIS FILE, BUT INSTEAD CREATE A 'local.php' TO OVERRIDE CONFIGURATION.
+ **/
 return [
 	'pageName' => 'Top Secret!',
 	'baseUrl' => 'https://top-secret.xyz',
@@ -12,5 +15,18 @@ return [
 	'serveMethod' => 'php', // php or nginx
 	'imageLibrary' => 'gd', // gd or imagemagick
 
-	'redirectFileName' => false
+	'redirectFileName' => false,
+
+	'areus' => [
+		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
+		'session' => [
+			'driver' => 'file',
+			'lifetime' => 120,
+			'cookie' => 'areus_session',
+			'path' => '/',
+			'domain' => null,
+			'secure' => false,
+			'http_only' => true
+		]
+	]
 ];
