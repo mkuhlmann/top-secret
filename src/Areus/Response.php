@@ -40,7 +40,6 @@ class Response extends \Areus\ApplicationModule {
 			new \Exception('Cannot set headers after data has been sent.');
 			return false;
 		}
-
 		$this->headersSent = true;
 		foreach($this->headers as $header => $value) {
 			header($header . ': ' . $value);

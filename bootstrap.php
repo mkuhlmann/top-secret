@@ -10,14 +10,20 @@ $appPath = dirname(__FILE__);
 
 $app = new \Areus\Application($appPath);
 
-$app->singleton('config', 'Areus\Config');
+$register = [
+	'config' => 'Areus\Config',
+	'request' => 'Areus\Request',
+	'response' => 'Areus\Response',
+	'router' => 'Areus\Router',
+	'session' => 'Areus\Session'
+];
 
-$app->singleton('request', 'Areus\Request');
-$app->singleton('response', 'Areus\Response');
-	$app->alias('response', 'res');
-	$app->alias('request', 'req');
-$app->singleton('router', 'Areus\Router');
-$app->singleton('session', 'Areus\Session');
+foreach($register as $alias => $concrete) {
+	$app->singleton([$concrete => $alias]);
+}
+
+$app->alias('Areus\Response', 'res');
+$app->alias('Areus\Request', 'req');
 
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
 

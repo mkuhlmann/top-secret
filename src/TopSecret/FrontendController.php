@@ -97,7 +97,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function index() {
+	public function index(Response $res) {
 		if($this->app->session->get('user_id') === 1) {
 			$res->redirect('/tsa');
 		} else {
