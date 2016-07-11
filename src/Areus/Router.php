@@ -5,7 +5,7 @@ namespace Areus;
 class Router extends \Areus\ApplicationModule {
 	private $routes = [];
 	private $filters = [];
-	private $group = null;
+	private $groups = null;
 
 	public function filter($key, $func) {
 		$this->filters[$key] = $func;
@@ -135,16 +135,18 @@ class Router extends \Areus\ApplicationModule {
 		$fargs = [];
 		foreach($reflection->getParameters() as $param) {
 			$key = $param->getName();
-			if(isset($args[$key]))
+			if(isset($args[$key])) {
 				$fargs[$key] = $args[$key];
-			else if($key == 'app')
-				$fargs[$key] = $this->app;
-			else if($key == 'req')
-				$fargs[$key] = $this->app->req;
-			else if($key == 'res')
-				$fargs[$key] = $this->app->res;
-			else if($param->isDefaultValueAvailable())
+			}
+			else if($param->getClass() !== null) {
+				$bind = $this->app->make($param->getClass()->getName());
+				if($bind !== null) {
+					$fargs[$key] = $bind;
+				}
+			}
+			else if($param->isDefaultValueAvailable()) {
 				$fargs[$key] = $param->getDefaultValue();
+			}
 		}
 		return $fargs;
 	}

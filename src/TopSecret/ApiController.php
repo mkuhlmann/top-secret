@@ -2,9 +2,12 @@
 
 namespace TopSecret;
 
+use \Areus\Response;
+use \Areus\Request;
+
 class ApiController extends \Areus\ApplicationModule {
 
-	public function itemDelete($slug, $res) {
+	public function itemDelete($slug, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			// delete physical files
@@ -21,7 +24,7 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function items($req, $res) {
+	public function items(Request $req, Response $res) {
 		list($sql, $params) = \TopSecret\Helper::buildQuery([
 			['SELECT * FROM item'],
 			[$req->query('type'), 'WHERE', 'type = ?'],
@@ -48,7 +51,7 @@ class ApiController extends \Areus\ApplicationModule {
 		echo json_encode(['slug' => $item->slug]);
 	}
 
-	public function postUpload($res) {
+	public function postUpload(Response $res) {
 		if(!isset($_FILES['file'])) return;
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
@@ -57,7 +60,7 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function taskerUpload($res) {
+	public function taskerUpload(Response $res) {
 		header('Content-Type: text/html; charset=utf-8;');
 		if(isset($_GET['fileName'])) {
 			$pathInfo = pathinfo($_GET['fileName']);
@@ -75,13 +78,13 @@ class ApiController extends \Areus\ApplicationModule {
 
 			$item = $this->handleUpload($targetPath);
 
-			echo $this->app->config->baseUrl.'/'.$item->slug;
+			$res->send($this->app->config->baseUrl.'/'.$item->slug);
 		}
 	}
 
-	public function taskerLast($res) {
+	public function taskerLast(Response $res) {
 		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
-		echo $this->app->config->baseUrl.'/'.$item->slug;
+		$res->send($this->app->config->baseUrl.'/'.$item->slug);
 	}
 
 	private function handleUpload($path) {

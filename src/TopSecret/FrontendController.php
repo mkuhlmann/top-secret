@@ -2,8 +2,11 @@
 
 namespace TopSecret;
 
+use \Areus\Request;
+use \Areus\Response;
+
 class FrontendController extends \Areus\ApplicationModule {
-	public function handleSlug($slug, $req, $res) {
+	public function handleSlug($slug, Request $req, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			$res->status(404)->json(['error' => '404 file not found']);
@@ -64,7 +67,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function handleThumbSlug($slug, $res) {
+	public function handleThumbSlug($slug, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			$res->status(404)->json(['error' => '404 file not found']);
@@ -94,7 +97,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function index($req, $res) {
+	public function index() {
 		if($this->app->session->get('user_id') === 1) {
 			$res->redirect('/tsa');
 		} else {

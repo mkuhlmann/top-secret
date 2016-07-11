@@ -2,6 +2,9 @@
 
 namespace TopSecret;
 
+use \Areus\Response;
+use \Areus\Request;
+
 class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary'];
 
@@ -10,12 +13,12 @@ class AdminController extends \Areus\ApplicationModule {
 		include $this->app->appPath.'/views/admin.php';
 	}
 
-	public function logout($res) {
+	public function logout(Response $res) {
 		$this->app->session->forget('user_id');
 		$res->redirect('/');
 	}
 
-	public function getConfig($res) {
+	public function getConfig(Response $res) {
 		$config = $this->app->config->asArray();
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
@@ -23,7 +26,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$res->json($config);
 	}
 
-	public function saveConfig($req, $res) {
+	public function saveConfig(Request $req,  Response $res) {
 		$config = $req->input('config', []);
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$localConfig = [];
@@ -37,7 +40,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$res->json('ok');
 	}
 
-	public function login($req, $res) {
+	public function login(Request $req, Response $res) {
 		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
 			$this->app->session->put('user_id', 1);
 			$res->redirect('/tsa');
