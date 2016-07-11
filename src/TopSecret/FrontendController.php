@@ -85,7 +85,8 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 
 		$res->header('Content-Type', 'image/jpeg')
-			->header('Content-Disposition', 'inline; filename="'.$item->title.'"');
+			->header('Content-Disposition', 'inline; filename="'.$item->title.'"')
+			->header('Cache-Control', 'public, max-age=1800');
 		if(false && $this->app->config->serveMethod == 'nginx') {
 			$res->header('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
@@ -94,7 +95,7 @@ class FrontendController extends \Areus\ApplicationModule {
 	}
 
 	public function index($req, $res) {
-		if($req->cookie('tsa') != null && $this->app->session->get('user_id') === 1) {
+		if($this->app->session->get('user_id') === 1) {
 			$res->redirect('/tsa');
 		} else {
 			$res->beginContent();

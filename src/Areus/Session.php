@@ -32,6 +32,11 @@ class Session {
 	public function start() {
 		$this->id = $this->app->request->cookie($this->app->config->get('areus.session.cookie'));
 
+		$lottery = $this->app->config->get('areus.session.lottery');
+		if(mt_rand(1, $lottery[1]) <= $lottery[0]) {
+			$this->sessionHandler->gc($this->app->config->get('areus.session.lifetime'));
+		}
+
 		if($this->id !== null) {
 			$this->attributes = unserialize($this->sessionHandler->read($this->id));
 		}

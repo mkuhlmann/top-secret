@@ -22,6 +22,7 @@ return [
 		'session' => [
 			'driver' => 'file',
 			'lifetime' => 24 * 60, // in minutes
+			'lottery' => [2, 100],
 			'cookie' => 'areus_session',
 			'path' => '/',
 			'domain' => null,
