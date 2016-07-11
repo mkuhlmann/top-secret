@@ -48,7 +48,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			->header('Content-Disposition', $disposition.'; filename="'.$fileName.'"');
 
 		if($this->app->config->serveMethod == 'nginx') {
-			$res
+			app()->res
 				->header('Content-Length', $size)
 				->header('X-Accel-Redirect', '/protected_uploads'.$item->path);
 		} else {
