@@ -10,6 +10,11 @@ class AdminController extends \Areus\ApplicationModule {
 		include $this->app->appPath.'/views/admin.php';
 	}
 
+	public function logout($res) {
+		$this->app->session->forget('user_id');
+		$res->redirect('/');
+	}
+
 	public function getConfig($res) {
 		$config = $this->app->config->asArray();
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);

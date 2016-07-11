@@ -39,10 +39,17 @@ class Session {
 
 		if($this->id !== null) {
 			$this->attributes = unserialize($this->sessionHandler->read($this->id));
+			$this->setCookie();
 		}
 
 		if($this->attributes == null || !is_array($this->attributes)) {
 			$this->attributes = [];
+		}
+	}
+
+	public function forget($key) {
+		if(isset($this->attributes[$key])) {
+			unset($this->attributes[$key]);
 		}
 	}
 
@@ -55,24 +62,27 @@ class Session {
 	}
 
 	public function put($key, $value) {
+		$this->ensureSessionInitialised();
 		$this->modified = true;
 		$this->attributes[$key] = $value;
 	}
 
-	public function save() {
+	private function ensureSessionInitialised() {
 		if($this->id === null) {
 			$this->id = sha1(uniqid('', true));
+			$this->setCookie();
+			$this->save();
 		}
+	}
 
+	public function save() {
 		$this->sessionHandler->write($this->id, serialize($this->attributes));
 	}
 
-	public function sendCookie() {
+	public function setCookie() {
 		if($this->cookieSent || (!$this->modified && $this->id === null)) {
 			return;
 		}
-
-		$this->save();
 
 		$config = $this->app->config->get('areus.session');
 		$this->app->response->withCookie(

@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<div class="ui top attached menu">
-			<a class="ui item" v-on:click="logout()">
+			<a class="ui item" href="/tsa/logout">
 				<i class="sign out icon"></i> Logout
 			</a>
 			<a class="ui item" v-on:click="switchMenu('settings')">

@@ -45,6 +45,11 @@ class Request {
 		return $r;
 	}
 
+	public function header($key, $default = null) {
+		$key = 'HTTP_'.str_replace(strtoupper($key), '-', '_');
+		return isset($_SERVER[$key]) ? $_SERVER[$key] : $default;
+	}
+
 	public function query($key, $default = null) {
 		return isset($_GET[$key]) ? $_GET[$key] : $default;
 	}

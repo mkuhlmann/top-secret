@@ -39,7 +39,7 @@ class FrontendController extends \Areus\ApplicationModule {
 	}
 
 	private function sendFile($path, $mime, $size, $fileName, $lastModified, $disposition = 'inline') {
-		$lastModified = gmdate('r', $lastModified);
+		$lastModifiedGm = gmdate('r', $lastModified);
 		app()->res
 			->header('Content-Type', $mime)
 			->header('Content-Disposition', $disposition.'; filename="'.$fileName.'"');
@@ -53,8 +53,8 @@ class FrontendController extends \Areus\ApplicationModule {
 			app()->res
 				->header('Cache-Control', 'public, max-age=1800')
 				->header('ETag', $etag)
-				->header('Last-Modified', $lastModified);
-			if ((isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $lastModified) || (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag)) {
+				->header('Last-Modified', $lastModifiedGm);
+			if (strtotime($this->app->req->header('If-Modified-Since')) == $lastModified || $this->app->req->header('If-None-Match') == $etag) {
 				app()->res->status(304);
 			} else {
 				app()->res
