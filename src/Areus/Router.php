@@ -5,7 +5,7 @@ namespace Areus;
 class Router extends \Areus\ApplicationModule {
 	private $routes = [];
 	private $filters = [];
-	private $groups = null;
+	private $group = null;
 
 	public function filter($key, $func) {
 		$this->filters[$key] = $func;
