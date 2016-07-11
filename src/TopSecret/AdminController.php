@@ -37,6 +37,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$config = array_merge($localConfig, $config);
 
 		file_put_contents($this->app->appPath.'/config/local.php', '<?php return '."\n\n".var_export($config, true).';');
+		sleep(1);
 		$res->json('ok');
 	}
 

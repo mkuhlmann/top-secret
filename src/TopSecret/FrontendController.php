@@ -50,7 +50,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		if($this->app->config->serveMethod == 'nginx') {
 			app()->res
 				->header('Content-Length', $size)
-				->header('X-Accel-Redirect', '/protected_uploads'.$item->path);
+				->header('X-Accel-Redirect', '/protected_uploads'.$path);
 		} else {
 			$etag = md5($lastModified.$fileName);
 			app()->res
