@@ -24,6 +24,38 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
+	private function normalizeSlug($text) {
+		$text = preg_replace('~[^_\pL\d]+~u', '-', $text);
+		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+		$text = preg_replace('~[^-\w]+~', '', $text);
+		$text = trim($text, '-');
+		$text = preg_replace('~-+~', '-', $text);
+		$text = strtolower($text);
+		if (empty($text)) {
+			return 'n-a';
+		}
+
+		$slug = $text;
+		$i = 1;
+		while(\R::count('item', 'slug = ?', [$slug]) > 0) {
+			$slug = $text.'-'.$i++;
+		}
+
+		return $slug;
+	}
+
+	public function itemUpdate($slug, Request $req, Response $res) {
+		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		if($item != null) {
+			$_item = $req->input('item');
+			$item->slug = $this->normalizeSlug($_item['slug']);
+			\R::store($item);
+			$res->json($item);
+		} else {
+			$res->status(404)->json(['error' => '404 file not found']);
+		}
+	}
+
 	public function items(Request $req, Response $res) {
 		list($sql, $params) = \TopSecret\Helper::buildQuery([
 			['SELECT * FROM item'],

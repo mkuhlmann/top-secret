@@ -15,6 +15,7 @@ $app->router->post('/l', 'TopSecret\AdminController@login');
 //
 $app->router->get('/api/v1/items', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@items']);
 $app->router->post('/api/v1/item/{slug}/delete', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemDelete']);
+$app->router->post('/api/v1/item/{slug}/update', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemUpdate']);
 
 $app->router->post('/api/v1/link', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postLink']);
 $app->router->post('/api/v1/upload', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postUpload']);

@@ -6,6 +6,24 @@
 	body { top: 0; left: 0; }
 	a { cursor: pointer; }
 	#app { padding: 40px; }
+	.pointer {
+		cursor: pointer;
+	}
+	.opacity-hover {
+		opacity: 0.7 !important;
+	}
+	.opacity-hover:hover {
+		opacity: 1 !important;
+	}
+	.slug {
+		font-family: monospace;
+	}
+	.slug input {
+		border: 0;
+		padding: 0;
+		margin: 0;
+		width: auto;
+	}
 	</style>
 	<title><?php echo app()->config->pageName; ?> Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
