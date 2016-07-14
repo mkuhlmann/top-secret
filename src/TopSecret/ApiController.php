@@ -24,8 +24,6 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	private function
-
 	public function itemUpdate($slug, Request $req, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
