@@ -67,9 +67,31 @@ class Helper {
 		$originalImage = null;
 	}
 
-	public static function getAdminCookie() {
-		$str = date('Y-m-d') . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . app()->config->loginSecret;
-		return hash('sha256', $str);
+	public static function normalizeSlug($text) {
+		$text = preg_replace('~[^_\pL\d]+~u', '-', $text);
+		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+		$text = preg_replace('~[^-\w]+~', '', $text);
+		$text = trim($text, '-');
+		$text = preg_replace('~-+~', '-', $text);
+		$text = strtolower($text);
+		if (empty($text)) {
+			return 'n-a';
+		}
+
+		$slug = $text;
+		$i = 1;
+		while(\R::count('item', 'slug = ?', [$slug]) > 0) {
+			$slug = $text.'-'.$i++;
+		}
+
+		return $slug;
+	}
+
+	public static function generateSlug($length = 6, $prepend = '') {
+		if(!empty($prepend) && app()->req->query('prependSlug') != null) {
+			$prepend = app()->req->query('prependSlug');
+		}
+		return self::normalizeSlug($prepend.self::generateRandomString($length));
 	}
 
 	public static function buildQuery($pieces) {

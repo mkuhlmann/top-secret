@@ -24,7 +24,7 @@
 					</span>
 				</td>
 				<td class="slug">
-					<span v-on:click="itemSlugEdit(item)" v-show="item.modified == false"><?php echo app()->config->baseUrl; ?>/{{ item.slug }}</span>
+					<span v-on:click="itemSlugEdit(item)" v-show="item.modified != true"><?php echo app()->config->baseUrl; ?>/{{ item.slug }}</span>
 					<span v-show="item.modified == true">
 						<?php echo app()->config->baseUrl; ?>/<input type="text" v-bind:id="'ise' + item.id" v-on:keyup="itemSlugKeyPress(item, $event)" v-model="item.slug">
 					 	<i v-show="item.slug.length > 0" v-on:click="itemSlugSave(item)" class="save icon opacity-hover pointer"></i>

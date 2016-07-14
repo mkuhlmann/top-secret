@@ -24,31 +24,13 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	private function normalizeSlug($text) {
-		$text = preg_replace('~[^_\pL\d]+~u', '-', $text);
-		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-		$text = preg_replace('~[^-\w]+~', '', $text);
-		$text = trim($text, '-');
-		$text = preg_replace('~-+~', '-', $text);
-		$text = strtolower($text);
-		if (empty($text)) {
-			return 'n-a';
-		}
-
-		$slug = $text;
-		$i = 1;
-		while(\R::count('item', 'slug = ?', [$slug]) > 0) {
-			$slug = $text.'-'.$i++;
-		}
-
-		return $slug;
-	}
+	private function
 
 	public function itemUpdate($slug, Request $req, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			$_item = $req->input('item');
-			$item->slug = $this->normalizeSlug($_item['slug']);
+			$item->slug = \TopSecret\Helper::normalizeSlug($_item['slug']);
 			\R::store($item);
 			$res->json($item);
 		} else {
@@ -72,7 +54,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$url = $_POST['url'];
 		$p = parse_url($url);
 		$item = \R::dispense('item');
-		$item->slug = \TopSecret\Helper::generateRandomString(6);
+		$item->slug = \TopSecret\Helper::generateSlug(6);
 		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
 		$item->path = $url;
@@ -136,8 +118,9 @@ class ApiController extends \Areus\ApplicationModule {
 
 		rename($path, $uploadPath);
 
+
 		$item = \R::dispense('item');
-		$item->slug = \TopSecret\Helper::generateRandomString(6);
+		$item->slug = \TopSecret\Helper::generateSlug(6);
 		$item->title = $pathInfo['basename'];
 		$item->name = $fileName;
 		$item->path = '/'.$uploadDir.$fileName;
