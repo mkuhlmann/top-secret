@@ -76,6 +76,7 @@ class Session {
 	}
 
 	public function save() {
+		if($this->id === null) return;
 		$this->sessionHandler->write($this->id, serialize($this->attributes));
 	}
 
