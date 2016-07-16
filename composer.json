@@ -1,6 +1,7 @@
 {
     "require": {
-        "illuminate/container": "^5.2"
+        "illuminate/container": "^5.2",
+        "cebe/markdown": "^1.1"
     },
     "autoload": {
         "psr-4": {
