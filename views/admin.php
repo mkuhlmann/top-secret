@@ -59,24 +59,37 @@
 		<div class="ui bottom attached segment hidden" v-show="menu != null">
 			<div v-if="menu == 'settings'"><settings-ctrl></settings-ctrl></div>
 			<div class="ui container" v-if="menu == 'howto'">
-				<h2>ShareX</h2>
 				<div class="ui grid">
 					<div class="six wide column">
+						<h2>ShareX</h2>
 						<div class="ui form">
 							<div class="field">
-								<label>Upload URL</label>
+								<label>Hochlade URL</label>
 								<input type="text" value="<?php echo app()->config->baseUrl . '/api/v1/upload?key='.app()->config->apiKey; ?>">
 							</div>
 							<div class="field">
-								<label>JSON Result</label>
+								<label>JSON Ergebnis</label>
 								<input type="text" value="<?php echo app()->config->baseUrl . '/$json:slug$.$json.extension$'; ?>">
 							</div>
 						</div>
-					</div>
-					<div class="six wide column">
+
 						<img v-bind:src="'https://top-secret.xyz/j2oMS6.png'" />
 					</div>
+					<div class="six wide column">
+						<h2>Tasker</h2>
+						<p>
+							<ul>
+								<li><a href="https://play.google.com/store/apps/details?id=com.joaomgcd.autoshare" target="_blank" rel="nofollow">AutoShare</a> installieren und neues AutoShare-Command namens "top-secret" hinzufügen.</li>
+								<li>Lade das <a href="/tsa/Tasker.prf.xml">Tasker Profil</a> herunter.</li>
+								<li>In Tasker importieren</li>
+								<li>Die Pushbullet Aufgabe neu konfigurieren.</li>
+								<li>???</li>
+								<li>Profit.</li>
+							</ul>
+						</p>
+					</div>
 				</div>
+
 			</div>
 		</div>
 		<index-ctrl></index-ctrl>

@@ -18,6 +18,12 @@ class AdminController extends \Areus\ApplicationModule {
 		$res->redirect('/');
 	}
 
+	public function tasker(Response $res) {
+		$res->header('Content-Type', 'application/xml')
+			->beginContent();
+		readfile($this->app->appPath.'/views/Tasker.prf.xml.php');
+	}
+
 	public function getConfig(Response $res) {
 		$config = $this->app->config->asArray();
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
