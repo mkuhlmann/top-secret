@@ -68,7 +68,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
 			$item = $this->handleUpload($this->app->appPath.'/storage/'.$_FILES['file']['name']);
-			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'']);
+			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item]);
 		}
 	}
 
@@ -116,9 +116,23 @@ class ApiController extends \Areus\ApplicationModule {
 
 		rename($path, $uploadPath);
 
+		$item = null;
+		if($this->app->req->input('overwriteSlug')) {
+			$item = \R::findOne('item', 'slug = ?', [$this->app->req->input('overwriteSlug')]);
+		}
 
-		$item = \R::dispense('item');
-		$item->slug = \TopSecret\Helper::generateSlug(6);
+		if($item == null) {
+			$item = \R::dispense('item');
+			$item->slug = \TopSecret\Helper::generateSlug(6);
+		} else {
+			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
+				unlink($this->app->storagePath.'/uploads'.$item->path);
+				if(file_exists($this->app->storagePath.'/thumb/'.$item->slug.'.jpg')) {
+					unlink($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
+				}
+			}
+		}
+
 		$item->title = $pathInfo['basename'];
 		$item->name = $fileName;
 		$item->path = '/'.$uploadDir.$fileName;

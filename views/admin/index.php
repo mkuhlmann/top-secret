@@ -7,6 +7,7 @@
 				<th>Hits</th>
 				<th>Typ</th>
 				<th>Hochgeladen</th>
+				<th></th>
 			</tr>
 		</thead>
 
@@ -33,10 +34,17 @@
 				 </td>
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
-				<td>{{ item.created_at }} <a v-on:click="itemDelete(item)">D</a></td>
+				<td>{{ item.created_at }}</td>
+				<td><a v-on:click="itemDelete(item)"><i class="trash icon"></i></a> <a v-on:click="itemUpload(item)" v-if="item.path"><i class="cloud upload icon"></i></a></td>
 			</tr>
 		</tbody>
 	</table>
+	<form style="display:none;" id="itemUploadForm">
+		<input type="hidden" name="_csrf" value="<?php echo app()->session->token(); ?>">
+		<input type="hidden" name="overwriteSlug" v-model="itemToUpload.slug">
+		<input type="file" v-on:change="itemUploadDo" name="file" id="itemUploadInput">
+		<input type="submit">
+	</form>
 	<div style="position: fixed; top: 0; right: 0;"><img v-bind:src="imageThumbPath"></div>
 </template>
 <!------------------------------------------>
@@ -45,7 +53,8 @@ app.IndexCtrl = Vue.extend({
 	template: '#tpl-index',
 	data: _ => { return {
 		items: [],
-		imageThumbPath: null
+		imageThumbPath: null,
+		itemToUpload: {slug:''}
 	} },
 	created: function() {
 		this.$http.get('/api/v1/items').then(function(response) {
@@ -68,6 +77,26 @@ app.IndexCtrl = Vue.extend({
 			this.$http.post('/api/v1/item/'+item.slug+'/delete', {'_csrf': app._csrf}).then(function(repsonse) {
 				this.items.splice(this.items.indexOf(item), 1);
 			});
+		},
+		itemUpload: function(item) {
+			this.itemToUpload = item;
+			document.getElementById('itemUploadInput').click();
+		},
+		itemUploadDo: function() {
+			var self = this;
+			var frm = document.getElementById('itemUploadForm');
+			var frmData = new FormData(frm);
+			var oReq = new XMLHttpRequest();
+			oReq.open('POST', '/api/v1/upload', true);
+			oReq.onload = function() {
+				if (oReq.status == 200) {
+					self.$set('items['+self.items.indexOf(self.itemToUpload)+']', JSON.parse(oReq.responseText).item);
+				} else {
+					alert('failed');
+				}
+			};
+
+			oReq.send(frmData);
 		},
 		itemSlugKeyPress: function(item, e) {
 			if(!item.modified) {
