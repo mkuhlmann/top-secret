@@ -116,10 +116,6 @@
 			methods: {
 				switchMenu: function(key) {
 					this.menu = (this.menu == key) ? null : key;
-				},
-				logout: function() {
-					document.cookie = 'tsa=asdf;';
-					document.location.href = '/';
 				}
 			}
 		});
