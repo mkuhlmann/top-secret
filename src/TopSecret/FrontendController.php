@@ -34,7 +34,9 @@ class FrontendController extends \Areus\ApplicationModule {
 			} else if($req->query('dl')) {
 					$this->sendFile($item->path, 'text/plain', $item->size, $item->title, strtotime($item->created_at), 'attachment');
 			} else {
-				if($item->extension == 'md') {
+				if(substr($item->title, -strlen('.display.html')) === '.display.html') {
+					$this->sendFile($item->path, 'text/html', $item->size, $item->title, strtotime($item->created_at));
+				} else if($item->extension == 'md') {
 					$parser = new \cebe\markdown\GithubMarkdown();
 					$parser->html5 = true;
 					$mdHtml = $parser->parse(file_get_contents($this->app->storagePath.'/uploads'.$item->path));
