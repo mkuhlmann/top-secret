@@ -43,6 +43,9 @@
 			<a class="ui item" v-on:click="switchMenu('settings')">
 				<i class="wrench icon"></i> Einstellungen
 			</a>
+			<a class="ui item" v-on:click="switchMenu('tags')">
+				<i class="flag icon"></i> Tags
+			</a>
 			<a class="ui item" v-on:click="switchMenu('howto')">
 				<i class="help circle icon"></i> Anleitung
 			</a>
@@ -58,6 +61,7 @@
 		</div>
 		<div class="ui bottom attached segment hidden" v-show="menu != null">
 			<div v-if="menu == 'settings'"><settings-ctrl></settings-ctrl></div>
+			<div v-if="menu == 'tags'"><tags-ctrl></tags-ctrl></div>
 			<div class="ui container" v-if="menu == 'howto'">
 				<div class="ui grid">
 					<div class="six wide column">
@@ -92,7 +96,9 @@
 
 			</div>
 		</div>
-		<index-ctrl></index-ctrl>
+		<div v-if="menu != 'tags'">
+			<index-ctrl></index-ctrl>
+		</div>
 	</div>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>

@@ -21,7 +21,7 @@ $app->router->filter('auth.api', function(\Areus\Request $req, \Areus\Response $
 		return false;
 	}
 
-	if($req->query('key') != app()->config->apiKey && $req->isMethod('post') && app()->session->token() != $req->input('_csrf')) {
+	if($req->query('key') != app()->config->apiKey && !$req->isMethod('get') && app()->session->token() != $req->input('_csrf')) {
 		$res->header('Content-Type', 'text/plain')
 			->status(403)
 			->send('invalid csrf token')

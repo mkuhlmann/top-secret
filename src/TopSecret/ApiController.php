@@ -28,12 +28,47 @@ class ApiController extends \Areus\ApplicationModule {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			$_item = $req->input('item');
-			$item->slug = \TopSecret\Helper::normalizeSlug($_item['slug']);
+
+			if($_item['slug'] != null && $_item['slug'] != $item->slug) {
+				$item->slug = \TopSecret\Helper::normalizeSlug($_item['slug']);
+			}
+
+			$tags = [];
+			foreach(explode(',', $_item['tags']) as $tag) {
+				$tag = \R::findOne('tag', 'id = ?', [$tag]);
+				if($tag != null) $tags[] = $tag;
+			}
+			$item->sharedTagList = $tags;
+
 			\R::store($item);
 			$res->json($item);
 		} else {
 			$res->status(404)->json(['error' => '404 file not found']);
 		}
+	}
+
+	public function tagUpdate($tagId, Request $req, Response $res) {
+		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
+		$_tag = $req->input('tag');
+
+		$tag->name = $_tag['name'];
+		$tag->color = $_tag['color'];
+
+		\R::store($tag);
+		$res->json($tag);
+	}
+
+	public function tagDelete($tagId, Request $req, Response $res) {
+		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
+		\R::trash($tag);
+		$res->json('ok');
+	}
+
+	public function tagCreate(Response $res) {
+		$tag = \R::dispense('tag');
+		$tag->name = 'Unbenannt';
+		\R::store($tag);
+		$res->json($tag);
 	}
 
 	public function tags(Response $res) {

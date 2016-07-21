@@ -1,6 +1,6 @@
 <template id="tpl-index">
 	<p></p>
-	<div class="ui floating labeled icon dropdown onload button">
+	<div class="ui floating labeled icon dropdown indexctrlonload button">
 		<input type="hidden" v-model="filters.type">
 		<i class="filter icon"></i>
 		<span class="text">Dateityp</span>
@@ -15,7 +15,34 @@
 			<div class="item" data-value="image">Bilder</div>
 			<div class="item" data-value="binary">Binärdateien</div>
 		</div>
+
 	</div>
+
+
+
+	<div class="ui floating dropdown labeled multiple indexctrlonload icon button">
+		<input type="hidden" v-model="filters.tags">
+		<i class="filter icon"></i>
+		<span class="text">Tags</span>
+		<div class="menu">
+			<div class="ui icon search input">
+				<i class="search icon"></i>
+				<input type="text" placeholder="Search tags...">
+			</div>
+			<div class="divider"></div>
+			<div class="header">
+				<i class="tags icon"></i>
+				Tag Label
+			</div>
+			<div class="scrolling menu">
+				<div class="item" data-value="{{ tag.id }}" v-for="tag in tags">
+					<div class="ui {{ tag.color }} circular empty label"></div>
+					{{ tag.name }}
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div style="float: right">
 		<button class="ui labeled primary icon button" v-on:click="itemUpload({ slug: null })">
 			<i class="upload icon"></i> Hochladen
@@ -55,7 +82,29 @@
 					 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 					</span>
 				</td>
-				<td><span v-if="tags != null"><a v-on:click="itemEditTags(item)"><i class="pencil icon"></i></a> <a class="ui tag small label" v-for="tag in item.tags">{{ tags[tag].name }}</a></a></td>
+				<td style="padding: 0">
+					<div class="ui multiple tag dropdown">
+						<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item)">
+						<span class="text">-</span>
+						<div class="menu">
+							<div class="ui icon search input">
+								<i class="search icon"></i>
+								<input type="text" placeholder="Search tags...">
+							</div>
+							<div class="divider"></div>
+							<div class="header">
+								<i class="tags icon"></i>
+								Tag Label
+							</div>
+							<div class="scrolling menu">
+								<div class="item" data-value="{{ tag.id }}" v-for="tag in tags">
+									<div class="ui {{ tag.color }} circular empty label"></div>
+									{{ tag.name }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
@@ -79,7 +128,7 @@
 app.IndexCtrl = Vue.extend({
 	template: '#tpl-index',
 	data: _ => { return {
-		filters: { type: '' },
+		filters: { type: '', tags: '' },
 		tags: null,
 		items: [],
 		imageThumbPath: null,
@@ -90,26 +139,35 @@ app.IndexCtrl = Vue.extend({
 		this.loadTags();
 		this.$watch('filters', function() {
 			this.loadItems();
-		}, {deep: true});
+		}, { deep: true });
 	},
 	methods: {
 		loadTags: function() {
 			this.$http.get('/api/v1/tags').then(function(response) {
 				this.tags = response.data;
+				$('.indexctrlonload').dropdown();
 			});
 		},
 		loadItems: function() {
+			$('.ui.tag.dropdown').dropdown('destroy');
 			var url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
 			if(this.filters.type != '') {
 				url += '&type='+this.filters.type;
+			}
+			if(this.filters.tags !== '') {
+				url += '&tags='+this.filters.tags;
 			}
 			this.$http.get(url).then(function(response) {
 			 	var items = response.data;
 				for(var i = 0; i < items.length; i++) {
 					items[i].modified = false;
-					items[i].tags = items[i].tags && items[i].tags.split(',');
 				}
 				this.items = items;
+				Vue.nextTick(function() {
+					window.setTimeout(function() {
+						$('.ui.tag.dropdown').dropdown();
+					}, 400);
+				 });
 			});
 		},
 		imageMouseOver: function(item) {
@@ -137,7 +195,6 @@ app.IndexCtrl = Vue.extend({
 			oReq.onload = function() {
 				if (oReq.status == 200) {
 					self.loadItems();
-					//self.$set('items['+self.items.indexOf(self.itemToUpload)+']', JSON.parse(oReq.responseText).item);
 				} else {
 					alert('failed');
 				}
@@ -165,6 +222,10 @@ app.IndexCtrl = Vue.extend({
 		itemSlugCancel: function(item) {
 			item.slug = item.oldSlug;
 			item.modified = false;
+		},
+		itemUpdate: function(item) {
+			var sendItem = Object.assign({}, item);
+			this.$http.put('/api/v1/item/'+item.slug, {'_csrf': app._csrf, 'item': sendItem }).then();
 		},
 		itemSlugSave: function(item) {
 			var sendItem = Object.assign({}, item);
