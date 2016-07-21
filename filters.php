@@ -20,7 +20,6 @@ $app->router->filter('auth.api', function(\Areus\Request $req, \Areus\Response $
 		$res->status(401)->json(['error' => '401 unauthorized']);
 		return false;
 	}
-
 	if($req->query('key') != app()->config->apiKey && !$req->isMethod('get') && app()->session->token() != $req->input('_csrf')) {
 		$res->header('Content-Type', 'text/plain')
 			->status(403)

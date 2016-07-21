@@ -22,6 +22,7 @@ $app->router->put('/api/v1/item/{slug}', ['before' => 'auth.api', 'uses' => 'Top
 $app->router->get('/api/v1/tags', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@tags']);
 $app->router->post('/api/v1/tags', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@tagCreate']);
 $app->router->put('/api/v1/tags/{tagId}', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@tagUpdate']);
+$app->router->delete('/api/v1/tags/{tagId}', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@tagDelete']);
 
 $app->router->post('/api/v1/link', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postLink']);
 $app->router->post('/api/v1/upload', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postUpload']);

@@ -67,10 +67,10 @@ class Request {
 	}
 
 	public function input($key, $default = null) {
-		if($this->isJson()) {
+		if(!$this->isMethod('get') && !$this->isMethod('delete') && $this->isJson()) {
 			$data = json_decode($this->getBody(), true);
 		} else {
-			$data = $this->method() == 'GET' ? $_GET : $_REQUEST;
+			$data = ($this->isMethod('get') || $this->isMethod('delete')) ? $_GET : $_REQUEST;
 		}
 		return isset($data[$key]) ? $data[$key] : $default;
 	}

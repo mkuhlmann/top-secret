@@ -15,10 +15,7 @@
 			<div class="item" data-value="image">Bilder</div>
 			<div class="item" data-value="binary">Binärdateien</div>
 		</div>
-
 	</div>
-
-
 
 	<div class="ui floating dropdown labeled multiple indexctrlonload icon button">
 		<input type="hidden" v-model="filters.tags">
@@ -134,6 +131,9 @@ app.IndexCtrl = Vue.extend({
 		imageThumbPath: null,
 		itemToUpload: {slug: null}
 	} },
+	beforeDestroy: function() {
+		$('.indexctrlonload').dropdown('destroy');
+	},
 	created: function() {
 		this.loadItems();
 		this.loadTags();
@@ -178,7 +178,7 @@ app.IndexCtrl = Vue.extend({
 		},
 		itemDelete: function(item) {
 			item.title = 'wird gelöscht ...';
-			this.$http.delete('/api/v1/item/'+item.slug, {'_csrf': app._csrf}).then(function(repsonse) {
+			this.$http.delete('/api/v1/item/'+item.slug+'?_csrf='+app._csrf).then(function(repsonse) {
 				this.items.splice(this.items.indexOf(item), 1);
 			});
 		},

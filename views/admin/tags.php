@@ -14,7 +14,7 @@
 				</div>
 				<div class="field">
 					<label>Löschen / Vorschau</label>
-					<button class="ui icon small button" style="margin-right: 1.5em;">
+					<button class="ui icon small button" style="margin-right: 1.5em;" v-on:click="deleteTag(tag)">
 						<i class="trash icon"></i>
 					</button>
 					<a class="ui tag {{ tag.color }} label">{{ tag.name }}</a>
@@ -47,6 +47,11 @@ app.TagsCtrl = Vue.extend({
 		add: function() {
 			this.$http.post('/api/v1/tags', {_csrf: app._csrf}).then(function(response) {
 				this.tags[response.data.id] = response.data;
+			});
+		},
+		deleteTag: function(tag) {
+			this.$http.delete('/api/v1/tags/'+tag.id+'?_csrf='+app._csrf).then(function(response) {
+				this.load();
 			});
 		},
 		load: function() {
