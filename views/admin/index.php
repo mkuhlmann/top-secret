@@ -50,11 +50,14 @@
 					 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 					</span>
 				</td>
-				<td><a v-on:click="itemEditTags(item)"><i class="pencil icon"></i></a> <a class="ui tag label" v-for="tag in item.tags">{{ tag }}</a></td>
+				<td><span v-if="tags != null"><a v-on:click="itemEditTags(item)"><i class="pencil icon"></i></a> <a class="ui tag small label" v-for="tag in item.tags">{{ tags[tag].name }}</a></a></td>
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
 				<td><a v-on:click="itemDelete(item)"><i class="trash icon"></i></a> <a v-on:click="itemUpload(item)" v-if="item.path"><i class="cloud upload icon"></i></a></td>
+			</tr>
+			<tr v-if="items.length == 0">
+				<td colspan="7"><center><em>Keine Dateien gefunden :(</em></center></td>
 			</tr>
 		</tbody>
 	</table>
@@ -71,18 +74,25 @@
 app.IndexCtrl = Vue.extend({
 	template: '#tpl-index',
 	data: _ => { return {
-		filters: {type: '' },
+		filters: { type: '' },
+		tags: null,
 		items: [],
 		imageThumbPath: null,
-		itemToUpload: {slug:''}
+		itemToUpload: {slug: '' }
 	} },
 	created: function() {
 		this.loadItems();
+		this.loadTags();
 		this.$watch('filters', function() {
 			this.loadItems();
 		}, {deep: true});
 	},
 	methods: {
+		loadTags: function() {
+			this.$http.get('/api/v1/tags').then(function(response) {
+				this.tags = response.data;
+			});
+		},
 		loadItems: function() {
 			var url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
 			if(this.filters.type != '') {
@@ -105,7 +115,7 @@ app.IndexCtrl = Vue.extend({
 		},
 		itemDelete: function(item) {
 			item.title = 'wird gelöscht ...';
-			this.$http.post('/api/v1/item/'+item.slug+'/delete', {'_csrf': app._csrf}).then(function(repsonse) {
+			this.$http.delete('/api/v1/item/'+item.slug, {'_csrf': app._csrf}).then(function(repsonse) {
 				this.items.splice(this.items.indexOf(item), 1);
 			});
 		},
@@ -155,7 +165,7 @@ app.IndexCtrl = Vue.extend({
 			item.modified = false;
 			item.slug = 'speichere ...';
 
-			this.$http.post('/api/v1/item/'+item.oldSlug+'/update', {'_csrf': app._csrf, 'item': sendItem }).then(function(response) {
+			this.$http.put('/api/v1/item/'+item.oldSlug, {'_csrf': app._csrf, 'item': sendItem }).then(function(response) {
 				this.$set('items['+this.items.indexOf(item)+']', Object.assign(response.data, {modified: false}));
 			});
 		}

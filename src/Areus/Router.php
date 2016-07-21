@@ -43,6 +43,12 @@ class Router extends \Areus\ApplicationModule {
 		$this->any($route, $options);
 	}
 
+	public function delete($route, $options) {
+		if(!is_array($options))	$options = ['uses' => $options];
+		$options['method'] = 'delete';
+		$this->any($route, $options);
+	}
+
 	public function any($route, $options) {
 		$route = $this->trim($route);
 

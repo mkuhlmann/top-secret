@@ -36,10 +36,14 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function items(Request $req, Response $res) {
-		$sql = 'SELECT i.*, group_concat(t.name) as tags FROM item i LEFT JOIN item_tag it ON it.item_id = i.id LEFT JOIN tag t ON it.tag_id = t.id';
-		$params = [];
+	public function tags(Response $res) {
+		$tags = \R::findAll('tag');
+		$res->json($tags);
+	}
 
+	public function items(Request $req, Response $res) {
+		$sql = 'SELECT i.*, group_concat(it.tag_id) as tags FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
+		$params = [];
 
 		$where = [];
 		if($req->query('type')) {
@@ -48,7 +52,7 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 
 		if($req->query('tags')) {
-			$where[] = 't.name IN ('.str_repeat('?, ', count($req->query('tags'))-1) . '?)';
+			$where[] = 'it.tag_id IN ('.str_repeat('?, ', count($req->query('tags'))-1) . '?)';
 			array_push($params, ...explode(',', $req->query('tags')));
 		}
 
@@ -57,6 +61,7 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 
 		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
+
 		$items = \R::getAll($sql, $params);
 		$res->json($items);
 	}

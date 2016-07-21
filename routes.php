@@ -15,8 +15,11 @@ $app->router->post('/l', 'TopSecret\AdminController@login');
 // API
 //
 $app->router->get('/api/v1/items', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@items']);
-$app->router->post('/api/v1/item/{slug}/delete', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemDelete']);
-$app->router->post('/api/v1/item/{slug}/update', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemUpdate']);
+$app->router->delete('/api/v1/item/{slug}', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemDelete']);
+$app->router->put('/api/v1/item/{slug}', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@itemUpdate']);
+
+
+$app->router->get('/api/v1/tags', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@tags']);
 
 $app->router->post('/api/v1/link', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postLink']);
 $app->router->post('/api/v1/upload', ['before' => 'auth.api', 'uses' => 'TopSecret\ApiController@postUpload']);
@@ -30,7 +33,7 @@ $app->router->get('/api/v1/taskerLast', ['before' => 'auth.api', 'uses' => 'TopS
 $app->router->get('/thumbs?/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleThumbSlug']);
 $app->router->get('/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleSlug']);
 
-$app->router->get('/404', ['as' => '404', 'uses' => function($res) {
+$app->router->get('/404', ['as' => '404', 'uses' => function(Response $res) {
 	$res->status(404);
 	echo '404';
 }]);
