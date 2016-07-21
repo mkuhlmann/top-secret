@@ -29,10 +29,13 @@ if(file_exists("$appPath/database.db")) {
 
 $tag = \R::findOne('tag', 'id = 1');
 if($tag == null) {
+	$item = \R::dispense('item');
 	$tag = \R::dispense('tag');
 	$tag->name = 'Unkategorisiert';
 	$tag->color = 'grey';
-	\R::store($tag);
+	$item->sharedTagList[] = $tag;
+	\R::store($item);
+	\R::trash($item);
 }
 
 echo 'Upgrade finished ...';
