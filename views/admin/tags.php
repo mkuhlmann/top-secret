@@ -20,7 +20,7 @@
 					<a class="ui tag {{ tag.color }} label">{{ tag.name }}</a>
 				</div>
 			</div>
-			<button class="ui icon primary button">
+			<button class="ui icon primary button" v-on:click="add()">
 				<i class="add icon"></i>
 			</button>
 			<em>Eingabefeld unfokusieren um Namen zu speichern!</em>
@@ -46,7 +46,7 @@ app.TagsCtrl = Vue.extend({
 		},
 		add: function() {
 			this.$http.post('/api/v1/tags', {_csrf: app._csrf}).then(function(response) {
-				this.tags[response.data.id] = response.data;
+				this.load();
 			});
 		},
 		deleteTag: function(tag) {
