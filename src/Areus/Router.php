@@ -31,6 +31,18 @@ class Router extends \Areus\ApplicationModule {
 		$this->any($route, $options);
 	}
 
+	public function put($route, $options) {
+		if(!is_array($options))	$options = ['uses' => $options];
+		$options['method'] = 'put';
+		$this->any($route, $options);
+	}
+
+	public function patch($route, $options) {
+		if(!is_array($options))	$options = ['uses' => $options];
+		$options['method'] = 'patch';
+		$this->any($route, $options);
+	}
+
 	public function any($route, $options) {
 		$route = $this->trim($route);
 

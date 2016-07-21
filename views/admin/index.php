@@ -1,9 +1,27 @@
 <template id="tpl-index">
+	<p></p>
+	<div class="ui floating labeled icon dropdown onload button">
+		<input type="hidden" v-model="filters.type">
+		<i class="filter icon"></i>
+		<span class="text">Dateityp</span>
+		<div class="menu">
+			<div class="header">
+				<i class="tags icon"></i>
+				Filter nach Dateityp
+			</div>
+			<div class="divider"></div>
+			<div class="item" data-value="">Alle Dateitypen</div>
+			<div class="item" data-value="text">Text</div>
+			<div class="item" data-value="image">Bilder</div>
+			<div class="item" data-value="binary">Binärdateien</div>
+		</div>
+	</div>
 	<table class="ui table">
 		<thead>
 			<tr>
 				<th>Datei</th>
 				<th>Link</th>
+				<th>Tags</th>
 				<th>Hits</th>
 				<th>Typ</th>
 				<th>Hochgeladen</th>
@@ -31,7 +49,8 @@
 					 	<i v-show="item.slug.length > 0" v-on:click="itemSlugSave(item)" class="save icon opacity-hover pointer"></i>
 					 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 					</span>
-				 </td>
+				</td>
+				<td><a v-on:click="itemEditTags(item)"><i class="pencil icon"></i></a> <a class="ui tag label" v-for="tag in item.tags">{{ tag }}</a></td>
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
@@ -52,20 +71,32 @@
 app.IndexCtrl = Vue.extend({
 	template: '#tpl-index',
 	data: _ => { return {
+		filters: {type: '' },
 		items: [],
 		imageThumbPath: null,
 		itemToUpload: {slug:''}
 	} },
 	created: function() {
-		this.$http.get('/api/v1/items').then(function(response) {
-		 	var items = response.data;
-			for(var i = 0; i < items.length; i++) {
-				items[i].modified = false;
-			}
-			this.items = items;
-		});
+		this.loadItems();
+		this.$watch('filters', function() {
+			this.loadItems();
+		}, {deep: true});
 	},
 	methods: {
+		loadItems: function() {
+			var url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
+			if(this.filters.type != '') {
+				url += '&type='+this.filters.type;
+			}
+			this.$http.get(url).then(function(response) {
+			 	var items = response.data;
+				for(var i = 0; i < items.length; i++) {
+					items[i].modified = false;
+					items[i].tags = items[i].tags && items[i].tags.split(',');
+				}
+				this.items = items;
+			});
+		},
 		imageMouseOver: function(item) {
 			this.imageThumbPath = '/thumb/'+item.slug;
 		},

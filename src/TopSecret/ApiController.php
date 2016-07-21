@@ -37,11 +37,26 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function items(Request $req, Response $res) {
-		list($sql, $params) = \TopSecret\Helper::buildQuery([
-			['SELECT * FROM item'],
-			[$req->query('type'), 'WHERE', 'type = ?'],
-			['ORDER BY created_at DESC']
-		]);
+		$sql = 'SELECT i.*, group_concat(t.name) as tags FROM item i LEFT JOIN item_tag it ON it.item_id = i.id LEFT JOIN tag t ON it.tag_id = t.id';
+		$params = [];
+
+
+		$where = [];
+		if($req->query('type')) {
+			$where[] = 'i.type = ?';
+			$params[] = $req->query('type');
+		}
+
+		if($req->query('tags')) {
+			$where[] = 't.name IN ('.str_repeat('?, ', count($req->query('tags'))-1) . '?)';
+			array_push($params, ...explode(',', $req->query('tags')));
+		}
+
+		if(count($where) > 0) {
+			$sql .= ' WHERE ' . implode(' AND ', $where);
+		}
+
+		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
 		$items = \R::getAll($sql, $params);
 		$res->json($items);
 	}
