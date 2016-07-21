@@ -16,6 +16,11 @@
 			<div class="item" data-value="binary">Binärdateien</div>
 		</div>
 	</div>
+	<div style="float: right">
+		<button class="ui labeled primary icon button" v-on:click="itemUpload({ slug: null })">
+			<i class="upload icon"></i> Hochladen
+		</button>
+	</div>
 	<table class="ui table">
 		<thead>
 			<tr>
@@ -78,7 +83,7 @@ app.IndexCtrl = Vue.extend({
 		tags: null,
 		items: [],
 		imageThumbPath: null,
-		itemToUpload: {slug: '' }
+		itemToUpload: {slug: null}
 	} },
 	created: function() {
 		this.loadItems();
@@ -131,7 +136,8 @@ app.IndexCtrl = Vue.extend({
 			oReq.open('POST', '/api/v1/upload', true);
 			oReq.onload = function() {
 				if (oReq.status == 200) {
-					self.$set('items['+self.items.indexOf(self.itemToUpload)+']', JSON.parse(oReq.responseText).item);
+					self.loadItems();
+					//self.$set('items['+self.items.indexOf(self.itemToUpload)+']', JSON.parse(oReq.responseText).item);
 				} else {
 					alert('failed');
 				}

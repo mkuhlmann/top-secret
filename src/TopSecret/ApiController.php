@@ -137,7 +137,7 @@ class ApiController extends \Areus\ApplicationModule {
 		rename($path, $uploadPath);
 
 		$item = null;
-		if($this->app->req->input('overwriteSlug')) {
+		if($this->app->req->input('overwriteSlug') != null) {
 			$item = \R::findOne('item', 'slug = ?', [$this->app->req->input('overwriteSlug')]);
 		}
 
