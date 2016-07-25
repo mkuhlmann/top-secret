@@ -16,6 +16,7 @@ return [
 	'imageLibrary' => 'gd', // gd or imagemagick
 
 	'redirectFileName' => false,
+	'countHitIfLoggedIn' => true,
 
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)

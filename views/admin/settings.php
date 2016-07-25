@@ -36,6 +36,16 @@
 					<input type="text" v-model="config.defaultChmod">
 				</div>
 			</div>
+			<div class="ui divider"></div>
+			<div class="three fields">
+				<div class="field">
+					<label>Dateizugriffe (Hits) zählen wenn eingeloggt</label>
+					<select v-model="config.countHitIfLoggedIn">
+						<option value="true">Ja</option>
+						<option value="false">Nein</option>
+					</select>
+				</div>
+			</div>
 			<div class="field">
 				<button class="ui primary button" v-on:click="save()">Speichern</button>
 			</div>

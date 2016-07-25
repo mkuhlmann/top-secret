@@ -6,7 +6,7 @@ use \Areus\Response;
 use \Areus\Request;
 
 class AdminController extends \Areus\ApplicationModule {
-	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary'];
+	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary', 'countHitIfLoggedIn'];
 
 	public function index() {
 		$this->app->res->beginContent();
@@ -28,6 +28,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$config = $this->app->config->asArray();
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
+		$config['countHitIfLoggedIn'] = ($config['countHitIfLoggedIn']) ? 'true' : 'false';
 
 		$res->json($config);
 	}
@@ -40,6 +41,7 @@ class AdminController extends \Areus\ApplicationModule {
 			$localConfig = require $this->app->appPath.'/config/local.php';
 		}
 		$config['defaultChmod'] = octdec($config['defaultChmod']);
+		$config['countHitIfLoggedIn'] = $config['countHitIfLoggedIn'] == 'true';
 		$config = array_merge($localConfig, $config);
 
 		file_put_contents($this->app->appPath.'/config/local.php', '<?php return '."\n\n".var_export($config, true).';');
