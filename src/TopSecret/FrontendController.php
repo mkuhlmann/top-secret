@@ -21,7 +21,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			}
 		}
 
-		if($this->app->config->countHitIfLoggedIn && app()->session->get('user_id') !== 1) {
+		if($this->app->config->countHitIfLoggedIn || app()->session->get('user_id') !== 1) {
 			if(!isset($item->clicks)) $item->clicks = 0;
 			$item->clicks++;
 			$item->last_hit_at = date('Y-m-d H:i:s');
