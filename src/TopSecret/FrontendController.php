@@ -14,7 +14,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 
 		if($item->type != 'url' && $this->app->config->redirectFileName) {
-			$url = '/'.$item->slug.'/'.$item->title;
+			$url = '/'.$item->slug.'/'.urlencode($item->title);
 			if($req->path() != $url) {
 				$res->redirect($url);
 				return;
