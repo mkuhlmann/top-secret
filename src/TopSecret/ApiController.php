@@ -107,7 +107,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$url = $_POST['url'];
 		$p = parse_url($url);
 		$item = \R::dispense('item');
-		$item->slug = \TopSecret\Helper::generateSlug(6);
+		$item->slug = \TopSecret\Helper::generateSlug();
 		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
 		$item->path = $url;
@@ -178,7 +178,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		if($item == null) {
 			$item = \R::dispense('item');
-			$item->slug = \TopSecret\Helper::generateSlug(6);
+			$item->slug = \TopSecret\Helper::generateSlug();
 		} else {
 			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
 				unlink($this->app->storagePath.'/uploads'.$item->path);

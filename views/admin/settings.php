@@ -45,6 +45,10 @@
 						<option value="false">Nein</option>
 					</select>
 				</div>
+				<div class="field">
+					<label>Slug Länge</label>
+					<input type="number" v-model="config.slugLength">
+				</div>
 			</div>
 			<div class="field">
 				<button class="ui primary button" v-on:click="save()">Speichern</button>

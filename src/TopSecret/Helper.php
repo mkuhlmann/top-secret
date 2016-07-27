@@ -87,7 +87,10 @@ class Helper {
 		return $slug;
 	}
 
-	public static function generateSlug($length = 6, $prepend = '') {
+	public static function generateSlug($length = null, $prepend = '') {
+		if($length == null) {
+			$length = app()->config->slugLength;
+		}
 		if(!empty($prepend) && app()->req->query('prependSlug') != null) {
 			$prepend = app()->req->query('prependSlug');
 		}

@@ -11,6 +11,8 @@ return [
 	'loginSecret' => 'qwertzuiop', // used internally to forge admin cookie
 	'apiKey' => '12457890qwertzuiop', // i think you use this to protect the upload api
 
+	'slugLength' => 6,
+
 	'defaultChmod' => 0777,
 	'serveMethod' => 'php', // php or nginx
 	'imageLibrary' => 'gd', // gd or imagemagick
