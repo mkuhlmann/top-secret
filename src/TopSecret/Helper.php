@@ -73,7 +73,6 @@ class Helper {
 		$text = preg_replace('~[^-\w]+~', '', $text);
 		$text = trim($text, '-');
 		$text = preg_replace('~-+~', '-', $text);
-		$text = strtolower($text);
 		if (empty($text)) {
 			return 'n-a';
 		}
