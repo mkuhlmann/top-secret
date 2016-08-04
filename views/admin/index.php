@@ -14,6 +14,7 @@
 			<div class="item" data-value="text">Text</div>
 			<div class="item" data-value="image">Bilder</div>
 			<div class="item" data-value="binary">Binärdateien</div>
+			<div class="item" data-value="url">Links</div>
 		</div>
 	</div>
 
