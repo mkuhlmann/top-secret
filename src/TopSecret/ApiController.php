@@ -101,7 +101,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$res->json($items);
 	}
 
-	public function postLink() {
+	public function postLink(Response $res) {
 		if(!isset($_POST['url'])) return;
 
 		$url = $_POST['url'];
@@ -115,7 +115,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		\R::store($item);
 
-		echo json_encode(['slug' => $item->slug]);
+		$res->json(['slug' => $item->slug]);
 	}
 
 	public function postUpload(Response $res) {

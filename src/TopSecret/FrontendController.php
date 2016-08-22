@@ -43,9 +43,9 @@ class FrontendController extends \Areus\ApplicationModule {
 					$parser->html5 = true;
 					$mdHtml = $parser->parse(file_get_contents($this->app->storagePath.'/uploads'.$item->path));
 					$mdHtml = str_replace('<table>', '<table class="ui table">', $mdHtml);
-					include $this->app->appPath.'/views/markdown.php';
+					return view('markdown', ['mdHtml' => $mdHtml, 'item' => $item]);
 				} else {
-					include $this->app->appPath.'/views/code.php';
+					return view('code', ['item' => $item]);
 				}
 			}
 		} else {
@@ -114,7 +114,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			$res->redirect('/tsa');
 		} else {
 			$res->beginContent();
-			include $this->app->appPath.'/views/index.php';
+			view('index');
 		}
 	}
 }

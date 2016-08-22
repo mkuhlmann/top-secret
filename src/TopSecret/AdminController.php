@@ -10,7 +10,7 @@ class AdminController extends \Areus\ApplicationModule {
 
 	public function index() {
 		$this->app->res->beginContent();
-		include $this->app->appPath.'/views/admin.php';
+		return view('admin');
 	}
 
 	public function logout(Response $res) {

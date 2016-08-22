@@ -27,8 +27,8 @@ if(file_exists("$appPath/database.db")) {
 
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
 
-$tag = \R::findOne('tag', 'id = 1');
-if($tag == null) {
+$tag = \R::count('tag');
+if($tag == 0) {
 	$item = \R::dispense('item');
 	$tag = \R::dispense('tag');
 	$tag->name = 'Unkategorisiert';

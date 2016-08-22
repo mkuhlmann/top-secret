@@ -125,4 +125,17 @@ class Helper {
 		}
 		return [$sql, $params];
 	}
+
+	public static function renderView($file, $data = []) {
+		extract($data);
+		$file .= '.php';
+		if(file_exists(app()->appPath.'/_views/'.$file)) {
+			$file = app()->appPath.'/_views/'.$file;
+		} else if(file_exists(app()->appPath.'/views/'.$file)) {
+			$file = app()->appPath.'/views/'.$file;
+		} else {
+			throw new \Exception('View not found: "'.$file.'"');
+		}
+		include $file;
+	}
 }
