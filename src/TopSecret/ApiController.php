@@ -97,6 +97,11 @@ class ApiController extends \Areus\ApplicationModule {
 
 		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
 
+		if(is_numeric($req->query('limit')) && $req->query('limit') <= 200) {
+			$sql .= ' LIMIT ?,?';
+			array_push($params, $req->query('limit') * $req->query('page', 1)-1, $req->query('limit'));
+		}
+
 		$items = \R::getAll($sql, $params);
 		$res->json($items);
 	}
