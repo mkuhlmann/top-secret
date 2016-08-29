@@ -25,7 +25,7 @@
 		width: auto;
 	}
 	</style>
-	<title><?php echo app()->config->pageName; ?> Admin</title>
+	<title><?php echo e(app()->config->pageName); ?> Admin</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 </head>
@@ -33,7 +33,7 @@
 	<div class="ui page main-wrap" id="app">
 		<div id="loader" v-if="loading">
 			<div class="ui active inverted dimmer">
-				<div class="ui text large loader"><?php echo app()->config->pageName; ?> wird geladen ...</div>
+				<div class="ui text large loader"><?php echo e(app()->config->pageName); ?> wird geladen ...</div>
 			</div>
 		</div>
 		<div class="ui secondary pointing menu">

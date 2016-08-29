@@ -13,11 +13,13 @@
 				max-width: 100%;
 			}
 		</style>
+
+		<title><?php echo e($item->title); ?></title>
 	</head>
 
 	<body>
 		<div class="ui container">
-			<header><?php echo $item->title; ?> [ <a href="?raw=1">Raw</a> | <a href="?dl=1">Download</a> ]</header>
+			<header><?php echo e($item->title); ?> [ <a href="?raw=1">Raw</a> | <a href="?dl=1">Download</a> ]</header>
 			<main>
 				<?php echo $mdHtml; ?>
 			</main>
