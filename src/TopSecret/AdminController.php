@@ -6,7 +6,7 @@ use \Areus\Response;
 use \Areus\Request;
 
 class AdminController extends \Areus\ApplicationModule {
-	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary', 'countHitIfLoggedIn', 'slugLength'];
+	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary', 'countHitIfLoggedIn', 'slugLength', 'slugCharset'];
 
 	public function index() {
 		$this->app->res->beginContent();

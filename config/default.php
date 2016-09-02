@@ -12,6 +12,7 @@ return [
 	'apiKey' => '12457890qwertzuiop', // i think you use this to protect the upload api
 
 	'slugLength' => 6,
+	'slugCharset' => '023456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ',
 
 	'defaultChmod' => 0777,
 	'serveMethod' => 'php', // php or nginx

@@ -7,12 +7,11 @@ class Helper {
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 	}
 
-	public static function generateRandomString($length = 10) {
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$charactersLength = strlen($characters);
+	public static function generateRandomString($length = 10, $charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+		$charactersLength = strlen($charset);
 		$randomString = '';
 		for ($i = 0; $i < $length; $i++) {
-			$randomString .= $characters[mt_rand(0, $charactersLength - 1)];
+			$randomString .= $charset[mt_rand(0, $charactersLength - 1)];
 		}
 		return $randomString;
 	}
@@ -93,7 +92,7 @@ class Helper {
 		if(!empty($prepend) && app()->req->query('prependSlug') != null) {
 			$prepend = app()->req->query('prependSlug');
 		}
-		return self::normalizeSlug($prepend.self::generateRandomString($length));
+		return self::normalizeSlug($prepend.self::generateRandomString($length, app()->config->get('slugCharset')));
 	}
 
 	public static function buildQuery($pieces) {

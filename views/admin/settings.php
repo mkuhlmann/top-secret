@@ -32,7 +32,7 @@
 					</select>
 				</div>
 				<div class="field">
-					<label>Berechtiung für neue Ordner</label>
+					<label>Berechtigung für neue Ordner</label>
 					<input type="text" v-model="config.defaultChmod">
 				</div>
 			</div>
@@ -45,9 +45,19 @@
 						<option value="false">Nein</option>
 					</select>
 				</div>
-				<div class="field">
+			</div>
+			<div class="three fields">
+				<div class="ten wide field">
+					<label>Slug Charset</label>
+					<input type="text" v-model="config.slugCharset">
+				</div>
+				<div class="two wide field">
 					<label>Slug Länge</label>
 					<input type="number" v-model="config.slugLength">
+				</div>
+				<div class="four wide field">
+					<label>Kombinationen</label>
+					<input type="number" disabled value="{{ Math.pow(config.slugCharset.length, config.slugLength ) }}">
 				</div>
 			</div>
 			<div class="field">
