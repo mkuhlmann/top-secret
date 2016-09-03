@@ -120,6 +120,7 @@
 		window.onload = function() {
 			new app.Root({ el: '#app' });
 			$('.ui.dropdown.onload').dropdown();
+			$('.ui.modal.onload').modal()
 		};
 	</script>
 	<!-- vue.js templates here -->

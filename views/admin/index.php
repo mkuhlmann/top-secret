@@ -1,4 +1,35 @@
 <template id="tpl-index">
+	<div class="ui dimmer modals page" style="opacity: 1; display: block;" v-if="itemForModal">
+		<div class="ui modal" style="top: 10%; display: block;">
+				<i class="close icon" v-on:click="itemModal(null)"></i>
+				<div class="header">
+					{{ itemForModal.title }}
+				</div>
+				<div class="content" v-bind:class="{ image: itemForModal.type == 'image' }">
+					<div class="ui medium image" v-if="itemForModal.type == 'image'">
+						<img v-bind:src="'/thumb/'+itemForModal.slug">
+					</div>
+					<div class="description">
+						<table class="ui definition table">
+							<tr><td>Dateiname</td><td>{{ itemForModal.name }}</td></tr>
+							<tr><td>Mime</td><td>{{ itemForModal.mime }} (.{{ itemForModal.extension }})</td></tr>
+
+							<tr><td>Letzer Aufruf</td><td>{{ itemForModal.last_hit_at }}</td></tr>
+							<tr><td>Hits</td><td>{{ itemForModal.clicks }}</td></tr>
+
+							<tr><td>Erstellt</td><td>{{ itemForModal.created_at }}</td></tr>
+						</table>
+
+					</div>
+				</div>
+				<div class="actions">
+					<div class="ui primary right labeled icon button" v-on:click="itemModal(null)">
+						Close
+						<i class="checkmark icon"></i>
+					</div>
+				</div>
+		</div>
+	</div>
 	<p></p>
 	<div class="ui floating labeled icon dropdown indexctrlonload button">
 		<input type="hidden" v-model="filters.type">
@@ -106,7 +137,11 @@
 				<td>{{ item.clicks || 0 }}</td>
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
-				<td><a v-on:click="itemDelete(item)"><i class="trash icon"></i></a> <a v-on:click="itemUpload(item)" v-if="item.path"><i class="cloud upload icon"></i></a></td>
+				<td>
+					<av-if="item.type != 'url'" v-on:click="itemModal(item)"><i class="info icon"></i></a>
+					<a v-on:click="itemDelete(item)"><i class="trash icon"></i></a>
+					<a v-on:click="itemUpload(item)" v-if="item.path"><i class="cloud upload icon"></i></a>
+				</td>
 			</tr>
 			<tr v-if="items.length == 0">
 				<td colspan="7"><center><em>Keine Dateien gefunden :(</em></center></td>
@@ -130,7 +165,8 @@ app.IndexCtrl = Vue.extend({
 		tags: null,
 		items: [],
 		imageThumbPath: null,
-		itemToUpload: {slug: null}
+		itemToUpload: {slug: null},
+		itemForModal: null
 	} },
 	beforeDestroy: function() {
 		$('.indexctrlonload').dropdown('destroy');
@@ -186,6 +222,9 @@ app.IndexCtrl = Vue.extend({
 		itemUpload: function(item) {
 			this.itemToUpload = item;
 			document.getElementById('itemUploadInput').click();
+		},
+		itemModal: function(item) {
+			this.itemForModal = item;
 		},
 		itemUploadDo: function() {
 			var self = this;
