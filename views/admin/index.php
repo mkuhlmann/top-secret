@@ -24,7 +24,7 @@
 				</div>
 				<div class="actions">
 					<div class="ui primary right labeled icon button" v-on:click="itemModal(null)">
-						Close
+						Schließen
 						<i class="checkmark icon"></i>
 					</div>
 				</div>
@@ -138,7 +138,7 @@
 				<td>{{ item.type }}</td>
 				<td>{{ item.created_at }}</td>
 				<td>
-					<av-if="item.type != 'url'" v-on:click="itemModal(item)"><i class="info icon"></i></a>
+					<a v-if="item.type != 'url'" v-on:click="itemModal(item)"><i class="info icon"></i></a>
 					<a v-on:click="itemDelete(item)"><i class="trash icon"></i></a>
 					<a v-on:click="itemUpload(item)" v-if="item.path"><i class="cloud upload icon"></i></a>
 				</td>
