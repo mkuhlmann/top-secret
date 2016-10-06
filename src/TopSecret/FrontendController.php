@@ -28,6 +28,10 @@ class FrontendController extends \Areus\ApplicationModule {
 			\R::store($item);
 		}
 
+		if($this->app->config->piwikEnableTracking) {
+			
+		}
+
 		if($item->type == 'url') {
 			$res->redirect($item->path);
 		} else if($item->type == 'text') {

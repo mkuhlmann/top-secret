@@ -72,6 +72,11 @@
 		</div>
 	</div>
 
+	<div class="ui left icon input">
+		<input type="text" placeholder="Search..." v-model="filters.q">
+		<i class="search icon"></i>
+	</div>
+
 	<div style="float: right">
 		<button class="ui labeled primary icon button" v-on:click="itemUpload({ slug: null })">
 			<i class="upload icon"></i> Hochladen
@@ -161,7 +166,7 @@
 app.IndexCtrl = Vue.extend({
 	template: '#tpl-index',
 	data: _ => { return {
-		filters: { type: '', tags: '' },
+		filters: { type: '', tags: '', q: '' },
 		tags: null,
 		items: [],
 		imageThumbPath: null,
@@ -193,6 +198,9 @@ app.IndexCtrl = Vue.extend({
 			}
 			if(this.filters.tags !== '') {
 				url += '&tags='+this.filters.tags;
+			}
+			if(this.filters.q !== '') {
+				url += '&q='+escape(this.filters.q);
 			}
 			this.$http.get(url).then(function(response) {
 			 	var items = response.data;

@@ -81,6 +81,13 @@ class ApiController extends \Areus\ApplicationModule {
 		$params = [];
 
 		$where = [];
+
+		if($req->query('q')) {
+			$where[] = 'i.title LIKE ? OR i.name LIKE ?';
+			$params[] = '%'.$req->query('q').'%';
+			$params[] = '%'.$req->query('q').'%';
+		}
+
 		if($req->query('type')) {
 			$where[] = 'i.type = ?';
 			$params[] = $req->query('type');

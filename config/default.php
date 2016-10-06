@@ -5,7 +5,7 @@
  **/
 return [
 	'pageName' => 'Top Secret!',
-	'baseUrl' => 'https://top-secret.xyz',
+	'baseUrl' => 'https://top-secret.site',
 
 	'adminPassword' => 'generate with password_hash("xyz", PASSWORD_BCRYPT)', // then just enter this on the index page and the admin interface will magically open
 	'loginSecret' => 'qwertzuiop', // used internally to forge admin cookie
@@ -20,6 +20,10 @@ return [
 
 	'redirectFileName' => false,
 	'countHitIfLoggedIn' => true,
+
+	'piwikEnableTracking' => false,
+	'piwikUrl' => 'https://piwik.top-secret.site/',
+	'piwikIdSite' => 1,
 
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
