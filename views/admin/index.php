@@ -116,10 +116,12 @@
 					 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 					</span>
 				</td>
-				<td style="padding: 0">
-					<div class="ui multiple tag dropdown">
+				<td style="padding: 0" v-on:click="itemChooseTags(item)">
+					<div v-if="!item.tags">&mdash;</div>
+					<div class="ui {{ tag.color }} horizontal label" v-for="tag in itemGetTags(item)">{{ tag.name }}</div>
+
+					<div class="ui multiple tag dropdown" id="item-tag-{{ item.id }}" v-if="itemForTagChooser == item.id">
 						<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item)">
-						<span class="text">-</span>
 						<div class="menu">
 							<div class="ui icon search input">
 								<i class="search icon"></i>
@@ -171,14 +173,18 @@ app.IndexCtrl = Vue.extend({
 		items: [],
 		imageThumbPath: null,
 		itemToUpload: {slug: null},
-		itemForModal: null
+		itemForModal: null,
+		itemForTagChooser: null
 	} },
 	beforeDestroy: function() {
 		$('.indexctrlonload').dropdown('destroy');
 	},
 	created: function() {
-		this.loadItems();
-		this.loadTags();
+		this.$http.get('/api/v1/tags').then(function(response) {
+			this.tags = response.data;
+			$('.indexctrlonload').dropdown();
+			this.loadItems();
+		});
 		this.$watch('filters', function() {
 			this.loadItems();
 		}, { deep: true });
@@ -208,11 +214,6 @@ app.IndexCtrl = Vue.extend({
 					items[i].modified = false;
 				}
 				this.items = items;
-				Vue.nextTick(function() {
-					window.setTimeout(function() {
-						$('.ui.tag.dropdown').dropdown();
-					}, 400);
-				 });
 			});
 		},
 		imageMouseOver: function(item) {
@@ -283,6 +284,30 @@ app.IndexCtrl = Vue.extend({
 			this.$http.put('/api/v1/item/'+item.oldSlug, {'_csrf': app._csrf, 'item': sendItem }).then(function(response) {
 				this.$set('items['+this.items.indexOf(item)+']', Object.assign(response.data, {modified: false}));
 			});
+		},
+		itemGetTags: function(item) {
+			if(item.tags == null) return [];
+			var tags = [];
+			var self = this;
+			item.tags.split(',').forEach(function(tag_id) {
+				if(self.tags[tag_id]) {
+					tags.push(self.tags[tag_id]);
+				}
+			});
+			return tags;
+		},
+		itemChooseTags: function(item) {
+			if(this.itemForTagChooser != null) {
+				$('#item-tag-'+this.itemForTagChooser).dropdown('destroy');
+			}
+			this.itemForTagChooser = item.id;
+
+			Vue.nextTick(function() {
+				$('#item-tag-'+item.id).dropdown('toggle');/*
+				window.setTimeout(function() {
+					$('#item-tag-'+item.id).click();
+				}, 10);*/
+			 });
 		}
 	}
 });
