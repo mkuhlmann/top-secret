@@ -26,10 +26,27 @@ class FrontendController extends \Areus\ApplicationModule {
 			$item->clicks++;
 			$item->last_hit_at = date('Y-m-d H:i:s');
 			\R::store($item);
-		}
 
-		if($this->app->config->piwikEnableTracking) {
-			
+			if($this->app->config->piwikEnableTracking) {
+				$data = [
+					'rec' => 1,
+					'idsite' => $this->app->config->piwikIdSite,
+					'url' => $this->app->config->baseUrl . '/' . $item->slug,
+					'token_auth' => $this->app->config->piwikAuthToken,
+					'rand' => uniqid(),
+
+					'action_name' => $item->title,
+					'ua' => $req->ua(),
+					'cip' => $req->ip()
+				];
+
+				$_data = [];
+				foreach($data as $k => $v) {
+					$_data[] = $k.'='.urlencode($v);
+				}
+				$piwikUrl = $this->app->config->piwikUrl.'?'.implode('&', $_data);
+				@file_get_contents($piwikUrl); // supress any errors
+			}
 		}
 
 		if($item->type == 'url') {

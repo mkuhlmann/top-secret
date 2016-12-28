@@ -22,8 +22,9 @@ return [
 	'countHitIfLoggedIn' => true,
 
 	'piwikEnableTracking' => false,
-	'piwikUrl' => 'https://piwik.top-secret.site/',
+	'piwikUrl' => 'https://piwik.top-secret.site/piwik.php',
 	'piwikIdSite' => 1,
+	'piwikAuthToken' => '',
 
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)

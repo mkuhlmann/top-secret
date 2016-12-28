@@ -29,6 +29,10 @@ class Request {
 		return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 	}
 
+	public function ua() {
+		return $_SERVER['HTTP_USER_AGENT'];
+	}
+
 	public function method() {
 		return $_SERVER['REQUEST_METHOD'];
 	}
