@@ -37,7 +37,8 @@ class FrontendController extends \Areus\ApplicationModule {
 
 					'action_name' => $item->title,
 					'ua' => $req->ua(),
-					'cip' => $req->ip()
+					'cip' => $req->ip(),				
+					'urlref' => $_SERVER['HTTP_REFERER']
 				];
 
 				$_data = [];

@@ -16,6 +16,7 @@
 				<label>Admin Password</label>
 				<input type="text" placeholder="***">
 			</div>
+			<div class="ui divider"></div>
 			<div class="three fields">
 				<div class="field">
 					<label>Methode für Dateibereitstellung</label>
@@ -36,16 +37,6 @@
 					<input type="text" v-model="config.defaultChmod">
 				</div>
 			</div>
-			<div class="ui divider"></div>
-			<div class="three fields">
-				<div class="field">
-					<label>Dateizugriffe (Hits) zählen wenn eingeloggt</label>
-					<select v-model="config.countHitIfLoggedIn">
-						<option value="true">Ja</option>
-						<option value="false">Nein</option>
-					</select>
-				</div>
-			</div>
 			<div class="three fields">
 				<div class="ten wide field">
 					<label>Slug Charset</label>
@@ -60,6 +51,39 @@
 					<input type="number" disabled value="{{ Math.pow(config.slugCharset.length, config.slugLength ) }}">
 				</div>
 			</div>
+			<div class="ui divider"></div>
+			<div class="three fields">
+				<div class="field">
+					<label>Dateizugriffe (Hits) zählen wenn eingeloggt</label>
+					<select v-model="config.countHitIfLoggedIn">
+						<option value="true">Ja</option>
+						<option value="false">Nein</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="fields">
+				<div class="two wide field">
+					<label>Nutze Piwik</label>
+					<select v-model="config.piwikEnableTracking">
+						<option value="true">Ja</option>
+						<option value="false">Nein</option>
+					</select>
+				</div>
+				<div class="six wide field">
+					<label>Piwik Endpoint</label>
+					<input type="text" v-model="config.piwikUrl">
+				</div>
+				<div class="two wide field">
+					<label>Piwik Idsite</label>
+					<input type="number" v-model="config.piwikIdSite">
+				</div>
+				<div class="six wide field">
+					<label>Piwik Auth Token</label>
+					<input type="text" v-model="config.piwikAuthToken">
+				</div>
+			</div>
+
 			<div class="field">
 				<button class="ui primary button" v-on:click="save()">Speichern</button>
 			</div>

@@ -6,7 +6,10 @@ use \Areus\Response;
 use \Areus\Request;
 
 class AdminController extends \Areus\ApplicationModule {
-	private $allowedConfigKeys = ['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'imageLibrary', 'countHitIfLoggedIn', 'slugLength', 'slugCharset'];
+	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
+	 								'imageLibrary', 'countHitIfLoggedIn', 'slugLength',
+									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
+									'piwikUrl', 'piwikAuthToken'];
 
 	public function index() {
 		$this->app->res->beginContent();
