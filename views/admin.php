@@ -57,9 +57,9 @@
 		</div>
 		<div v-if="menu == 'settings'"><settings-ctrl></settings-ctrl></div>
 		<div v-if="menu == 'tags'"><tags-ctrl></tags-ctrl></div>
-		<div class="ui container" v-if="menu == 'howto'">
+		<div class="ui container" v-show="menu == 'howto'">
 			<div class="ui grid">
-				<div class="six wide column">
+				<div class="eight wide column">
 					<h2>ShareX</h2>
 					<div class="ui form">
 						<div class="field">
