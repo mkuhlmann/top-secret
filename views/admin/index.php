@@ -116,13 +116,14 @@
 					 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 					</span>
 				</td>
-				<td style="padding: 0" v-on:click="itemChooseTags(item)">
-					<div v-if="!item.tags">&mdash;</div>
-					<div class="ui {{ tag.color }} horizontal label" v-for="tag in itemGetTags(item)">{{ tag.name }}</div>
+				<td>
+					<span class="ui {{ tag.color }} horizontal label" v-for="tag in item._tags">{{ tag.name }} <i style="margin: 0 0 0 0.5em; cursor: pointer;" v-on:click="itemTagRemove(item, tag)" class="remove icon"></i></span>
 
-					<div class="ui multiple tag dropdown" id="item-tag-{{ item.id }}" v-if="itemForTagChooser == item.id">
+					<a v-on:click="itemChooseTags(item)"><i class="plus icon"></i></a>
+
+					<div class="ui multiple tag dropdown" id="item-tag-{{ item.id }}">
 						<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item)">
-						<div class="menu">
+						<div class="menu" v-if="itemForTagChooser == item.id">
 							<div class="ui icon search input">
 								<i class="search icon"></i>
 								<input type="text" placeholder="Search tags...">
@@ -212,6 +213,7 @@ app.IndexCtrl = Vue.extend({
 			 	var items = response.data;
 				for(var i = 0; i < items.length; i++) {
 					items[i].modified = false;
+					items[i]._tags = this.itemGetTags(items[i]);
 				}
 				this.items = items;
 			});
@@ -273,6 +275,7 @@ app.IndexCtrl = Vue.extend({
 			item.modified = false;
 		},
 		itemUpdate: function(item) {
+			item._tags = this.itemGetTags(item);
 			var sendItem = Object.assign({}, item);
 			this.$http.put('/api/v1/item/'+item.slug, {'_csrf': app._csrf, 'item': sendItem }).then();
 		},
@@ -286,15 +289,20 @@ app.IndexCtrl = Vue.extend({
 			});
 		},
 		itemGetTags: function(item) {
-			if(item.tags == null) return [];
-			var tags = [];
+			if(item.tags == null) return {};
+			var tags = {};
 			var self = this;
 			item.tags.split(',').forEach(function(tag_id) {
 				if(self.tags[tag_id]) {
-					tags.push(self.tags[tag_id]);
+					tags[self.tags[tag_id].id] = self.tags[tag_id];
 				}
 			});
 			return tags;
+		},
+		itemTagRemove: function(item, tag) {
+			delete item._tags[tag.id];
+			item.tags = Object.keys(item._tags).join(',');
+			this.itemUpdate(item);
 		},
 		itemChooseTags: function(item) {
 			if(this.itemForTagChooser != null) {
@@ -303,11 +311,8 @@ app.IndexCtrl = Vue.extend({
 			this.itemForTagChooser = item.id;
 
 			Vue.nextTick(function() {
-				$('#item-tag-'+item.id).dropdown('toggle');/*
-				window.setTimeout(function() {
-					$('#item-tag-'+item.id).click();
-				}, 10);*/
-			 });
+				$('#item-tag-'+item.id).dropdown('toggle');
+			});
 		}
 	}
 });
