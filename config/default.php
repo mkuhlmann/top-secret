@@ -26,6 +26,8 @@ return [
 	'piwikIdSite' => 1,
 	'piwikAuthToken' => '',
 
+	'behindTrustedProxy' => false,
+
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
 		'session' => [

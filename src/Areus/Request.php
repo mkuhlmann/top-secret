@@ -26,7 +26,7 @@ class Request {
 	}
 
 	public function ip() {
-		return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+		return $_SERVER['REMOTE_ADDR'];
 	}
 
 	public function ua() {
