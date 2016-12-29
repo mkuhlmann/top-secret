@@ -50,6 +50,9 @@
 				<i class="help circle icon"></i> Anleitung
 			</a>
 			<div class="right menu">
+				<span class="item">
+					{{ Math.round(stats.total_size/1024/1024*100)/100  }} MiB / {{ stats.total_count }} Dateien
+				</span>
 				<a class="item" href="/tsa/logout">
 					<i class="sign out icon"></i> Logout
 				</a>
@@ -107,9 +110,14 @@
 		app.Root = Vue.extend({
 			data: function() { return {
 				menu: null,
-				loading: false
+				loading: false,
+				stats: {}
 			} },
-			created: function() {},
+			created: function() {
+				this.$http.get('/api/v1/stats').then(function(response) {
+					this.stats = response.data;
+				});
+			},
 			methods: {
 				switchMenu: function(key) {
 					this.menu = key;

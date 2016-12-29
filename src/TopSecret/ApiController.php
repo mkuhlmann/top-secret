@@ -6,6 +6,10 @@ use \Areus\Response;
 use \Areus\Request;
 
 class ApiController extends \Areus\ApplicationModule {
+	public function stats(Response $res) {
+		$stats = \R::getRow('SELECT count(id) as total_count, sum(size) as total_size FROM item');
+		$res->json($stats);
+	}
 
 	public function itemDelete($slug, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
