@@ -58,8 +58,9 @@
 				</a>
 			</div>
 		</div>
-		<div v-if="menu == 'settings'"><settings-ctrl></settings-ctrl></div>
-		<div v-if="menu == 'tags'"><tags-ctrl></tags-ctrl></div>
+		<items-ctrl v-if="menu == null"></items-ctrl>
+		<settings-ctrl v-if="menu == 'settings'"></settings-ctrl>
+		<tags-ctrl v-if="menu == 'tags'"></tags-ctrl>
 		<div class="ui container" v-show="menu == 'howto'">
 			<div class="ui grid">
 				<div class="eight wide column">
@@ -93,13 +94,12 @@
 			</div>
 
 		</div>
-		<div v-if="menu == null"><index-ctrl></index-ctrl></div>
 	</div>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.9.1/vue-resource.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/0.7.13/vue-router.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.2.0/vue-resource.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.0/vue-router.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.js"></script>
 	<script type="text/javascript">
@@ -127,8 +127,6 @@
 
 		window.onload = function() {
 			new app.Root({ el: '#app' });
-			$('.ui.dropdown.onload').dropdown();
-			$('.ui.modal.onload').modal()
 		};
 	</script>
 	<!-- vue.js templates here -->

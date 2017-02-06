@@ -1,6 +1,6 @@
 <template id="tpl-settings">
 	<div class="ui container">
-		<div class="ui active centered inline loader"  v-if="loading"></div>
+		<div class="ui active centered inline loader" v-if="loading"></div>
 		<div class="ui form" v-if="!loading">
 			<div class="two fields">
 				<div class="field">
