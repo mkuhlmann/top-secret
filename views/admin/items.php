@@ -177,7 +177,8 @@ app.ItemsCtrl = Vue.extend({
 		imageThumbPath: null,
 		itemToUpload: {slug: null},
 		itemForModal: null,
-		itemForTagChooser: null
+		itemForTagChooser: null,
+		refreshCount: 0
 	} },
 	beforeDestroy: function() {
 		$('.indexctrlonload').dropdown('destroy');
@@ -211,13 +212,28 @@ app.ItemsCtrl = Vue.extend({
 			if(this.filters.q !== '') {
 				url += '&q='+escape(this.filters.q);
 			}
-			this.$http.get(url).then(function(response) {
+			this.$http.get(url, {
+				before: function(request) {
+			      if (this.previousRequest) {
+			        this.previousRequest.abort();
+			      }
+			      this.previousRequest = request;
+			    }
+			}).then(function(response) {
 			 	var items = response.data;
 				for(var i = 0; i < items.length; i++) {
 					items[i].modified = false;
 					items[i]._tags = this.itemGetTags(items[i]);
 				}
-				this.items = items;
+				this.refreshCount++;
+				var currentRefresh = this.refreshCount;
+				window.setTimeout(_ => {
+					if(this.refreshCount == currentRefresh) {
+						this.items = items;
+					}
+				}, 100);
+			}, function(response) {
+
 			});
 		},
 		imageMouseOver: function(item) {
