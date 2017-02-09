@@ -6,9 +6,9 @@
 					<div class="header">
 						{{ itemForModal.title }}
 					</div>
-					<div class="content" v-bind:class="{ image: itemForModal.type == 'image' }">
+					<div class="content" :class="{ image: itemForModal.type == 'image' }">
 						<div class="ui medium image" v-if="itemForModal.type == 'image'">
-							<img v-bind:src="'/thumb/'+itemForModal.slug">
+							<img :src="'/thumb/'+itemForModal.slug">
 						</div>
 						<div class="description">
 							<table class="ui definition table">
@@ -65,8 +65,8 @@
 					Tag Label
 				</div>
 				<div class="scrolling menu">
-					<div class="item" data-value="{{ tag.id }}" v-for="tag in tags">
-						<div class="ui {{ tag.color }} circular empty label"></div>
+					<div class="item" :data-value="tag.id" v-for="tag in tags">
+						<div class="ui circular empty label" :class="tag.color"></div>
 						{{ tag.name }}
 					</div>
 				</div>
@@ -100,13 +100,13 @@
 				<tr v-for="item in items">
 					<td>
 						<span v-if="item.type == 'image'">
-							<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" href="/{{ item.slug }}/{{ item.title }}">{{ item.title }}</a>
+							<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
 						</span>
 						<span v-if="item.type == 'text' || item.type == 'binary'">
-							<a href="/{{ item.slug }}/{{ item.title }}">{{ item.title }}</a>
+							<a v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
 						</span>
 						<span v-if="item.type == 'url'">
-							<a href="{{ item.path }}">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
+							<a v-bind:href="item.path">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
 						</span>
 					</td>
 					<td class="slug">
@@ -118,11 +118,11 @@
 						</span>
 					</td>
 					<td>
-						<span class="ui {{ tag.color }} horizontal label" v-for="tag in item._tags">{{ tag.name }} <i style="margin: 0 0 0 0.5em; cursor: pointer;" v-on:click="itemTagRemove(item, tag)" class="remove icon"></i></span>
+						<span :class="tag.color" class="ui horizontal label" v-for="tag in item._tags">{{ tag.name }} <i style="margin: 0 0 0 0.5em; cursor: pointer;" v-on:click="itemTagRemove(item, tag)" class="remove icon"></i></span>
 
 						<a v-on:click="itemChooseTags(item)"><i class="plus icon"></i></a>
 
-						<div class="ui multiple tag dropdown" id="item-tag-{{ item.id }}">
+						<div class="ui multiple tag dropdown" :id="'item-tag-' + item.id">
 							<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item)">
 							<div class="menu" v-if="itemForTagChooser == item.id">
 								<div class="ui icon search input">
@@ -135,8 +135,8 @@
 									Tag Label
 								</div>
 								<div class="scrolling menu">
-									<div class="item" data-value="{{ tag.id }}" v-for="tag in tags">
-										<div class="ui {{ tag.color }} circular empty label"></div>
+									<div class="item" :data-value="tag.id" v-for="tag in tags">
+										<div class="ui circular empty label" :class="tag.color"></div>
 										{{ tag.name }}
 									</div>
 								</div>
