@@ -17,7 +17,7 @@
 					<button class="ui icon small button" style="margin-right: 1.5em;" v-on:click="deleteTag(tag)">
 						<i class="trash icon"></i>
 					</button>
-					<a :class="tag.color" class="ui tag label">{{ tag.name }}</a>
+					<a :class="tag.color" class="ui tag label">{{ tag.name }}</a> #{{ tag.id }}
 				</div>
 			</div>
 			<button class="ui icon primary button" v-on:click="add()">

@@ -197,6 +197,15 @@ class ApiController extends \Areus\ApplicationModule {
 		if($item == null) {
 			$item = \R::dispense('item');
 			$item->slug = \TopSecret\Helper::generateSlug();
+
+			if($this->app->req->input('tags') !== null) {
+				$tags = [];
+				foreach(explode(',', $this->app->req->input('tags', '')) as $tag) {
+					$tag = \R::findOne('tag', 'id = ?', [$tag]);
+					if($tag != null) $tags[] = $tag;
+				}
+				$item->sharedTagList = $tags;
+			}
 		} else {
 			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
 				unlink($this->app->storagePath.'/uploads'.$item->path);
