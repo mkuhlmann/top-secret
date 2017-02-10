@@ -83,7 +83,10 @@
 				<i class="upload icon"></i> Hochladen
 			</button>
 		</div>
-		<table class="ui table">
+
+
+		<div class="ui active centered inline loader" v-if="loading" style="margin-top: 1em;"></div>
+		<table class="ui table" v-if="loading == false">
 			<thead>
 				<tr>
 					<th>Datei</th>
@@ -178,7 +181,8 @@ app.ItemsCtrl = Vue.extend({
 		itemToUpload: {slug: null},
 		itemForModal: null,
 		itemForTagChooser: null,
-		refreshCount: 0
+		refreshCount: 0,
+		loading: true
 	} },
 	beforeDestroy: function() {
 		$('.indexctrlonload').dropdown('destroy');
@@ -205,6 +209,7 @@ app.ItemsCtrl = Vue.extend({
 			});
 		},
 		loadItems: function() {
+			this.loading = true;
 			$('.ui.tag.dropdown').dropdown('destroy');
 			var url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
 			if(this.filters.type != '') {
@@ -234,8 +239,9 @@ app.ItemsCtrl = Vue.extend({
 				window.setTimeout(_ => {
 					if(this.refreshCount == currentRefresh) {
 						this.items = items;
+						this.loading = false;
 					}
-				}, 100);
+				}, 200);
 			}, function(response) {
 
 			});
