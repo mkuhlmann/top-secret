@@ -31,6 +31,30 @@
 					</div>
 			</div>
 		</div>
+
+
+		<div class="ui dimmer modals page" style="opacity: 1; display: block;" v-if="showItemAddUrl">
+			<div class="ui modal" style="top: 10%; display: block;">
+					<i class="close icon" v-on:click="showItemAddUrl = false"></i>
+					<div class="header">
+						URL kürzen
+					</div>
+					<div class="content ui form">
+						<div class="field">
+							<input type="text" placeholder="URL ..." v-model="itemToUpload.url" />
+						</div>
+
+					</div>
+					<div class="actions">
+						<div class="ui green left labeled icon button" v-on:click="itemAddUrl()">
+							Kürzen
+							<i class="checkmark icon"></i>
+						</div>
+					</div>
+			</div>
+		</div>
+
+
 		<p></p>
 		<div class="ui floating labeled icon dropdown indexctrlonload button">
 			<input type="hidden" v-on:change="updateFilter()" id="filter-type">
@@ -79,9 +103,17 @@
 		</div>
 
 		<div style="float: right">
-			<button class="ui labeled primary icon button" v-on:click="itemUpload({ slug: null })">
-				<i class="upload icon"></i> Hochladen
-			</button>
+			<div class="ui primary buttons ">
+				<button class="ui labeled icon button" v-on:click="itemUpload({ slug: null })">
+					<i class="upload icon"></i> Hochladen
+				</button>
+				<div class="ui floating dropdown icon button indexctrlonload">
+					<i class="dropdown icon"></i>
+					<div class="menu">
+						<div class="item" v-on:click="showItemAddUrl = true"><i class="bookmark icon"></i> URL kürzen</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 
@@ -178,9 +210,10 @@ app.ItemsCtrl = Vue.extend({
 		tags: null,
 		items: [],
 		imageThumbPath: null,
-		itemToUpload: {slug: null},
+		itemToUpload: {slug: null, url: null},
 		itemForModal: null,
 		itemForTagChooser: null,
+		showItemAddUrl: false,
 		refreshCount: 0,
 		loading: true
 	} },
@@ -229,7 +262,7 @@ app.ItemsCtrl = Vue.extend({
 			      this.previousRequest = request;
 			    }
 			}).then(function(response) {
-			 	var items = response.data;
+			 	var items = response.data.items;
 				for(var i = 0; i < items.length; i++) {
 					items[i].modified = false;
 					items[i]._tags = this.itemGetTags(items[i]);
@@ -256,6 +289,12 @@ app.ItemsCtrl = Vue.extend({
 			item.title = 'wird gelöscht ...';
 			this.$http.delete('/api/v1/item/'+item.slug+'?_csrf='+app._csrf).then(function(repsonse) {
 				this.items.splice(this.items.indexOf(item), 1);
+			});
+		},
+		itemAddUrl: function() {
+			this.$http.post('/api/v1/link', {_csrf: app._csrf, url: this.itemToUpload.url}, { emulateJSON: true }).then(function(response) {
+				this.showItemAddUrl = false;
+				this.loadItems();
 			});
 		},
 		itemUpload: function(item) {

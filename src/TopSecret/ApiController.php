@@ -81,7 +81,7 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function items(Request $req, Response $res) {
-		$sql = 'SELECT i.*, group_concat(it.tag_id) as tags FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
+		$sql = 'FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
 		$params = [];
 
 		$where = [];
@@ -106,6 +106,8 @@ class ApiController extends \Areus\ApplicationModule {
 			$sql .= ' WHERE ' . implode(' AND ', $where);
 		}
 
+		$itemsCount = \R::getCell('SELECT COUNT(i.id) ' . $sql, $params);
+
 		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
 
 		if(is_numeric($req->query('limit')) && $req->query('limit') <= 200) {
@@ -113,8 +115,8 @@ class ApiController extends \Areus\ApplicationModule {
 			array_push($params, $req->query('limit') * $req->query('page', 1)-1, $req->query('limit'));
 		}
 
-		$items = \R::getAll($sql, $params);
-		$res->json($items);
+		$items = \R::getAll('SELECT i.*, group_concat(it.tag_id) as tags ' . $sql, $params);
+		$res->json(['items' => $items, 'total' => $itemsCount]);
 	}
 
 	public function postLink(Response $res) {
