@@ -33,7 +33,7 @@
 		</div>
 		<p></p>
 		<div class="ui floating labeled icon dropdown indexctrlonload button">
-			<input type="hidden" v-model="filters.type">
+			<input type="hidden" v-on:change="updateFilter()" id="filter-type">
 			<i class="filter icon"></i>
 			<span class="text">Dateityp</span>
 			<div class="menu">
@@ -51,7 +51,7 @@
 		</div>
 
 		<div class="ui floating dropdown labeled multiple indexctrlonload icon button">
-			<input type="hidden" v-model="filters.tags">
+			<input type="hidden" v-on:change="updateFilter()" id="filter-tags">
 			<i class="filter icon"></i>
 			<span class="text">Tags</span>
 			<div class="menu">
@@ -112,7 +112,7 @@
 					<td class="slug">
 						<span v-on:click="itemSlugEdit(item)" v-show="item.modified != true"><?php echo app()->config->baseUrl; ?>/{{ item.slug }}</span>
 						<span v-show="item.modified == true">
-							<?php echo app()->config->baseUrl; ?>/<input type="text" v-bind:id="'ise' + item.id" v-on:keyup="itemSlugKeyPress(item, $event)" v-model="item.slug">
+							<?php echo app()->config->baseUrl; ?>/<input type="text" :id="'ise' + item.id" v-on:keyup="itemSlugKeyPress(item, $event)" v-model="item.slug">
 						 	<i v-show="item.slug.length > 0" v-on:click="itemSlugSave(item)" class="save icon opacity-hover pointer"></i>
 						 	<i v-on:click="itemSlugCancel(item)" class="cancel icon opacity-hover pointer"></i>
 						</span>
@@ -123,7 +123,7 @@
 						<a v-on:click="itemChooseTags(item)"><i class="plus icon"></i></a>
 
 						<div class="ui multiple tag dropdown" :id="'item-tag-' + item.id">
-							<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item)">
+							<input type="hidden" v-model="item.tags" v-on:change="itemUpdate(item, 'tag-chooser')">
 							<div class="menu" v-if="itemForTagChooser == item.id">
 								<div class="ui icon search input">
 									<i class="search icon"></i>
@@ -194,6 +194,10 @@ app.ItemsCtrl = Vue.extend({
 		}, { deep: true });
 	},
 	methods: {
+		updateFilter: function() {
+			this.filters.type = $('#filter-type').val();
+			this.filters.tags = $('#filter-tags').val();
+		},
 		loadTags: function() {
 			this.$http.get('/api/v1/tags').then(function(response) {
 				this.tags = response.data;
@@ -292,7 +296,9 @@ app.ItemsCtrl = Vue.extend({
 			item.slug = item.oldSlug;
 			item.modified = false;
 		},
-		itemUpdate: function(item) {
+		itemUpdate: function(item, origin) {
+			// Vuejs 2 fix
+			if(origin == 'tag-chooser')	item.tags = $('#item-tag-'+item.id+' > input').val();
 			item._tags = this.itemGetTags(item);
 			var sendItem = Object.assign({}, item);
 			this.$http.put('/api/v1/item/'+item.slug, {'_csrf': app._csrf, 'item': sendItem }).then();
@@ -328,8 +334,10 @@ app.ItemsCtrl = Vue.extend({
 			}
 			this.itemForTagChooser = item.id;
 
-			Vue.nextTick(function() {
-				$('#item-tag-'+item.id).dropdown('toggle');
+			this.$nextTick(function() {
+				window.setTimeout(function() {
+					$('#item-tag-'+item.id).dropdown('toggle');
+				}, 200);
 			});
 		}
 	}

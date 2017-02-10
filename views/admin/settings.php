@@ -48,7 +48,7 @@
 				</div>
 				<div class="four wide field">
 					<label>Kombinationen</label>
-					<input type="number" disabled value="{{ Math.pow(config.slugCharset.length, config.slugLength ) }}">
+					<input type="number" disabled :value="Math.pow(config.slugCharset.length, config.slugLength )">
 				</div>
 			</div>
 			<div class="ui divider"></div>

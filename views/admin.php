@@ -96,43 +96,43 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.2.0/vue-resource.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.0/vue-router.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.js"></script>
 	<script type="text/javascript">
 		var app = {
 			_csrf: '<?php echo app()->session->token(); ?>'
 		};
-
-		app.Root = Vue.extend({
-			data: function() { return {
-				menu: null,
-				loading: false,
-				stats: {}
-			} },
-			created: function() {
-				this.$http.get('/api/v1/stats').then(function(response) {
-					this.stats = response.data;
-				});
-			},
-			methods: {
-				switchMenu: function(key) {
-					this.menu = key;
-				}
-			}
-		});
-
-		window.onload = function() {
-			new app.Root({ el: '#app' });
-		};
 	</script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.2.0/vue-resource.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.0/vue-router.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js"></script>
+
 	<!-- vue.js templates here -->
 	<?php $files = glob(dirname(__FILE__).'/admin/*.{html,php}', GLOB_BRACE);
 	foreach($files as $file) {
 		include $file; // full path
 	} ?>
+
+	<script type="text/javascript">
+	new Vue({
+		el: '#app',
+		data: function() { return {
+			menu: null,
+			loading: false,
+			stats: {}
+		} },
+		created: function() {
+			this.$http.get('/api/v1/stats').then(function(response) {
+				this.stats = response.data;
+			});
+		},
+		methods: {
+			switchMenu: function(key) {
+				this.menu = key;
+			}
+		}
+	});
+</script>
 </body>
 </html>
