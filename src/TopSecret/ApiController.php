@@ -112,7 +112,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		if(is_numeric($req->query('limit')) && $req->query('limit') <= 200) {
 			$sql .= ' LIMIT ?,?';
-			array_push($params, $req->query('limit') * $req->query('page', 1)-1, $req->query('limit'));
+			array_push($params, (int)$req->query('limit', 20) * (int)($req->query('page', 1)-1), $req->query('limit'));
 		}
 
 		$items = \R::getAll('SELECT i.*, group_concat(it.tag_id) as tags ' . $sql, $params);

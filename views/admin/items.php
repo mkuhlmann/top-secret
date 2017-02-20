@@ -118,7 +118,9 @@
 
 
 		<div class="ui active centered inline loader" v-if="loading" style="margin-top: 1em;"></div>
-		<table class="ui table" v-if="loading == false">
+		<div v-if="loading == false"  style="margin-top: 1em;">
+
+		<table class="ui table">
 			<thead>
 				<tr>
 					<th>Datei</th>
@@ -192,6 +194,14 @@
 				</tr>
 			</tbody>
 		</table>
+
+
+		<div class="ui pagination menu">
+			<a class="item" :class="{'active': n == pagination.page}" v-for="n in Math.ceil(itemsCount/pagination.limit)" v-on:click="pagination.page = n">
+				{{ n }}
+			</a>
+		</div>
+		</div>
 		<form style="display:none;" id="itemUploadForm">
 			<input type="hidden" name="_csrf" value="<?php echo app()->session->token(); ?>">
 			<input type="hidden" name="overwriteSlug" v-model="itemToUpload.slug">
@@ -207,8 +217,10 @@ app.ItemsCtrl = Vue.extend({
 	template: '#tpl-items',
 	data: _ => { return {
 		filters: { type: '', tags: '', q: '' },
+		pagination: { page: 1, limit: 25 },
 		tags: null,
 		items: [],
+		itemsCount: 0,
 		imageThumbPath: null,
 		itemToUpload: {slug: null, url: null},
 		itemForModal: null,
@@ -227,6 +239,10 @@ app.ItemsCtrl = Vue.extend({
 			this.loadItems();
 		});
 		this.$watch('filters', function() {
+			this.page = 1;
+			this.loadItems();
+		}, { deep: true });
+		this.$watch('pagination', function() {
 			this.loadItems();
 		}, { deep: true });
 	},
@@ -254,6 +270,7 @@ app.ItemsCtrl = Vue.extend({
 			if(this.filters.q !== '') {
 				url += '&q='+escape(this.filters.q);
 			}
+			url += '&page='+this.pagination.page+'&limit='+this.pagination.limit;
 			this.$http.get(url, {
 				before: function(request) {
 			      if (this.previousRequest) {
@@ -272,6 +289,7 @@ app.ItemsCtrl = Vue.extend({
 				window.setTimeout(_ => {
 					if(this.refreshCount == currentRefresh) {
 						this.items = items;
+						this.itemsCount = response.data.total;
 						this.loading = false;
 					}
 				}, 200);
