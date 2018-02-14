@@ -109,7 +109,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js"></script>
 
 	<!-- vue.js templates here -->
-	<?php $files = glob(dirname(__FILE__).'/admin/*.{html,php}', GLOB_BRACE);
+	<?php $files = glob(dirname(__FILE__).'/admin/*');
 	foreach($files as $file) {
 		include $file; // full path
 	} ?>
