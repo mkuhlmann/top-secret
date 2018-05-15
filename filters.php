@@ -13,6 +13,8 @@ $app->router->filter('auth.admin', function(\Areus\Request $req,  \Areus\Respons
 			->end();
 		return false;
 	}
+
+
 });
 
 $app->router->filter('auth.api', function(\Areus\Request $req, \Areus\Response $res) {

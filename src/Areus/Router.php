@@ -116,6 +116,7 @@ class Router extends \Areus\ApplicationModule {
 	}
 
 	private function callRoute($route, $args = []) {
+		var_dump($route);
 		//check filters
 		$abort = false;
 		if(isset($route['before'])) {
