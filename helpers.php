@@ -5,7 +5,11 @@ function app() {
 }
 
 function view($file, $data = []) {
-	return \TopSecret\Helper::renderView($file, $data);
+	return app()->viewFactory->make($file, $data);
+}
+
+function viewResponse($file, $data = [], $code = 200) {
+	return new \Areus\Http\ViewResponse(view($file, $data), $code);
 }
 
 function e($value) {

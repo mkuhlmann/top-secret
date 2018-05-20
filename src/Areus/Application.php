@@ -13,28 +13,17 @@ class Application extends \Illuminate\Container\Container {
 		$this->basePath = rtrim($basePath, '\/');
 
 		$this->instance('appPath', $this->appPath());
-		$this->instance('publicPath', $this->publicPath());
-		$this->instance('storagePath', $this->storagePath());
-		$this->instance('configPath', $this->configPath());
+		$this->instance('viewPath', $this->appPath('/views'));
+		$this->instance('publicPath', $this->appPath('/public'));
+		$this->instance('storagePath', $this->appPath('/storage'));
+		$this->instance('configPath', $this->appPath('/config'));
 
 		$this->instance('Areus\Application', $this);
 		$this->alias('Areus\Application', 'app');
 	}
 
-	public function appPath() {
-		return $this->basePath;
-	}
-
-	public function publicPath() {
-		return $this->basePath.'/public';
-	}
-
-	public function storagePath() {
-		return $this->basePath.'/storage';
-	}
-
-	public function configPath() {
-		return $this->basePath.'/config';
+	public function appPath($subPath = '') {
+		return $this->basePath.$subPath;
 	}
 
 	public function abort($statusCode = null) {

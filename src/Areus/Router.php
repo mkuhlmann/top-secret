@@ -116,7 +116,6 @@ class Router extends \Areus\ApplicationModule {
 	}
 
 	private function callRoute($route, $args = []) {
-		var_dump($route);
 		//check filters
 		$abort = false;
 		if(isset($route['before'])) {
@@ -125,6 +124,9 @@ class Router extends \Areus\ApplicationModule {
 			}
 		}
 
+
+		$response = null;
+
 		//finally call the route
 		if(!$abort) {
 			$uses = $route['uses'];
@@ -132,22 +134,24 @@ class Router extends \Areus\ApplicationModule {
 
 			if(is_callable($uses)) {
 				$reflection = new \ReflectionFunction($uses);
-				call_user_func_array($uses, $this->prepareArguments($reflection, $args));
+				$response = call_user_func_array($uses, $this->prepareArguments($reflection, $args));
 			} else if(is_string($uses)) {
 				$act = explode('@', $uses);
 				if(count($act) == 1) {
 					$uses = $act;
 					$reflection = new \ReflectionFunction($uses);
-					call_user_func_array($uses, $this->prepareArguments($reflection, $args));
+					$response = call_user_func_array($uses, $this->prepareArguments($reflection, $args));
 				} else if(count($act) == 2) {
 					$ctrl = $this->app->make($act[0]);
 					$reflection = new \ReflectionMethod($ctrl, $act[1]);
-					call_user_func_array([$ctrl, $act[1]], $this->prepareArguments($reflection, $args));
+					$response = call_user_func_array([$ctrl, $act[1]], $this->prepareArguments($reflection, $args));
 				} else {
 					throw new \RuntimeException('Could not parse route controller: '.$uses);
 				}
 			}
 		}
+
+		return $response;
 	}
 
 	private function prepareArguments($reflection, $args = []) {
@@ -187,6 +191,8 @@ class Router extends \Areus\ApplicationModule {
 		}
 		$path = '/'.trim($path, '/');
 
+		$response = null;
+
 		$missing = true;
 		foreach($this->routes as $id => $route) {
 			$pattern = $route['pattern'];
@@ -194,19 +200,21 @@ class Router extends \Areus\ApplicationModule {
 				continue;
 			}
 			if($path == $pattern) {
-				$this->callRoute($route);
+				$response = $this->callRoute($route);
 				$missing = false;
 				break;
 			} else if(preg_match($this->compile($route), $path, $matches) === 1) {
-				$this->callRoute($route, $matches);
+				$response = $this->callRoute($route, $matches);
 				$missing = false;
 				break;
 			}
 		}
 
 		if($missing) {
-			$this->call404();
+			return $this->call404();
 		}
+
+		return $response;
 	}
 
 	public function dump() {

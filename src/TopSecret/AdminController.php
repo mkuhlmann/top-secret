@@ -2,8 +2,7 @@
 
 namespace TopSecret;
 
-use \Areus\Response;
-use \Areus\Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
@@ -53,7 +52,10 @@ class AdminController extends \Areus\ApplicationModule {
 		$res->json('ok');
 	}
 
-	public function login(Request $req, Response $res) {
+	public function login(Request $request) {
+		die('yoyoyoy');
+		var_dump($req); exit;
+
 		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
 			$this->app->session->put('user_id', 1);
 			$res->redirect('/tsa');

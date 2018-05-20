@@ -2,6 +2,9 @@
 
 namespace Areus;
 
+use Dflydev\FigCookies\SetCookie;
+use Dflydev\FigCookies\FigRequestCookies;
+
 class Session {
 	protected $sessionHandler;
 	protected $app;
@@ -30,7 +33,8 @@ class Session {
 	}
 
 	public function start() {
-		$this->id = $this->app->legacyRequest->cookie($this->app->config->get('areus.session.cookie'));
+		$cookie = FigRequestCookies::get($this->app->request, $this->app->config->get('areus.session.cookie'));
+		$this->id = $cookie->getValue();
 
 		$lottery = $this->app->config->get('areus.session.lottery');
 		if(mt_rand(1, $lottery[1]) <= $lottery[0]) {
@@ -39,7 +43,6 @@ class Session {
 
 		if($this->id !== null) {
 			$this->attributes = unserialize($this->sessionHandler->read($this->id));
-			$this->setCookie();
 		}
 
 		if($this->attributes == null || !is_array($this->attributes)) {
@@ -70,7 +73,6 @@ class Session {
 	private function ensureSessionInitialised() {
 		if($this->id === null) {
 			$this->id = sha1(uniqid('', true));
-			$this->setCookie();
 			$this->save();
 		}
 	}
@@ -80,21 +82,20 @@ class Session {
 		$this->sessionHandler->write($this->id, serialize($this->attributes));
 	}
 
-	public function setCookie() {
+	public function generateCookie() {
 		if($this->cookieSent || (!$this->modified && $this->id === null)) {
 			return;
 		}
 
 		$config = $this->app->config->get('areus.session');
-		$this->app->response->withCookie(
-			$config['cookie'],
-			$this->id,
-			time() + 60* $config['lifetime'],
-			$config['path'],
-			$config['domain'],
-			$config['secure'],
-			$config['http_only']
-		);
+
+		return SetCookie::create($config['cookie'])
+			->withValue($this-id)
+			->withExpires(time() + 60* $config['lifetime'])
+			->withPath($config['path'])
+			->withDomain($config['domain'])
+			->withSecure($config['secure'])
+			->withHttpOnly($config['http_only']);
 	}
 
 	public function token() {

@@ -6,9 +6,9 @@ class Config {
 	protected $config;
 
 	public function __construct(\Areus\Application $app) {
-		$this->config = require $app->configPath().'/default.php';
-		if(file_exists($app->configPath().'/local.php')) {
-			$this->config = $this->mergeArrayDeep([$this->config, require $app->configPath().'/local.php']);
+		$this->config = require $app->configPath.'/default.php';
+		if(file_exists($app->configPath.'/local.php')) {
+			$this->config = $this->mergeArrayDeep([$this->config, require $app->configPath.'/local.php']);
 		}
 	}
 

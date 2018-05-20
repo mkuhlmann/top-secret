@@ -2,6 +2,8 @@
 
 namespace Areus\Http;
 
-class Request extends \Symfony\Component\HttpFoundation\Request {
+use Psr\Http\Message\ServerRequestInterface;
 
+interface Request extends ServerRequestInterface {
+	
 }

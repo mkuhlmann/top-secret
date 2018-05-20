@@ -132,12 +132,11 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function index(Response $res) {
+	public function index(Request $res) {
 		if($this->app->session->get('user_id') === 1) {
-			$res->redirect('/tsa');
+			return \Zend\Diactoros\Response\RedirectResponse('/tsa');
 		} else {
-			$res->beginContent();
-			view('index');
+			return viewResponse('index');
 		}
 	}
 }

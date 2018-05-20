@@ -12,19 +12,22 @@ $app = new \Areus\Application($appPath);
 
 $register = [
 	'config' => 'Areus\Config',
-	'legacyRequest' => 'Areus\Request',
-	'request' => 'Areus\Http\Request',
-	'response' => 'Areus\Response',
 	'router' => 'Areus\Router',
-	'session' => 'Areus\Session'
+	'session' => 'Areus\Session',
+
+
+	'viewFactory' => function($app) {
+		return new \Areus\View\Factory($app->viewPath);
+	},
+	'request' => function($app) {
+		return \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+	}
 ];
 
 foreach($register as $alias => $concrete) {
 	$app->singleton($alias, $concrete);
 }
-
-$app->alias('Areus\Response', 'res');
-$app->alias('Areus\Http\Request', 'req');
+$app->alias('request', 'Psr\Http\Message\ServerRequestInterface');
 
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
 
@@ -32,5 +35,16 @@ require 'helpers.php';
 require 'filters.php';
 require 'routes.php';
 
-$app->router->run();
-$app->res->end();
+$middlewares = [
+	\Areus\Middleware\Router::class
+];
+
+foreach($middlewares as &$val) {
+	$val = $app->make($val);
+}
+
+$requestHandler = new \Relay\Relay($middlewares);
+$response = $requestHandler->handle($app->request);
+
+$emitter = new \Zend\Diactoros\Response\SapiEmitter();
+$emitter->emit($response);
