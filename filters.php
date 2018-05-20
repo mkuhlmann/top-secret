@@ -11,25 +11,15 @@ $app->router->filter('auth.admin', function(Request $request) {
 
 
 	if($request->getMethod() == 'POST' && app()->session->token() != $request->getParsedBody()['_csrf']) {
-		$res->header('Content-Type', 'text/plain')
-			->status(403)
-			->send('invalid csrf token')
-			->end();
-		return false;
+		return new JsonResponse(['error' => '403 invalid csrf token'], 403);
 	}
-
-
 });
 
 $app->router->filter('auth.api', function(Request $request) {
-	if($request->getQueryParams()['key'] != app()->config->apiKey && app()->session->get('user_id') !== 1) {
+	if($request->query('key') != app()->config->apiKey && app()->session->get('user_id') !== 1) {
 		return new JsonResponse(['error' => '401 unauthorized'], 401);
 	}
-	if($request->getQueryParams()['key'] != app()->config->apiKey && !$request->getMethod() == 'GET' && app()->session->token() != $request->getParsedBody()['_csrf']) {
-		$res->header('Content-Type', 'text/plain')
-			->status(403)
-			->send('invalid csrf token')
-			->end();
-		return false;
+	if($request->query('key') != app()->config->apiKey && !$request->getMethod() == 'GET' && app()->session->token() != $request->getParsedBody()['_csrf']) {
+		return new JsonResponse(['error' => '403 invalid csrf token'], 403);
 	}
 });

@@ -2,8 +2,11 @@
 
 namespace TopSecret;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Areus\Http\Request as Request;
 use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Stream;
 
 class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
@@ -15,27 +18,26 @@ class AdminController extends \Areus\ApplicationModule {
 		return viewResponse('admin');
 	}
 
-	public function logout(Response $res) {
+	public function logout() {
 		$this->app->session->forget('user_id');
 		return new RedirectResponse('/');
 	}
 
-	public function tasker(Response $res) {
-		$res->header('Content-Type', 'application/xml')
-			->beginContent();
-		readfile($this->app->appPath.'/views/Tasker.prf.xml.php');
+	public function tasker() {
+		return (new Response(new Stream($this->app->appPath.'/views/Tasker.prf.xml.php')))
+			->withHeader('Content-Type', 'application/xml');
 	}
 
-	public function getConfig(Response $res) {
+	public function getConfig() {
 		$config = $this->app->config->asArray();
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = ($config['countHitIfLoggedIn']) ? 'true' : 'false';
 
-		$res->json($config);
+		return new JsonResponse($config);
 	}
 
-	public function saveConfig(Request $req,  Response $res) {
+	public function saveConfig(Request $req) {
 		$config = $req->input('config', []);
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$localConfig = [];
@@ -49,7 +51,7 @@ class AdminController extends \Areus\ApplicationModule {
 
 		file_put_contents($this->app->appPath.'/config/local.php', '<?php return '."\n\n".var_export($config, true).';');
 		sleep(2);
-		$res->json('ok');
+		return new JsonResponse('ok');
 	}
 
 	public function login(Request $request) {

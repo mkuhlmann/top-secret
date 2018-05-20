@@ -2,22 +2,23 @@
 
 namespace TopSecret;
 
-use \Areus\Request;
-use \Areus\Response;
+use Areus\Http\Request;
+use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Stream;
 
 class FrontendController extends \Areus\ApplicationModule {
-	public function handleSlug($slug, Request $req, Response $res) {
+	public function handleSlug($slug, Request $req) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
-			$res->status(404)->json(['error' => '404 file not found']);
-			return;
+			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 
 		if($item->type != 'url' && $this->app->config->redirectFileName) {
 			$url = '/'.$item->slug.'/'.urlencode($item->title);
 			if($req->path() != $url) {
-				$res->redirect($url);
-				return;
+				return new RedirectResponse($url);
 			}
 		}
 
@@ -52,54 +53,59 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 
 		if($item->type == 'url') {
-			$res->redirect($item->path);
+			return new RedirectResponse($item->path);
 		} else if($item->type == 'text') {
 			if($req->query('raw')) {
-					$this->sendFile($item->path, 'text/plain', $item->size, $item->title, strtotime($item->created_at));
+					return $this->sendFile($item->path, 'text/plain', $item->size, $item->title, strtotime($item->created_at));
 			} else if($req->query('dl')) {
-					$this->sendFile($item->path, 'text/plain', $item->size, $item->title, strtotime($item->created_at), 'attachment');
+					return $this->sendFile($item->path, 'text/plain', $item->size, $item->title, strtotime($item->created_at), 'attachment');
 			} else {
 				if(substr($item->title, -strlen('.display.html')) === '.display.html') {
-					$this->sendFile($item->path, 'text/html', $item->size, $item->title, strtotime($item->created_at));
+					return $this->sendFile($item->path, 'text/html', $item->size, $item->title, strtotime($item->created_at));
 				} else if($item->extension == 'md') {
 					$parser = new \cebe\markdown\GithubMarkdown();
 					$parser->html5 = true;
 					$mdHtml = $parser->parse(file_get_contents($this->app->storagePath.'/uploads'.$item->path));
 					$mdHtml = str_replace('<table>', '<table class="ui table">', $mdHtml);
-					return view('markdown', ['mdHtml' => $mdHtml, 'item' => $item]);
+					return viewResponse('markdown', ['mdHtml' => $mdHtml, 'item' => $item]);
 				} else {
-					return view('code', ['item' => $item]);
+					return viewResponse('code', ['item' => $item]);
 				}
 			}
 		} else {
-			$this->sendFile($item->path, $item->mime, $item->size, $item->title, strtotime($item->created_at));
+			return $this->sendFile($item->path, $item->mime, $item->size, $item->title, strtotime($item->created_at));
 		}
 	}
 
 	private function sendFile($path, $mime, $size, $fileName, $lastModified, $disposition = 'inline') {
 		$lastModifiedGm = gmdate('r', $lastModified);
-		app()->res
-			->header('Content-Type', $mime)
-			->header('Content-Disposition', $disposition.'; filename="'.$fileName.'"');
+
+		$response = new Response();
+
+		$response = $response
+			->withHeader('Content-Type', $mime)
+			->withHeader('Content-Disposition', $disposition.'; filename="'.$fileName.'"');
 
 		if($this->app->config->serveMethod == 'nginx') {
-			app()->res
-				->header('Content-Length', $size)
-				->header('X-Accel-Redirect', '/protected_uploads'.$path);
+			$response = $response
+				->withHeader('Content-Length', $size)
+				->withHeader('X-Accel-Redirect', '/protected_uploads'.$path);
 		} else {
 			$etag = md5($lastModified.$fileName);
-			app()->res
-				->header('Cache-Control', 'public, max-age=1800')
-				->header('ETag', $etag)
-				->header('Last-Modified', $lastModifiedGm);
-			if (strtotime($this->app->req->header('If-Modified-Since')) == $lastModified || $this->app->req->header('If-None-Match') == $etag) {
-				app()->res->status(304);
+			$response = $response
+				->withHeader('Cache-Control', 'public, max-age=1800')
+				->withHeader('ETag', $etag)
+				->withHeader('Last-Modified', $lastModifiedGm);
+			if (strtotime($this->app->request->header('If-Modified-Since')) == $lastModified || $this->app->request->header('If-None-Match') == $etag) {
+				$response = $response->withStatus(304);
 			} else {
-				app()->res
-					->header('Content-Length', $size)
-					->readfile($this->app->storagePath.'/uploads'.$path);
+				$response = $response
+					->withHeader('Content-Length', $size)
+					->withBody(new Stream($this->app->storagePath.'/uploads'.$path));
 			}
 		}
+
+		return $response;
 	}
 
 	public function handleThumbSlug($slug, Response $res) {

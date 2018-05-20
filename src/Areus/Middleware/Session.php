@@ -25,8 +25,7 @@ class Router implements MiddlewareInterface {
 		$response = $handler->handle($request);
 
 		$cookie = $this->app->session->generateCookie();
-		FigResponseCookies::set($response, $cookie);
 
-		return $response;
+		return FigResponseCookies::set($response, $cookie);
 	}
 }

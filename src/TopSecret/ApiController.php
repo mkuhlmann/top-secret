@@ -2,16 +2,16 @@
 
 namespace TopSecret;
 
-use \Areus\Response;
-use \Areus\Request;
+use Areus\Http\Request;
+use Zend\Diactoros\Response\JsonResponse;
 
 class ApiController extends \Areus\ApplicationModule {
-	public function stats(Response $res) {
+	public function stats() {
 		$stats = \R::getRow('SELECT count(id) as total_count, sum(size) as total_size FROM item');
-		$res->json($stats);
+		return new JsonResponse($stats);
 	}
 
-	public function itemDelete($slug, Response $res) {
+	public function itemDelete($slug) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			// delete physical files
@@ -22,13 +22,13 @@ class ApiController extends \Areus\ApplicationModule {
 				}
 			}
 			\R::trash($item);
-			$res->json('ok');
+			return new JsonResponse('ok');
 		} else {
-			$res->status(404)->json(['error' => '404 file not found']);
+			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 	}
 
-	public function itemUpdate($slug, Request $req, Response $res) {
+	public function itemUpdate($slug, Request $req) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			$_item = $req->input('item');
@@ -45,13 +45,13 @@ class ApiController extends \Areus\ApplicationModule {
 			$item->sharedTagList = $tags;
 
 			\R::store($item);
-			$res->json($item);
+			return new JsonResponse($item);
 		} else {
-			$res->status(404)->json(['error' => '404 file not found']);
+			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 	}
 
-	public function tagUpdate($tagId, Request $req, Response $res) {
+	public function tagUpdate($tagId, Request $req) {
 		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
 		$_tag = $req->input('tag');
 
@@ -59,28 +59,28 @@ class ApiController extends \Areus\ApplicationModule {
 		$tag->color = $_tag['color'];
 
 		\R::store($tag);
-		$res->json($tag);
+		return new JsonResponse($tag);
 	}
 
-	public function tagDelete($tagId, Request $req, Response $res) {
+	public function tagDelete($tagId, Request $req) {
 		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
 		\R::trash($tag);
-		$res->json('ok');
+		return new JsonResponse('ok');
 	}
 
-	public function tagCreate(Response $res) {
+	public function tagCreate() {
 		$tag = \R::dispense('tag');
 		$tag->name = 'Unbenannt';
 		\R::store($tag);
-		$res->json($tag);
+		return new JsonResponse($tag);
 	}
 
-	public function tags(Response $res) {
+	public function tags() {
 		$tags = \R::findAll('tag');
-		$res->json($tags);
+		return new JsonResponse($tags);
 	}
 
-	public function items(Request $req, Response $res) {
+	public function items(Request $req) {
 		$sql = 'FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
 		$params = [];
 
@@ -116,10 +116,10 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 
 		$items = \R::getAll('SELECT i.*, group_concat(it.tag_id) as tags ' . $sql, $params);
-		$res->json(['items' => $items, 'total' => $itemsCount]);
+		return new JsonResponse(['items' => $items, 'total' => $itemsCount]);
 	}
 
-	public function postLink(Response $res) {
+	public function postLink() {
 		if(!isset($_POST['url'])) return;
 
 		$url = $_POST['url'];
@@ -133,19 +133,20 @@ class ApiController extends \Areus\ApplicationModule {
 
 		\R::store($item);
 
-		$res->json(['slug' => $item->slug]);
+		return new JsonResponse(['slug' => $item->slug]);
 	}
 
-	public function postUpload(Response $res) {
+	public function postUpload() {
 		if(!isset($_FILES['file'])) return;
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
 			$item = $this->handleUpload($this->app->appPath.'/storage/'.$_FILES['file']['name']);
-			$res->json(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item]);
+			return new JsonResponse(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item]);
 		}
+		return new JsonResponse(['error'=>'500 internal server error'], 500);
 	}
 
-	public function taskerUpload(Response $res) {
+	public function taskerUpload() {
 		header('Content-Type: text/html; charset=utf-8;');
 		if(isset($_GET['fileName'])) {
 			$pathInfo = pathinfo($_GET['fileName']);
@@ -167,7 +168,7 @@ class ApiController extends \Areus\ApplicationModule {
 		}
 	}
 
-	public function taskerLast(Response $res) {
+	public function taskerLast() {
 		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
 		$res->send($this->app->config->baseUrl.'/'.$item->slug);
 	}
