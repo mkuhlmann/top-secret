@@ -3,6 +3,7 @@
 namespace TopSecret;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Diactoros\Response\RedirectResponse;
 
 class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
@@ -11,13 +12,12 @@ class AdminController extends \Areus\ApplicationModule {
 									'piwikUrl', 'piwikAuthToken'];
 
 	public function index() {
-		$this->app->res->beginContent();
-		return view('admin');
+		return viewResponse('admin');
 	}
 
 	public function logout(Response $res) {
 		$this->app->session->forget('user_id');
-		$res->redirect('/');
+		return new RedirectResponse('/');
 	}
 
 	public function tasker(Response $res) {
@@ -53,14 +53,12 @@ class AdminController extends \Areus\ApplicationModule {
 	}
 
 	public function login(Request $request) {
-		die('yoyoyoy');
-		var_dump($req); exit;
+		$password = $request->getParsedBody()['p'];
 
-		if(password_verify($req->post('p'), $this->app->config->adminPassword)) {
+		if(password_verify($password, $this->app->config->adminPassword)) {
 			$this->app->session->put('user_id', 1);
-			$res->redirect('/tsa');
-			return;
+			return new RedirectResponse('/tsa');
 		}
-		$res->redirect('/');
+		return new RedirectResponse('/');
 	}
 }

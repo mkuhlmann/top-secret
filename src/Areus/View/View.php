@@ -14,7 +14,11 @@ class View {
 	}
 
 	public function render() {
+		ob_start();
 		extract($this->data);
 		include $this->path;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		return $contents;
 	}
 }

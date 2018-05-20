@@ -1,12 +1,16 @@
 <?php
 
-$app->router->filter('auth.admin', function(\Areus\Request $req,  \Areus\Response $res) {
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Diactoros\Response\JsonResponse;
+
+$app->router->filter('auth.admin', function(Request $request) {
 	if(app()->session->get('user_id') !== 1) {
-		$res->redirect('/');
-		return false;
+		return new RedirectResponse('/');
 	}
 
-	if($req->isMethod('post') && app()->session->token() != $req->input('_csrf')) {
+
+	if($request->getMethod() == 'POST' && app()->session->token() != $request->getParsedBody()['_csrf']) {
 		$res->header('Content-Type', 'text/plain')
 			->status(403)
 			->send('invalid csrf token')
@@ -17,12 +21,11 @@ $app->router->filter('auth.admin', function(\Areus\Request $req,  \Areus\Respons
 
 });
 
-$app->router->filter('auth.api', function(\Areus\Request $req, \Areus\Response $res) {
-	if($req->query('key') != app()->config->apiKey && app()->session->get('user_id') !== 1) {
-		$res->status(401)->json(['error' => '401 unauthorized']);
-		return false;
+$app->router->filter('auth.api', function(Request $request) {
+	if($request->getQueryParams()['key'] != app()->config->apiKey && app()->session->get('user_id') !== 1) {
+		return new JsonResponse(['error' => '401 unauthorized'], 401);
 	}
-	if($req->query('key') != app()->config->apiKey && !$req->isMethod('get') && app()->session->token() != $req->input('_csrf')) {
+	if($request->getQueryParams()['key'] != app()->config->apiKey && !$request->getMethod() == 'GET' && app()->session->token() != $request->getParsedBody()['_csrf']) {
 		$res->header('Content-Type', 'text/plain')
 			->status(403)
 			->send('invalid csrf token')

@@ -2,8 +2,8 @@
 
 namespace Areus\Http;
 
-use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\ServerRequest;
 
-interface Request extends ServerRequestInterface {
+class Request extends ServerRequest {
 	
 }

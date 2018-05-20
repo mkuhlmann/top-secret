@@ -109,26 +109,22 @@ class Router extends \Areus\ApplicationModule {
 		$reflection = new \ReflectionFunction($filter);
 		$filterResult = call_user_func_array($filter, $this->prepareArguments($reflection));
 
-		if($filterResult !== null && $filterResult !== true) {
-			$continue = false;
+		if($filterResult instanceof \Psr\Http\Message\ServerRequestInterface) {
+			return $filterResult;
 		}
-		return $continue;
+		return null;
 	}
 
 	private function callRoute($route, $args = []) {
-		//check filters
-		$abort = false;
+		$response = null;
+
 		if(isset($route['before'])) {
-			if(!$this->callFilter($route['before'])) {
-				$abort = true;
-			}
+			$response = $this->callFilter($route['before']);
 		}
 
 
-		$response = null;
-
 		//finally call the route
-		if(!$abort) {
+		if($response === null) {
 			$uses = $route['uses'];
 			$reflection = null;
 
