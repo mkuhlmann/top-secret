@@ -12,6 +12,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use stdClass;
 use UnexpectedValueException;
 use Zend\Diactoros\Uri;
+use Zend\Diactoros\UploadedFile;
 
 /**
  * Class for marshaling a request object from the current PHP environment.

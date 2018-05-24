@@ -4,6 +4,8 @@ namespace TopSecret;
 
 use Areus\Http\Request;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\Response;
 
 class ApiController extends \Areus\ApplicationModule {
 	public function stats() {
@@ -147,7 +149,6 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function taskerUpload() {
-		header('Content-Type: text/html; charset=utf-8;');
 		if(isset($_GET['fileName'])) {
 			$pathInfo = pathinfo($_GET['fileName']);
 			$targetPath = $this->app->appPath.'/storage/'.$pathInfo['basename'];
@@ -164,13 +165,13 @@ class ApiController extends \Areus\ApplicationModule {
 
 			$item = $this->handleUpload($targetPath);
 
-			$res->send($this->app->config->baseUrl.'/'.$item->slug);
+			return new HtmlResponse($this->app->config->baseUrl.'/'.$item->slug);
 		}
 	}
 
 	public function taskerLast() {
 		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
-		$res->send($this->app->config->baseUrl.'/'.$item->slug);
+		return new Response($this->app->config->baseUrl.'/'.$item->slug);
 	}
 
 	private function handleUpload($path) {
@@ -191,17 +192,18 @@ class ApiController extends \Areus\ApplicationModule {
 		rename($path, $uploadPath);
 
 		$item = null;
-		if($this->app->req->input('overwriteSlug') != null) {
-			$item = \R::findOne('item', 'slug = ?', [$this->app->req->input('overwriteSlug')]);
+		$request = $this->app->request;
+		if($request->input('overwriteSlug') != null) {
+			$item = \R::findOne('item', 'slug = ?', [$request->input('overwriteSlug')]);
 		}
 
 		if($item == null) {
 			$item = \R::dispense('item');
 			$item->slug = \TopSecret\Helper::generateSlug();
 
-			if($this->app->req->input('tags') !== null) {
+			if($request->input('tags') !== null) {
 				$tags = [];
-				foreach(explode(',', $this->app->req->input('tags', '')) as $tag) {
+				foreach(explode(',', $request->input('tags', '')) as $tag) {
 					$tag = \R::findOne('tag', 'id = ?', [$tag]);
 					if($tag != null) $tags[] = $tag;
 				}

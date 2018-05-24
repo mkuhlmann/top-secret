@@ -111,13 +111,11 @@ class FrontendController extends \Areus\ApplicationModule {
 	public function handleThumbSlug($slug, Response $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
-			$res->status(404)->json(['error' => '404 file not found']);
-			return;
+			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 
 		if($item->type != 'image') {
-			$res->redirect('/' . $item->slug);
-			return;
+			return new RedirectResponse('/' . $item->slug);
 		}
 
 		$thumbPath = $this->app->storagePath.'/thumb/'.$item->slug.'.jpg';
@@ -128,19 +126,23 @@ class FrontendController extends \Areus\ApplicationModule {
 			\TopSecret\Helper::resizeImage($this->app->storagePath.'/uploads'.$item->path, $thumbPath, 300);
 		}
 
-		$res->header('Content-Type', 'image/jpeg')
-			->header('Content-Disposition', 'inline; filename="'.$item->title.'"')
-			->header('Cache-Control', 'public, max-age=1800');
+		$response = new Response();
+		$response = $response
+			->withHeader('Content-Type', 'image/jpeg')
+			->withHeader('Content-Disposition', 'inline; filename="'.$item->title.'"')
+			->withHeader('Cache-Control', 'public, max-age=1800');
 		if(false && $this->app->config->serveMethod == 'nginx') {
-			$res->header('X-Accel-Redirect', '/protected_thumbs'.$item->path);
+			$response = $repsonse->withHeader('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
-			$res->readfile($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
+			$response = $response->withBody(new Stream($this->app->storagePath.'/thumb/'.$item->slug.'.jpg'));
 		}
+
+		return $response;
 	}
 
 	public function index(Request $res) {
 		if($this->app->session->get('user_id') === 1) {
-			return \Zend\Diactoros\Response\RedirectResponse('/tsa');
+			return new RedirectResponse('/tsa');
 		} else {
 			return viewResponse('index');
 		}
