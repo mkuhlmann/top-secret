@@ -12,7 +12,7 @@ class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
 	 								'imageLibrary', 'countHitIfLoggedIn', 'slugLength',
 									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
-									'piwikUrl', 'piwikAuthToken'];
+									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged'];
 
 	public function index() {
 		return viewResponse('admin');
@@ -62,5 +62,18 @@ class AdminController extends \Areus\ApplicationModule {
 			return new RedirectResponse('/tsa');
 		}
 		return new RedirectResponse('/');
+	}
+
+	private function retentionSql() {
+		$sql = 'FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
+		$params = [];
+
+		' WHERE ';
+
+		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
+	}
+
+	public function retentionDryRun() {
+		
 	}
 }

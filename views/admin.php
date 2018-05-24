@@ -40,11 +40,14 @@
 			<a class="item" v-on:click="switchMenu(null)" v-bind:class="{ active: menu == null }">
 				<i class="list icon"></i> Start
 			</a>
+			<a class="item" v-on:click="switchMenu('tags')" v-bind:class="{ active: menu == 'tags' }">
+				<i class="flag icon"></i> Tags
+			</a>
 			<a class="item" v-on:click="switchMenu('settings')" v-bind:class="{ active: menu == 'settings' }">
 				<i class="wrench icon"></i> Einstellungen
 			</a>
-			<a class="item" v-on:click="switchMenu('tags')" v-bind:class="{ active: menu == 'tags' }">
-				<i class="flag icon"></i> Tags
+			<a class="item" v-on:click="switchMenu('retention')" v-bind:class="{ active: menu == 'retention' }">
+				<i class="history icon"></i> Aufbewahrung
 			</a>
 			<a class="item" v-on:click="switchMenu('howto')" v-bind:class="{ active: menu == 'howto' }">
 				<i class="help circle icon"></i> Anleitung
@@ -59,6 +62,7 @@
 			</div>
 		</div>
 		<items-ctrl v-if="menu == null"></items-ctrl>
+		<retention-ctrl v-if="menu == 'retention'"></retention-ctrl>
 		<settings-ctrl v-if="menu == 'settings'"></settings-ctrl>
 		<tags-ctrl v-if="menu == 'tags'"></tags-ctrl>
 		<div class="ui container" v-show="menu == 'howto'">

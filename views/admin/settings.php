@@ -51,6 +51,7 @@
 					<input type="number" disabled :value="Math.pow(config.slugCharset.length, config.slugLength )">
 				</div>
 			</div>
+
 			<div class="ui divider"></div>
 			<div class="three fields">
 				<div class="field">
@@ -81,6 +82,21 @@
 				<div class="six wide field">
 					<label>Piwik Auth Token</label>
 					<input type="text" v-model="config.piwikAuthToken">
+				</div>
+			</div>
+
+			<div class="ui divider"></div>
+			<div class="fields">
+				<div class="six wide field">
+						<label>Maximales Alter ohne Ansicht (Tage)</label>
+						<input type="number" v-model="config.retentionDays">
+					</div>
+				<div class="two wide field">
+					<label>Nur ungetaggte</label>
+					<select v-model="config.retentionOnlyUntagged">
+						<option value="true">Ja</option>
+						<option value="false">Nein</option>
+					</select>
 				</div>
 			</div>
 

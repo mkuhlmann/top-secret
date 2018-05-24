@@ -28,6 +28,9 @@ return [
 
 	'behindTrustedProxy' => false,
 
+	'retentionDays' => 60,
+	'retentionOnlyUntagged' => true,
+
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
 		'session' => [
