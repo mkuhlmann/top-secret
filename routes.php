@@ -9,6 +9,8 @@ $app->router->get('/tsa/logout', ['before' => 'auth.admin', 'uses' => 'TopSecret
 $app->router->get('/tsa/Tasker.prf.xml', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@tasker']);
 $app->router->get('/tsa/getConfig', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@getConfig']);
 $app->router->post('/tsa/saveConfig', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@saveConfig']);
+$app->router->get('/tsa/retentionDryRun', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@retentionDryRun']);
+$app->router->post('/tsa/retentionRun', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@retentionRun']);
 $app->router->post('/l', 'TopSecret\AdminController@login');
 
 //

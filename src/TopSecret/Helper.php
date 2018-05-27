@@ -16,6 +16,22 @@ class Helper {
 		return $randomString;
 	}
 
+	public static function itemDelete($slug) {
+		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		if($item != null) {
+			// delete physical files
+			if(isset($item->path) && file_exists(app()->storagePath.'/uploads'.$item->path)) {
+				unlink(app()->storagePath.'/uploads'.$item->path);
+				if(file_exists(app()->storagePath.'/thumb/'.$item->slug.'.jpg')) {
+					unlink(app()->storagePath.'/thumb/'.$item->slug.'.jpg');
+				}
+			}
+			\R::trash($item);
+			return true;
+		}
+		return false;
+	}
+
 	public static function resizeImage($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
 		if (app()->config->imageLibrary != 'imagemagick') {
 			self::resizeImageGd($srcPath, $dstPath, $maxSize, $jpegQuality);

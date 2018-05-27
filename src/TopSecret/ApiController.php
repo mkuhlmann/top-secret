@@ -14,16 +14,7 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function itemDelete($slug) {
-		$item = \R::findOne('item', 'slug = ?', [$slug]);
-		if($item != null) {
-			// delete physical files
-			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
-				unlink($this->app->storagePath.'/uploads'.$item->path);
-				if(file_exists($this->app->storagePath.'/thumb/'.$item->slug.'.jpg')) {
-					unlink($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
-				}
-			}
-			\R::trash($item);
+		if(\TopSecret\Helper::itemDelete($slug)) {
 			return new JsonResponse('ok');
 		} else {
 			return new JsonResponse(['error' => '404 file not found'], 404);

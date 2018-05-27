@@ -68,12 +68,34 @@ class AdminController extends \Areus\ApplicationModule {
 		$sql = 'FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
 		$params = [];
 
-		' WHERE ';
+		$sql .= ''
+			. ' WHERE (i.last_hit_at IS NULL AND julianday() - julianday(i.created_at) > ?)'
+			. ' OR (julianday() - julianday(i.last_hit_at) > 60)'
+			. ' AND it.id IS NULL';
 
-		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
+		$params[] = $this->app->config->get('retentionDays');
+
+		return [$sql, $params];
 	}
 
 	public function retentionDryRun() {
 		
+		list($sql, $params) = $this->retentionSql();
+
+		$items = \R::getCell('SELECT COUNT(i.id) ' . $sql, $params);
+
+		return new JsonResponse(['deletedItems' => $items]);
+	}
+
+	public function retentionRun() {
+		list($sql, $params) = $this->retentionSql();
+
+		$items = \R::getAll('SELECT i.* ' . $sql, $params);
+
+		foreach($items as $item) {
+			\TopSecret\Helper::itemDelete($item['slug']);
+		}
+
+		return new JsonResponse(['success' => true]);
 	}
 }

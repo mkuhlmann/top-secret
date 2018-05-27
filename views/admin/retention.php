@@ -1,6 +1,10 @@
 <template id="tpl-retention">
 	<div class="ui container">
-		<div v-if="run == null">
+		<div class="ui active centered inline loader" v-if="run == 1"></div>
+		<div v-show="run == 2">
+			<strong>Löschen erfolgreich.</strong>
+		</div>
+		<div v-if="run == 0">
 			<div>Es stehen {{ dryRun.deletedItems }} Items zum Löschen an. Du kannst die Policy unter Einstellungen ändern.</div>
 
 			<hr>
@@ -10,9 +14,6 @@
 			<div>
 			<button class="ui danger button" v-if="safteyCheck" v-on:click="nuke()">Jetzt ausführen!</button>
 		</div>
-		<div v-if="run != null">
-			Löschen erfolgreich.
-		</div>
 	</div>
 </template>
 <!------------------------------------------>
@@ -21,7 +22,7 @@ app.RetentionCtrl = Vue.extend({
 	template: '#tpl-retention',
 	data: function() { return {
 		dryRun: {},
-		run: null,
+		run: 0,
 		safteyCheck: false
 	} },
 	created: function() {
@@ -29,13 +30,14 @@ app.RetentionCtrl = Vue.extend({
 	},
 	methods: {
 		load: function() {
-			this.$http.get('/api/v1/retention/dry-run').then(function(response) {
+			this.$http.get('/tsa/retentionDryRun').then(function(response) {
 				this.dryRun = response.data;
 			});
 		},
 		nuke: function() {
-			this.$http.get('/api/v1/retention/run').then(function(response) {
-				this.run = response.data;
+			this.run = 1;
+			this.$http.post('/tsa/retentionRun', {_csrf: app._csrf}).then(function(response) {
+				this.run = 2;
 			});
 		}
 	}
