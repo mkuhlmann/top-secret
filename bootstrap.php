@@ -38,6 +38,7 @@ require 'filters.php';
 require 'routes.php';
 
 $middlewares = [
+	\Areus\Middleware\Session::class,
 	\Areus\Middleware\JsonPayload::class,
 	\Areus\Middleware\Router::class
 ];

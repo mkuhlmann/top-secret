@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Dflydev\FigCookies\FigResponseCookies;
 
-class Router implements MiddlewareInterface {
+class Session implements MiddlewareInterface {
 	private $app;
 
 	public function __construct(Application $app) {
@@ -26,6 +26,10 @@ class Router implements MiddlewareInterface {
 
 		$cookie = $this->app->session->generateCookie();
 
-		return FigResponseCookies::set($response, $cookie);
+		if($cookie != null) {
+			$response = FigResponseCookies::set($response, $cookie);
+		}
+
+		return $response;
 	}
 }

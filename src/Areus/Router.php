@@ -109,10 +109,11 @@ class Router extends \Areus\ApplicationModule {
 		$reflection = new \ReflectionFunction($filter);
 		$filterResult = call_user_func_array($filter, $this->prepareArguments($reflection));
 
-		if($filterResult instanceof \Psr\Http\Message\ServerRequestInterface) {
+		if($filterResult instanceof \Psr\Http\Message\ResponseInterface) {
 			return $filterResult;
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private function callRoute($route, $args = []) {

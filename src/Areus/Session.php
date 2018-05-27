@@ -52,6 +52,7 @@ class Session {
 
 	public function forget($key) {
 		if(isset($this->attributes[$key])) {
+			$this->modified = true;
 			unset($this->attributes[$key]);
 		}
 	}
@@ -83,14 +84,22 @@ class Session {
 	}
 
 	public function generateCookie() {
-		if($this->cookieSent || (!$this->modified && $this->id === null)) {
+		if(!$this->modified && $this->id === null) {
 			return;
+		}
+
+		if($this->id === null) {
+			$this->ensureSessionInitialised();
+		}
+
+		if($this->modified) {
+			$this->save();
 		}
 
 		$config = $this->app->config->get('areus.session');
 
 		return SetCookie::create($config['cookie'])
-			->withValue($this-id)
+			->withValue($this->id)
 			->withExpires(time() + 60* $config['lifetime'])
 			->withPath($config['path'])
 			->withDomain($config['domain'])
