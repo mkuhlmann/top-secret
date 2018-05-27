@@ -37,7 +37,7 @@ class FrontendController extends \Areus\ApplicationModule {
 					'rand' => uniqid(),
 
 					'action_name' => $item->title,
-					'ua' => $req->ua(),
+					'ua' => $_SERVER['HTTP_USER_AGENT'],
 					'cip' => ($this->app->config->behindTrustedProxy && isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 								? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],				
 					'urlref' => $_SERVER['HTTP_REFERER']

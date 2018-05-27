@@ -84,7 +84,6 @@ class Helper {
 
 	public static function normalizeSlug($text) {
 		$text = preg_replace('~[^_\pL\d]+~u', '-', $text);
-		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
 		$text = preg_replace('~[^-\w]+~', '', $text);
 		$text = trim($text, '-');
 		$text = preg_replace('~-+~', '-', $text);
