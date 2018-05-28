@@ -82,12 +82,11 @@ class AdminController extends \Areus\ApplicationModule {
 	}
 
 	public function retentionDryRun() {
-		
 		list($sql, $params) = $this->retentionSql();
 
-		$items = \R::getCell('SELECT COUNT(i.id) ' . $sql, $params);
+		$items = \R::getRow('SELECT COUNT(i.id) AS deletedItems, SUM(i.size) AS deletedSize ' . $sql, $params);
 
-		return new JsonResponse(['deletedItems' => $items]);
+		return new JsonResponse(['deletedItems' => $items['deletedItems'], 'deletedSize' => $items['deletedSize']]);
 	}
 
 	public function retentionRun() {

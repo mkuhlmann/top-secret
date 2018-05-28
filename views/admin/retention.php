@@ -5,7 +5,7 @@
 			<strong>Löschen erfolgreich.</strong>
 		</div>
 		<div v-if="run == 0">
-			<div>Es stehen {{ dryRun.deletedItems }} Items zum Löschen an. Du kannst die Policy unter Einstellungen ändern.</div>
+			<div>Es stehen {{ dryRun.deletedItems }} Items ({{ Math.round(dryRun.deletedSize/1024/1024*100)/100 }} MiB) zum Löschen an. Du kannst die Policy unter Einstellungen ändern.</div>
 
 			<hr>
 			<div>
