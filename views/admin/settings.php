@@ -61,6 +61,14 @@
 						<option value="false">Nein</option>
 					</select>
 				</div>
+
+				<div class="field">
+					<label>Rich Preview</label>
+					<select v-model="config.richPreview">
+						<option value="true">Ja</option>
+						<option value="false">Nein</option>
+					</select>
+				</div>
 			</div>
 
 			<div class="fields">

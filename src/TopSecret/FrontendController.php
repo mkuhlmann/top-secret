@@ -51,6 +51,12 @@ class FrontendController extends \Areus\ApplicationModule {
 				@file_get_contents($piwikUrl); // supress any errors
 			}
 		}
+		
+		if($this->app->config->richPreview && $item->type == 'image') {
+			if(strpos($req->getHeader('User-Agent')[0], 'WhatsApp/') === 0) {
+				return viewResponse('opengraph', ['item' => $item]);
+			}
+		}
 
 		if($item->type == 'url') {
 			return new RedirectResponse($item->path);

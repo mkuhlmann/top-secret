@@ -31,6 +31,8 @@ return [
 	'retentionDays' => 60,
 	'retentionOnlyUntagged' => true,
 
+	'richPreview' => true,
+
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
 		'session' => [

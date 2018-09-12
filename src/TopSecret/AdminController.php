@@ -9,7 +9,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class AdminController extends \Areus\ApplicationModule {
-	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod',
+	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'richPreview',
 	 								'imageLibrary', 'countHitIfLoggedIn', 'slugLength',
 									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
 									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged'];
@@ -33,6 +33,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = ($config['countHitIfLoggedIn']) ? 'true' : 'false';
+		$config['richPreview'] = ($config['richPreview']) ? 'true' : 'false';
 
 		return new JsonResponse($config);
 	}
@@ -46,6 +47,7 @@ class AdminController extends \Areus\ApplicationModule {
 		}
 		$config['defaultChmod'] = octdec($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = $config['countHitIfLoggedIn'] == 'true';
+		$config['richPreview'] = $config['richPreview'] == 'true';
 		$config['slugLength'] = intval($config['slugLength']);
 		$config = array_merge($localConfig, $config);
 
