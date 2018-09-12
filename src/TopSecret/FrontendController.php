@@ -51,10 +51,13 @@ class FrontendController extends \Areus\ApplicationModule {
 				@file_get_contents($piwikUrl); // supress any errors
 			}
 		}
-		
+
 		if($this->app->config->richPreview && $item->type == 'image') {
 			if(strpos($req->getHeader('User-Agent')[0], 'WhatsApp/') === 0) {
-				return viewResponse('opengraph', ['item' => $item]);
+				return viewResponse('opengraph', [
+					'item' => $item, 
+					'thumbSize' => \TopSecret\Helper::calculateImageSizeGd($this->app->storagePath.'/uploads'.$item->path, 300)
+				]);
 			}
 		}
 

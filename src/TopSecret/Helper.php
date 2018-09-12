@@ -44,6 +44,22 @@ class Helper {
 		}
 	}
 
+	public static function calculateImageSizeGd($srcPath, $maxSize = 1000) {
+		list($originalWidth, $originalHeight) = getimagesize($srcPath);
+ 		$ratio = $originalWidth / $originalHeight;
+
+ 		$targetWidth = $targetHeight = min($maxSize, max($originalWidth, $originalHeight));
+		if($targetWidth == $maxSize) {
+			if ($ratio < 1) {
+	 			$targetWidth = $targetHeight * $ratio;
+	 		} else {
+	 			$targetHeight = $targetWidth / $ratio;
+			}
+			return [$targetWidth, $targetHeight];
+		}
+		return [$originalWidth, $originalHeight];
+	}
+
 	public static function resizeImageGd($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
 		$extension = pathinfo($srcPath, PATHINFO_EXTENSION);
 		if($extension == 'jpg' || $extension == 'jpeg') {
