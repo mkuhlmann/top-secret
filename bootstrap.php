@@ -48,8 +48,8 @@ foreach($middlewares as &$val) {
 }
 
 
-$requestHandler = new \Relay\Relay($middlewares);
+$requestHandler = new \Areus\Http\Server\RequestHandler($middlewares);
 $response = $requestHandler->handle($app->request);
 
-$emitter = new \Zend\Diactoros\Response\SapiStreamEmitter();
+$emitter = new \Zend\HttpHandlerRunner\Emitter\SapiStreamEmitter();
 $emitter->emit($response);
