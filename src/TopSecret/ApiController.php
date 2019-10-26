@@ -5,7 +5,7 @@ namespace TopSecret;
 use Areus\Http\Request;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\Response;
+use Zend\Diactoros\Response\TextResponse;
 
 class ApiController extends \Areus\ApplicationModule {
 	public function stats() {
@@ -162,7 +162,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 	public function taskerLast() {
 		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
-		return new Response($this->app->config->baseUrl.'/'.$item->slug);
+		return new TextResponse($this->app->config->baseUrl.'/'.$item->slug);
 	}
 
 	private function handleUpload($path) {
