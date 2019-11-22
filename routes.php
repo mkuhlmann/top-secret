@@ -7,6 +7,7 @@ $router = $app->router;
 ///
 $router->get('/', 'TopSecret\FrontendController@index');
 $router->get('/tsa', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@index']);
+$router->get('/tsa2', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@index2']);
 $router->get('/tsa/logout', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@logout']);
 $router->get('/tsa/Tasker.prf.xml', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@tasker']);
 $router->get('/tsa/getConfig', ['before' => 'auth.admin', 'uses' => 'TopSecret\AdminController@getConfig']);

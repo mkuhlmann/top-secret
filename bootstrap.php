@@ -7,29 +7,44 @@ require 'vendor/autoload.php';
 
 $appPath = dirname(__FILE__);
 
+$container = new \League\Container\Container();
+$container->delegate(
+	new \League\Container\ReflectionContainer()
+);
 
-$app = new \Areus\Application($appPath);
+$app = new \Areus\Application($appPath, $container);
 
-$register = [
-	'config' => 'Areus\Config',
-	'router' => 'Areus\Router',
-	'session' => 'Areus\Session',
+$request = \Areus\Http\RequestFactory::fromGlobals();
+$container->add(\Areus\Http\Request::class, $request)->setShared();
 
-
-	'viewFactory' => function($app) {
-		return new \Areus\View\Factory($app->viewPath);
-	},
-	'request' => function($app) {
-		return \Areus\Http\RequestFactory::fromGlobals();
-	}
-];
-
-foreach($register as $alias => $concrete) {
-	$app->singleton($alias, $concrete);
-}
-
-$app->alias('request', 'Psr\Http\Message\ServerRequestInterface');
-$app->alias('request', 'Areus\Http\Request');
+$container
+	->add(\Areus\Application::class, $app)
+	->addTag('app')
+	->setShared();
+$container
+	->add(\Areus\Config::class)
+	->addArgument($app->path('/config'))
+	->addTag('config')
+	->setShared();
+$container
+	->add(\Areus\Router::class)
+	->addArgument(\Areus\Application::class)
+	->addTag('router')
+	->setShared();
+$container
+	->add(\Areus\Session::class)
+	->addArgument(\Areus\Application::class)
+	->addTag('session')
+	->setShared();
+$container
+	->add(Areus\View\Factory::class)
+	->addArgument($app->path('/views'))	
+	->addTag('view')
+	->setShared();
+$container
+	->add(\Psr\Http\Message\ServerRequestInterface::class, $request)
+	->addTag('request')
+	->setShared();
 
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
 
@@ -44,7 +59,7 @@ $middlewares = [
 ];
 
 foreach($middlewares as &$val) {
-	$val = $app->make($val);
+	$val = $app->container->get($val);
 }
 
 

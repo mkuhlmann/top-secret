@@ -139,7 +139,7 @@ class Router extends \Areus\ApplicationModule {
 					$reflection = new \ReflectionFunction($uses);
 					$response = call_user_func_array($uses, $this->prepareArguments($reflection, $args));
 				} else if(count($act) == 2) {
-					$ctrl = $this->app->make($act[0]);
+					$ctrl = $this->app->get($act[0]);
 					$reflection = new \ReflectionMethod($ctrl, $act[1]);
 					$response = call_user_func_array([$ctrl, $act[1]], $this->prepareArguments($reflection, $args));
 				} else {
@@ -159,7 +159,7 @@ class Router extends \Areus\ApplicationModule {
 				$fargs[$key] = $args[$key];
 			}
 			else if($param->getClass() !== null) {
-				$bind = $this->app->make($param->getClass()->getName());
+				$bind = $this->app->get($param->getClass()->getName());
 				if($bind !== null) {
 					$fargs[$key] = $bind;
 				}

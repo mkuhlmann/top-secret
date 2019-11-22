@@ -2,7 +2,7 @@
 
 namespace TopSecret;
 
-use Areus\Http\Request as Request;
+use Areus\Http\Request;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response;
@@ -16,6 +16,10 @@ class AdminController extends \Areus\ApplicationModule {
 
 	public function index() {
 		return viewResponse('admin');
+	}
+
+	public function index2() {
+		return viewResponse('admin2');
 	}
 
 	public function logout() {
@@ -58,7 +62,6 @@ class AdminController extends \Areus\ApplicationModule {
 
 	public function login(Request $request) {
 		$password = $request->getParsedBody()['p'];
-
 		if(password_verify($password, $this->app->config->adminPassword)) {
 			$this->app->session->put('user_id', 1);
 			return new RedirectResponse('/tsa');

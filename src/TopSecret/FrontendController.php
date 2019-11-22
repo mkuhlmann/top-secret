@@ -56,7 +56,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			if(strpos($req->getHeader('User-Agent')[0], 'WhatsApp/') === 0) {
 				return viewResponse('opengraph', [
 					'item' => $item, 
-					'thumbSize' => \TopSecret\Helper::calculateImageSizeGd($this->app->storagePath.'/uploads'.$item->path, 300)
+					'thumbSize' => \TopSecret\Helper::calculateImageSizeGd($this->app->path('/storage').'/uploads'.$item->path, 300)
 				]);
 			}
 		}
@@ -74,7 +74,7 @@ class FrontendController extends \Areus\ApplicationModule {
 				} else if($item->extension == 'md') {
 					$parser = new \cebe\markdown\GithubMarkdown();
 					$parser->html5 = true;
-					$mdHtml = $parser->parse(file_get_contents($this->app->storagePath.'/uploads'.$item->path));
+					$mdHtml = $parser->parse(file_get_contents($this->app->path('/storage').'/uploads'.$item->path));
 					$mdHtml = str_replace('<table>', '<table class="ui table">', $mdHtml);
 					return viewResponse('markdown', ['mdHtml' => $mdHtml, 'item' => $item]);
 				} else {
@@ -110,7 +110,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			} else {
 				$response = $response
 					->withHeader('Content-Length', $size)
-					->withBody(new Stream($this->app->storagePath.'/uploads'.$path));
+					->withBody(new Stream($this->app->path('/storage').'/uploads'.$path));
 			}
 		}
 
@@ -127,12 +127,12 @@ class FrontendController extends \Areus\ApplicationModule {
 			return new RedirectResponse('/' . $item->slug);
 		}
 
-		$thumbPath = $this->app->storagePath.'/thumb/'.$item->slug.'.jpg';
+		$thumbPath = $this->app->path('/storage').'/thumb/'.$item->slug.'.jpg';
 		if(!file_exists($thumbPath)) {
-			if(!file_exists($this->app->storagePath.'/thumb')) {
-				mkdir($this->app->storagePath.'/thumb', $this->app->config->defaultChmod, true);
+			if(!file_exists($this->app->path('/storage').'/thumb')) {
+				mkdir($this->app->path('/storage').'/thumb', $this->app->config->defaultChmod, true);
 			}
-			\TopSecret\Helper::resizeImage($this->app->storagePath.'/uploads'.$item->path, $thumbPath, 300);
+			\TopSecret\Helper::resizeImage($this->app->path('/storage').'/uploads'.$item->path, $thumbPath, 300);
 		}
 
 		$response = new Response();
@@ -143,7 +143,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		if(false && $this->app->config->serveMethod == 'nginx') {
 			$response = $repsonse->withHeader('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
-			$response = $response->withBody(new Stream($this->app->storagePath.'/thumb/'.$item->slug.'.jpg'));
+			$response = $response->withBody(new Stream($this->app->path('/storage').'/thumb/'.$item->slug.'.jpg'));
 		}
 
 		return $response;

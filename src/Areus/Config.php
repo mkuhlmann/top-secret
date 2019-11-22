@@ -5,10 +5,10 @@ namespace Areus;
 class Config {
 	protected $config;
 
-	public function __construct(\Areus\Application $app) {
-		$this->config = require $app->configPath.'/default.php';
-		if(file_exists($app->configPath.'/local.php')) {
-			$this->config = $this->mergeArrayDeep([$this->config, require $app->configPath.'/local.php']);
+	public function __construct($configPath) {
+		$this->config = require $configPath.'/default.php';
+		if(file_exists($configPath.'/local.php')) {
+			$this->config = $this->mergeArrayDeep([$this->config, require $configPath.'/local.php']);
 		}
 	}
 
@@ -32,6 +32,7 @@ class Config {
 		}
 		return $cfg;
 	}
+	
 	private function mergeArrayDeep($arrays) {
 		$result = array();
 		foreach ($arrays as $array) {

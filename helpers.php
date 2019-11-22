@@ -5,7 +5,7 @@ function app() {
 }
 
 function view($file, $data = []) {
-	return app()->viewFactory->make($file, $data);
+	return app()->view->make($file, $data);
 }
 
 function viewResponse($file, $data = [], $code = 200) {

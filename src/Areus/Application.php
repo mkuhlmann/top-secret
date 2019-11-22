@@ -2,28 +2,47 @@
 
 namespace Areus;
 
-class Application extends \Illuminate\Container\Container {
-	protected $basePath;
+class Application {
+	protected $basePath;	
+	protected $container;
 
-	public function __construct($basePath) {
+	protected static $instance;
+
+	
+	public static function setInstance($app) {
+		self::$instance = $app;
+	}
+
+	public static function getInstance() {
+		return self::$instance;
+	}
+
+
+	public function __construct($basePath, $container) {
 		if(static::$instance == null) {
 			static::setInstance($this);
 		}
 
+		$this->container = $container;
 		$this->basePath = rtrim($basePath, '\/');
-
-		$this->instance('appPath', $this->appPath());
-		$this->instance('viewPath', $this->appPath('/views'));
-		$this->instance('publicPath', $this->appPath('/public'));
-		$this->instance('storagePath', $this->appPath('/storage'));
-		$this->instance('configPath', $this->appPath('/config'));
-
-		$this->instance('Areus\Application', $this);
-		$this->alias('Areus\Application', 'app');
 	}
 
-	public function appPath($subPath = '') {
-		return $this->basePath.$subPath;
+	public function get($id, bool $new = false) {
+		$obj = $this->container->get($id, $new);
+		if(is_array($obj)) {
+			return $obj[0];
+		}
+		return $obj;
+	}
+
+	public function __get($name) {
+		if($name == 'container') return $this->container;
+		return $this->get($name);
+	}
+
+	public function path($subPath = '') {
+		$subPath = trim($subPath, '\/');
+		return $this->basePath.'/'.$subPath;
 	}
 
 	public function abort($statusCode = null) {

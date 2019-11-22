@@ -1,6 +1,6 @@
 {
     "require": {
-        "illuminate/container": "^6.3",
+        "league/container": "^3.3",
         "cebe/markdown": "^1.1",
         "zendframework/zend-diactoros": "^2.1",
         "zendframework/zend-httphandlerrunner": "^1.1",

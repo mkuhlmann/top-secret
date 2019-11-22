@@ -20,12 +20,12 @@ class Session {
 		switch($app->config->get('areus.session.driver')) {
 			case 'file':
 				$this->sessionHandler = new \Areus\SessionHandlerFilesystem(
-					$app->storagePath.'/sessions',
+					$app->path('storage/sessions'),
 					$app->config->get('areus.session.lifetime')
 				);
 				break;
 			default:
-				$this->sessionHandler = $app->make($app->config->get('areus.session.driver'));
+				$this->sessionHandler = $app->get($app->config->get('areus.session.driver'));
 				break;
 		}
 
