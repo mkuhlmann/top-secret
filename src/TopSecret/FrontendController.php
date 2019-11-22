@@ -5,6 +5,7 @@ namespace TopSecret;
 use Areus\Http\Request;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -117,14 +118,16 @@ class FrontendController extends \Areus\ApplicationModule {
 		return $response;
 	}
 
-	public function handleThumbSlug($slug, Response $res) {
+	public function handleThumbSlug($slug, Request $res) {
 		$item = \R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 
 		if($item->type != 'image') {
-			return new RedirectResponse('/' . $item->slug);
+			$color = $res->query('dark') ? '#ddd' : '#333';
+			return (new TextResponse(FileTypeSvg::get($item->type, $color)))
+					->withHeader('Content-type', 'image/svg+xml');
 		}
 
 		$thumbPath = $this->app->path('/storage').'/thumb/'.$item->slug.'.jpg';

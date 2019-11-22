@@ -13,8 +13,8 @@ export default {
 						<div class="columns">
 						
 							<div class="column">
-								<div class="ui medium image" v-if="item.type == 'image'">
-									<img :src="'/thumb/'+item.slug">
+								<div class="ui medium image">
+									<img :src="'/thumb/'+item.slug + '?dark=true'">
 								</div>
 							</div>
 

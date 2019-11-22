@@ -132,8 +132,8 @@ class ApiController extends \Areus\ApplicationModule {
 	public function postUpload() {
 		if(!isset($_FILES['file'])) return;
 
-		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->appPath.'/storage/'.$_FILES['file']['name'])) {
-			$item = $this->handleUpload($this->app->appPath.'/storage/'.$_FILES['file']['name']);
+		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->path('/storage/'.$_FILES['file']['name']))) {
+			$item = $this->handleUpload($this->app->path('/storage/' .$_FILES['file']['name']));
 			return new JsonResponse(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item]);
 		}
 		return new JsonResponse(['error'=>'500 internal server error'], 500);
@@ -142,13 +142,13 @@ class ApiController extends \Areus\ApplicationModule {
 	public function taskerUpload() {
 		if(isset($_GET['fileName'])) {
 			$pathInfo = pathinfo($_GET['fileName']);
-			$targetPath = $this->app->appPath.'/storage/'.$pathInfo['basename'];
+			$targetPath = $this->app->path('/storage/' . $pathInfo['basename']);
 
 			$input = file_get_contents('php://input', 'r');
 			file_put_contents($targetPath, $input);
 
 			if($pathInfo['extension'] == 'png' && filesize($targetPath) > 200*1000) {
-				$newTarget = $this->app->appPath.'/storage/'.$pathInfo['filename'].'.jpg';
+				$newTarget = $this->app->path('/storage/').$pathInfo['filename'].'.jpg';
 				\TopSecret\Helper::resizeImage($targetPath, $newTarget, 100000);
 				unlink($targetPath);
 				$targetPath = $newTarget;
@@ -169,7 +169,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$pathInfo = pathinfo($path);
 
 		$uploadDir = date('Y/m').'/';
-		$uploadPath = $this->app->storagePath.'/uploads/'.$uploadDir;
+		$uploadPath = $this->app->path('/storage').'/uploads/'.$uploadDir;
 		if(!file_exists($uploadPath)) {
 			mkdir($uploadPath, $this->app->config->defaultChmod, true);
 		}
@@ -201,10 +201,10 @@ class ApiController extends \Areus\ApplicationModule {
 				$item->sharedTagList = $tags;
 			}
 		} else {
-			if(isset($item->path) && file_exists($this->app->storagePath.'/uploads'.$item->path)) {
-				unlink($this->app->storagePath.'/uploads'.$item->path);
-				if(file_exists($this->app->storagePath.'/thumb/'.$item->slug.'.jpg')) {
-					unlink($this->app->storagePath.'/thumb/'.$item->slug.'.jpg');
+			if(isset($item->path) && file_exists($this->app->path('/storage').'/uploads'.$item->path)) {
+				unlink($this->app->path('/storage').'/uploads'.$item->path);
+				if(file_exists($this->app->path('/storage').'/thumb/'.$item->slug.'.jpg')) {
+					unlink($this->app->path('/storage').'/thumb/'.$item->slug.'.jpg');
 				}
 			}
 		}

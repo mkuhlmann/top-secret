@@ -1,4 +1,3 @@
-import ItemView from './ItemView.js';
 
 const app = window.app = {
     apiKey: document.querySelector('meta[name="apiKey"]').content,
@@ -15,7 +14,9 @@ const app = window.app = {
 const router = new VueRouter({
 	//mode: 'history',
 	routes: [
-		{ path: '/', component: ItemView },
+		{ path: '/', component: () => import('./ItemView.js') },
+		{ path: '/config', component: () => import('./SettingsView.js') },
+		{ path: '/retention', component: () => import('./RetentionView.js') }
 	]
 });
 
