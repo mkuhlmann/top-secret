@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areus\Http;
+namespace Areus\Http\Response;
 
 use Zend\Diactoros\Response\HtmlResponse;
 use Areus\View\View;

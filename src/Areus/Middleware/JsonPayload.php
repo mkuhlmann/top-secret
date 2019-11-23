@@ -21,8 +21,7 @@ class JsonPayload implements MiddlewareInterface {
 			$contentType = $request->getHeaderLine('Content-Type');
 
 			if(stripos($contentType, 'application/json') === 0) {
-				$request = $request->withParsedBody($this->parse($request->getBody()));
-				app()->request = $request; // small hack
+				$request =& $request->withParsedBody($this->parse($request->getBody()));
 			}
 		}
 		return $handler->handle($request);

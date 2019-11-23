@@ -1,6 +1,6 @@
 export default {
 	template: /*html*/`
-        <div class="content">
+        <div class="content container">
             <article class="message is-primary">
                 <div class="message-header">
                     <p>Aufbewahrung</p>

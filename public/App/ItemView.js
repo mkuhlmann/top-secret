@@ -4,6 +4,7 @@ export default {
 	template: /*html*/`
 		<div>
 			<item-modal v-if="itemModal" v-bind:item="itemModal" v-on:close="itemModal = null"></item-modal>
+			<add-link-modal v-if="addLinkModal" v-on:close="addLinkModal=false"></add-link-modal>
 
 			<div style="position: absolute; top: 0; right: 0; z-index: 1000;"><img v-bind:src="imageThumbPath"></div>
 
@@ -18,18 +19,29 @@ export default {
 						</div>
 					</div>
 				</div>
-				<div class="column  is-narrow">
+				<div class="column is-narrow">
+					
+					<div class="buttons has-addons">
+						<button class="button" :class="{ 'is-active is-info': displayMode == 'table' }" v-on:click="displayMode = 'table'">
+							<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
+						</button>
+						<button class="button" :class="{ 'is-active is-info': displayMode == 'gallery' }" v-on:click="displayMode = 'gallery'">
+							<span class="icon is-medium"><i class="mdi mdi-image-multiple"></i></span>
+						</button>
+					</div>
+				</div>
+				<div class="column is-narrow">
 					<div class="field has-addons">
 						<div class="control">
 							<button class="button is-primary">
 								<span class="icon is-medium"><i class="mdi mdi-cloud-upload"></i></span>
-								Hochladen
+								<span>Hochladen</span>
 							</button>
 						</div>
 						<div class="control">
-							<button class="button is-secondary">
+							<button class="button is-secondary" v-on:click="addLinkModal = true">
 								<span class="icon is-medium"><i class="mdi mdi-link-plus"></i></span>
-								Link
+								<span>Link</span>
 							</button>
 						</div>
 					</div>
@@ -106,13 +118,15 @@ export default {
 	`,
 
 	components: {
-		ItemModal
+		ItemModal,
+		AddLinkModal: () => import('./AddLinkModal.js')
 	},
 
 	data() {
 		return {
 			displayMode: 'gallery',
 			itemModal: null,
+			addLinkModal: false,
 
 			items: [],
 			itemsTotal: 0,
@@ -120,7 +134,7 @@ export default {
 
 			q: { 
 				p: 1, // page
-				l: 2, // limit
+				l: 10, // limit
 				s: '', // search
 			},
 			loading: true

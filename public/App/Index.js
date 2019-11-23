@@ -16,7 +16,7 @@ const router = new VueRouter({
 	routes: [
 		{ path: '/', redirect: '/items' },
 		{ path: '/items/:q?', component: () => import('./ItemView.js') },
-		{ path: '/config', component: () => import('./SettingsView.js') },
+		{ path: '/config', component: () => import('./ConfigView.js') },
 		{ path: '/retention', component: () => import('./RetentionView.js') }
 	]
 });

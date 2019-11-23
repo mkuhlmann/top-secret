@@ -12,6 +12,9 @@ class FileTypeSvg {
             case 'text':
                 return '<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path fill="' . $bg .'" d="M218.392 205.857l-62.678 62.679 62.678 62.678 25.072-25.071-37.607-37.607 37.607-37.607-25.072-25.072zm50.143 25.072l37.607 37.607-37.607 37.607 25.072 25.071 62.678-62.678-62.678-62.679-25.072 25.072zM331.214 80.5H105.57v351h300.857V155.714L331.214 80.5zm50.143 325.929H130.642V105.57h175.5l75.215 75.215v225.643z" fill-rule="nonzero"/></svg>';
                 break;
+            case 'url':
+                return '<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path fill="' . $bg .'" d="M356 356H156V156.745l50-.745v-50H106v300h300V281h-50v75zM256 106l50 50-75 75 50 50 75-75 50 50V106H256z" fill-rule="nonzero"/></svg>';
+                break;
         }
     }
 }

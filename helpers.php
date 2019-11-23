@@ -9,7 +9,7 @@ function view($file, $data = []) {
 }
 
 function viewResponse($file, $data = [], $code = 200) {
-	return new \Areus\Http\ViewResponse(view($file, $data), $code);
+	return new \Areus\Http\Response\ViewResponse(view($file, $data), $code);
 }
 
 if (! function_exists('e')) {

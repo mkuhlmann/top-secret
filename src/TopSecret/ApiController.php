@@ -7,6 +7,8 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
 
+use TopSecret\Model\Item;
+
 class ApiController extends \Areus\ApplicationModule {
 	public function stats() {
 		$stats = \R::getRow('SELECT count(id) as total_count, sum(size) as total_size FROM item');
@@ -112,13 +114,27 @@ class ApiController extends \Areus\ApplicationModule {
 		return new JsonResponse(['items' => $items, 'total' => $itemsCount]);
 	}
 
-	public function postLink() {
-		if(!isset($_POST['url'])) return;
+	public function postLink(Request $req) {
+		$payload = $req->getParsedBody();
 
-		$url = $_POST['url'];
+		if(!isset($payload['url'])) {
+			return new JsonResponse(['error' => 'no url supplied'], 400);
+		}
+
+		$slug = $payload['slug'] ?? \TopSecret\Helper::generateSlug();
+		if(Item::slugExists($slug)) {
+			return new JsonResponse(['error' => 'slug already exists'], 400);
+		}
+
+		$url = $payload['url'];
 		$p = parse_url($url);
+
+		if(empty($p['host'])) {
+			return new JsonResponse(['error' => 'url cant be empty'], 400);
+		}
+
 		$item = \R::dispense('item');
-		$item->slug = \TopSecret\Helper::generateSlug();
+		$item->slug = $slug;
 		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
 		$item->path = $url;

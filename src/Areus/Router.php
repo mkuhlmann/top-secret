@@ -2,10 +2,15 @@
 
 namespace Areus;
 
+
+use Psr\Http\Message\ServerRequestInterface;
+
 class Router extends \Areus\ApplicationModule {
 	private $routes = [];
 	private $filters = [];
 	private $group = null;
+
+	private $request;
 
 	public function filter($key, $func) {
 		$this->filters[$key] = $func;
@@ -159,7 +164,13 @@ class Router extends \Areus\ApplicationModule {
 				$fargs[$key] = $args[$key];
 			}
 			else if($param->getClass() !== null) {
-				$bind = $this->app->get($param->getClass()->getName());
+				$name = $param->getClass()->getName();
+				$bind = null;
+				if($name == \Areus\Http\Request::class || $name == \Psr\Http\Message\ServerRequestInterface::class) {
+					$bind = $this->request;
+				} else {
+					$bind = $this->app->get($param->getClass()->getName());
+				}
 				if($bind !== null) {
 					$fargs[$key] = $bind;
 				}
@@ -178,7 +189,10 @@ class Router extends \Areus\ApplicationModule {
 			throw new \RuntimeException('No action found for request: 404');
 	}
 
-	public function run($path = null) {
+	public function run(ServerRequestInterface $request) {
+		$this->request = $request;
+		$path = $request->getUri()->getPath();
+		
 		if($path == null) {
 			if(isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) {
 				$path = $_SERVER['PATH_INFO'];

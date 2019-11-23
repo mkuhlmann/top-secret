@@ -93,16 +93,16 @@
 
 					<div class="navbar-menu">
 						<div class="navbar-start">
-							<router-link to="/" class="navbar-item">
+							<router-link to="/items" class="navbar-item" active-class="is-active">
 								<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span> Hochlads
 							</router-link>
-							<router-link to="/tags" class="navbar-item">
+							<router-link to="/tags" class="navbar-item" active-class="is-active">
 								<span class="icon is-medium"><i class="mdi mdi-tag-multiple"></i></span> Tags
 							</router-link>
-							<router-link to="/retention" class="navbar-item">
+							<router-link to="/retention" class="navbar-item" active-class="is-active">
 								<span class="icon is-medium"><i class="mdi mdi-history"></i></span> Aufbewahrung
 							</router-link>
-							<router-link to="/config" class="navbar-item">
+							<router-link to="/config" class="navbar-item" active-class="is-active">
 								<span class="icon is-medium"><i class="mdi mdi-settings"></i></span> Einstellungen
 							</router-link>
 						</div>
@@ -129,7 +129,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js" integrity="sha256-r/vPIUvTobCpYZsMmvU7HM58cNd4D6/vdICqDFapV7Y=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
-		<script type="module" src="/app/Index.js"></script>
+		<script type="module" src="/App/Index.js"></script>
 	</body>
 	
 </html>

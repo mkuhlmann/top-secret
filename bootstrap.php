@@ -46,6 +46,7 @@ $container
 	->addTag('request')
 	->setShared();
 
+define('READBEAN_MODEL_PREFIX',  '\\TopSecret\\Model');
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
 
 require 'helpers.php';

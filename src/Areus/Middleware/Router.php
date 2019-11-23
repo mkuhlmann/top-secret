@@ -22,7 +22,7 @@ class Router implements MiddlewareInterface {
 	{
 		$router = $this->app->router;
 
-		$response = $router->run($request->getUri()->getPath());
+		$response = $router->run($request);
 
 		return $response;
 	}
