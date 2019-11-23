@@ -12,7 +12,7 @@ export default {
             <div>
                 <input type="checkbox" v-model="safteyCheck"> Ich möchte löschen.
             <div>
-             <button class="ui danger button" v-if="safteyCheck" v-on:click="nuke()">Jetzt ausführen!</button>
+            <button class="ui danger button" v-if="safteyCheck" v-on:click="nuke()">Jetzt ausführen!</button>
         </div>
 	`,
 

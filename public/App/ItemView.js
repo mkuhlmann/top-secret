@@ -12,14 +12,33 @@ export default {
 					<div class="field">
 						<div class="control has-icons-left">
 							<input class="input" type="text" placeholder="Suchen ...">
-							<span class="icon is-small is-left">
+							<span class="icon is-medium is-left">
 								<i class="mdi mdi-magnify"></i>
 							</span>
 						</div>
 					</div>
 				</div>
+				<div class="column  is-narrow">
+					<div class="field has-addons">
+						<div class="control">
+							<button class="button is-primary">
+								<span class="icon is-medium"><i class="mdi mdi-cloud-upload"></i></span>
+								Hochladen
+							</button>
+						</div>
+						<div class="control">
+							<button class="button is-secondary">
+								<span class="icon is-medium"><i class="mdi mdi-link-plus"></i></span>
+								Link
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 
+			<div class="loader-wrapper is-active" v-if="loading">
+				<div class="loader is-loading"></div>
+            </div>
 			
 			<table v-if="displayMode == 'table'" class="table is-fullwidth is-striped">
 				<thead>
@@ -63,10 +82,10 @@ export default {
 			</table>
 
 			<div v-if="displayMode == 'gallery'">
-				<div v-for="item in items" class="gallery__image">
-					<img v-bind:src="'/thumb/' + item.slug + '?dark=true'">
-					<div class="gallery__image__toolbar">
-						<span>{{ item.title }}</span>
+				<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
+					<div class="tiles__item__toolbar">
+						<span v-if="item.title.length < 32">{{ item.title }}</span>
+						<span v-else>{{ item.title.substring(0, 32) + '...' }}</span>
 						<div class="gallery__image__buttons">
 							<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
 							<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
@@ -78,8 +97,8 @@ export default {
 
 			<nav class="pagination" role="navigation" aria-label="pagination">
 				<ul class="pagination-list">
-					<li v-for="n in Math.ceil(itemsTotal/pagination.limit)" >
-						<a class="pagination-link" :class="{'is-current': n == pagination.page}" v-on:click="pagination.page = n">{{ n }}</a>
+					<li v-for="n in Math.ceil(itemsTotal/q.l)" >
+						<a class="pagination-link" :class="{'is-current': n == q.p}" v-on:click="q.p = n; loadItems()">{{ n }}</a>
 					</li>
 				</ul>
 			</nav>
@@ -99,23 +118,42 @@ export default {
 			itemsTotal: 0,
 			imageThumbPath: null,
 
-			pagination: { page: 1, limit: 2 },
+			q: { 
+				p: 1, // page
+				l: 2, // limit
+				s: '', // search
+			},
+			loading: true
 		}
 	},
 
 	created() {
+		if(typeof this.$route.params.q !== 'undefined') {
+			try {
+				this.q = JSON.parse(atob(this.$route.params.q));
+			} catch {}
+		}
 		this.loadItems();
+
 	},
 
 	methods: {
 		loadItems() {
+			this.loading = true;
+
 			let url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
+			
+			url += `&page=${this.q.p}&limit=${this.q.l}`;
 
 			app.fetch(url)
 				.then(res => res.json())
 				.then(json => {
+					let q = btoa(JSON.stringify(this.q));
+					if(q != this.$route.params.q)
+						this.$router.push('/items/' + q);
 					this.items = json.items;
 					this.itemsTotal = json.total;
+					this.loading = false;
 				});
 		},
 

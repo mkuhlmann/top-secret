@@ -45,3 +45,11 @@ server {
         }
 }
 ```
+
+## Developing
+
+Install as seen above and start the development server with
+
+```bash
+php -S 127.0.0.1:8080 -t public server.php
+```

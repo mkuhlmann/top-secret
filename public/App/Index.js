@@ -1,10 +1,10 @@
 
 const app = window.app = {
-    apiKey: document.querySelector('meta[name="apiKey"]').content,
+	key: document.querySelector('meta[name="key"]').content,
+	csrf: document.querySelector('meta[name="csrf"]').content,
 
     fetch(input, init) {
-        init = init || {};
-        
+        init = init || {};        
 			init.headers = init.headers || {};
             init.headers['Authorization'] = 'Bearer ' + app.apiKey;
 		return fetch(input, init);
@@ -14,7 +14,8 @@ const app = window.app = {
 const router = new VueRouter({
 	//mode: 'history',
 	routes: [
-		{ path: '/', component: () => import('./ItemView.js') },
+		{ path: '/', redirect: '/items' },
+		{ path: '/items/:q?', component: () => import('./ItemView.js') },
 		{ path: '/config', component: () => import('./SettingsView.js') },
 		{ path: '/retention', component: () => import('./RetentionView.js') }
 	]

@@ -128,6 +128,8 @@ class FrontendController extends \Areus\ApplicationModule {
 			$color = $res->query('dark') ? '#ddd' : '#333';
 			return (new TextResponse(FileTypeSvg::get($item->type, $color)))
 					->withHeader('Content-type', 'image/svg+xml');
+		} else if($item->mime == 'image/svg+xml') {
+			return new RedirectResponse('/' . $item->slug);
 		}
 
 		$thumbPath = $this->app->path('/storage').'/thumb/'.$item->slug.'.jpg';
