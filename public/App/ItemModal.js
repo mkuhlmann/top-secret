@@ -14,7 +14,7 @@ export default {
 						
 							<div class="column">
 								<div class="ui medium image">
-									<img :src="'/thumb/'+item.slug + '?dark=true'">
+									<img :src="'/thumb/'+item.slug">
 								</div>
 							</div>
 

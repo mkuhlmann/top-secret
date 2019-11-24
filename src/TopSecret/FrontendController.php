@@ -146,7 +146,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			->withHeader('Content-Disposition', 'inline; filename="'.$item->title.'"')
 			->withHeader('Cache-Control', 'public, max-age=1800');
 		if(false && $this->app->config->serveMethod == 'nginx') {
-			$response = $repsonse->withHeader('X-Accel-Redirect', '/protected_thumbs'.$item->path);
+			$response = $response->withHeader('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
 			$response = $response->withBody(new Stream($this->app->path('/storage').'/thumb/'.$item->slug.'.jpg'));
 		}
@@ -156,7 +156,7 @@ class FrontendController extends \Areus\ApplicationModule {
 
 	public function index(Request $res) {
 		if($this->app->session->get('user_id') === 1) {
-			return new RedirectResponse('/tsa');
+			return new RedirectResponse('/tsa2');
 		} else {
 			return viewResponse('index');
 		}

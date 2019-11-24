@@ -33,7 +33,7 @@ export default {
 				<div class="column is-narrow">
 					<div class="field has-addons">
 						<div class="control">
-							<button class="button is-primary">
+							<button class="button is-primary" v-on:click="itemUpload({ slug: null })">
 								<span class="icon is-medium"><i class="mdi mdi-cloud-upload"></i></span>
 								<span>Hochladen</span>
 							</button>
@@ -96,13 +96,16 @@ export default {
 			<div v-if="q.dm == 'g'">
 				<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
 					<div class="tiles__item__toolbar">
-						<span v-if="item.title.length < 32">{{ item.title }}</span>
-						<span v-else>{{ item.title.substring(0, 32) + '...' }}</span>
-						<div class="gallery__image__buttons">
+					
+						<span class="tiles__item__buttons">
 							<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
 							<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
 							<a v-on:click="itemUpload(item)" v-if="item.path"><i class="mdi mdi-cloud-upload"></i></a>
-						</div>
+						</span>
+						<a :href="app.baseUrl + '/' + item.slug">
+							<span v-if="item.title.length < 64">{{ item.title }}</span>
+							<span v-else>{{ item.title.substring(0, 32) + '...' }}</span>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -114,6 +117,13 @@ export default {
 					</li>
 				</ul>
 			</nav>
+
+			<form style="display:none;" id="itemUploadForm">
+				<input type="hidden" name="_csrf" v-bind:value="app.csrf">
+				<input type="hidden" name="overwriteSlug" v-model="itemToUpload.slug">
+				<input type="file" v-on:change="itemUploadDo" name="file" id="itemUploadInput">
+				<input type="submit">
+			</form>
 		</div>
 	`,
 
@@ -130,9 +140,10 @@ export default {
 			items: [],
 			itemsTotal: 0,
 			imageThumbPath: null,
+			itemToUpload: {slug: null, url: null},
 
 			q: { 
-				dm: 't',
+				dm: 'g',
 				p: 1, // page
 				l: 25, // limit
 				s: '', // search
@@ -173,11 +184,33 @@ export default {
 
 		itemDelete(item) {
 			item.title = 'wird gelöscht ...';
-			app.fetch('/api/v1/item/'+item.slug+'?_csrf='+app._csrf, {
+			app.fetch('/api/v1/item/'+item.slug, {
 				method: 'DELETE'
 			}).then(r => {
 				this.items.splice(this.items.indexOf(item), 1);
 			});
+		},
+
+		itemUpload(item) {
+			this.itemToUpload = item;
+			document.getElementById('itemUploadInput').click();
+		},
+
+		itemUploadDo() {
+			var self = this;
+			var frm = document.getElementById('itemUploadForm');
+			var frmData = new FormData(frm);
+			var oReq = new XMLHttpRequest();
+			oReq.open('POST', '/api/v1/upload', true);
+			oReq.onload = function() {
+				if (oReq.status == 200) {
+					self.loadItems();
+				} else {
+					alert('failed');
+				}
+			};
+
+			oReq.send(frmData);
 		},
 
 		imageMouseOver(item) {

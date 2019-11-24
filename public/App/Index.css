@@ -1,5 +1,5 @@
 
-body {
+body, button, input, select, textarea {
     font-family: 'Quicksand', sans-serif;
 }
 
@@ -17,6 +17,7 @@ body {
     border-radius: 0.5em;
     background-size: cover;
     background-repeat: no-repeat;
+    vertical-align: bottom;
 }
 
 .tiles__item__toolbar {
@@ -25,6 +26,26 @@ body {
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
     color: #eee;
+}
+
+.tiles__item__toolbar a {
+    color: hsl(0, 0%, 96%)
+}
+
+.tiles__item__toolbar a:hover {
+    color: hsl(171, 100%, 41%);
+}
+
+.tiles__item__buttons {
+    float: right;
+}
+
+.cf {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
 }
 
 

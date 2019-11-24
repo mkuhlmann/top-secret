@@ -64,7 +64,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$password = $request->getParsedBody()['p'];
 		if(password_verify($password, $this->app->config->adminPassword)) {
 			$this->app->session->put('user_id', 1);
-			return new RedirectResponse('/tsa');
+			return new RedirectResponse('/tsa2');
 		}
 		return new RedirectResponse('/');
 	}
