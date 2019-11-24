@@ -4,6 +4,8 @@
  * PLEASE DO NOT MODIFY THIS FILE, BUT INSTEAD CREATE A 'local.php' TO OVERRIDE CONFIGURATION.
  **/
 return [
+	'environment' => 'production',
+
 	'pageName' => 'Top Secret!',
 	'baseUrl' => 'https://top-secret.site',
 

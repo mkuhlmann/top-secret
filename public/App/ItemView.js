@@ -22,10 +22,10 @@ export default {
 				<div class="column is-narrow">
 					
 					<div class="buttons has-addons">
-						<button class="button" :class="{ 'is-active is-info': displayMode == 'table' }" v-on:click="displayMode = 'table'">
+						<button class="button" :class="{ 'is-active is-info': q.dm == 't' }" v-on:click="q.dm = 't'">
 							<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
 						</button>
-						<button class="button" :class="{ 'is-active is-info': displayMode == 'gallery' }" v-on:click="displayMode = 'gallery'">
+						<button class="button" :class="{ 'is-active is-info': q.dm == 'g' }" v-on:click="q.dm = 'g'">
 							<span class="icon is-medium"><i class="mdi mdi-image-multiple"></i></span>
 						</button>
 					</div>
@@ -52,7 +52,7 @@ export default {
 				<div class="loader is-loading"></div>
             </div>
 			
-			<table v-if="displayMode == 'table'" class="table is-fullwidth is-striped">
+			<table v-if="q.dm == 't'" class="table is-fullwidth is-striped">
 				<thead>
 					<tr>
 						<th>Datei</th>
@@ -77,7 +77,7 @@ export default {
 								<a v-bind:href="item.path">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
 							</span>
 						</td>
-						<td></td>
+						<td>{{ app.baseUrl + '/' + item.slug }}</td>
 						<td></td>
 						<td>{{ item.clicks || 0 }}</td>
 						<td>{{ item.type }}</td>
@@ -93,7 +93,7 @@ export default {
 				</tbody>
 			</table>
 
-			<div v-if="displayMode == 'gallery'">
+			<div v-if="q.dm == 'g'">
 				<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
 					<div class="tiles__item__toolbar">
 						<span v-if="item.title.length < 32">{{ item.title }}</span>
@@ -124,7 +124,6 @@ export default {
 
 	data() {
 		return {
-			displayMode: 'gallery',
 			itemModal: null,
 			addLinkModal: false,
 
@@ -133,8 +132,9 @@ export default {
 			imageThumbPath: null,
 
 			q: { 
+				dm: 't',
 				p: 1, // page
-				l: 10, // limit
+				l: 25, // limit
 				s: '', // search
 			},
 			loading: true
@@ -169,6 +169,15 @@ export default {
 					this.itemsTotal = json.total;
 					this.loading = false;
 				});
+		},
+
+		itemDelete(item) {
+			item.title = 'wird gelöscht ...';
+			app.fetch('/api/v1/item/'+item.slug+'?_csrf='+app._csrf, {
+				method: 'DELETE'
+			}).then(r => {
+				this.items.splice(this.items.indexOf(item), 1);
+			});
 		},
 
 		imageMouseOver(item) {

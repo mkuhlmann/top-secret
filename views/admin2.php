@@ -10,68 +10,11 @@
 		
 		<meta name="key" content="%API_KEY%">
 		<meta name="csrf" content="<?php echo app()->session->token(); ?>">
+		<meta name="baseUrl" content="<?php echo e(app()->config->baseUrl); ?>">
 		<title><?php echo e(app()->config->pageName); ?> Admin</title>
 
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:400,600,700&display=swap" rel="stylesheet">
-		<style class="text/css">
-			body {
-				font-family: 'Quicksand', sans-serif;
-			}
-
-			#app main {
-				margin: 1em;
-			}
-
-			.tiles__item {
-				width: 300px;
-				height: 200px;
-				background: #eee;
-				display: inline-block;
-				margin-right: 1em;
-				margin-bottom: 1em;
-				border-radius: 0.5em;
-				background-size: cover;
-				background-repeat: no-repeat;
-			}
-
-			.tiles__item__toolbar {
-				padding: 0.5em;
-				background: rgba(30, 30, 30, 0.7);
-				border-top-left-radius: 0.5em;
-				border-top-right-radius: 0.5em;
-				color: #eee;
-			}
-
-
-			.loader-wrapper {
-				position: absolute;
-				top: 0;
-				left: 0;
-				height: 100%;
-				width: 100%;
-				background: #fff;
-				opacity: 0;
-				z-index: -1;
-				transition: opacity .3s;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				border-radius: 6px;
-
-				
-			}
-
-			.loader {
-				height: 80px;
-				width: 80px;
-			}
-
-			.loader-wrapper.is-active {
-				opacity: 1;
-				z-index: 1;
-			}
-
-		</style>
+		<link href="/App/Index.css" rel="stylesheet">
 	</head>
 	
 	<body>
@@ -94,28 +37,29 @@
 					<div class="navbar-menu">
 						<div class="navbar-start">
 							<router-link to="/items" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span> Hochlads
+								<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
+								<span>Hochlads</span>
 							</router-link>
 							<router-link to="/tags" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-tag-multiple"></i></span> Tags
+								<span class="icon is-medium"><i class="mdi mdi-tag-multiple"></i></span>
+								<span>Tags</span>
 							</router-link>
 							<router-link to="/retention" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-history"></i></span> Aufbewahrung
+								<span class="icon is-medium"><i class="mdi mdi-history"></i></span>
+								<span>Aufbewahrung</span>
 							</router-link>
 							<router-link to="/config" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-settings"></i></span> Einstellungen
+								<span class="icon is-medium"><i class="mdi mdi-settings"></i></span>
+								<span>Einstellungen</span>
 							</router-link>
 						</div>
 					</div>
 
 					<div class="navbar-end">
-						<div class="navbar-item">
-							<div class="buttons">
-								<a href="/tsa/logout" class="button is-light">
-								Logout
-								</a>
-							</div>
-						</div>
+						<a href="/tsa/logout" class="navbar-item">
+							<span class="icon is-medium"><i class="mdi mdi-logout"></i></span> 
+							<span>Logout</span>
+						</a>
 					</div>
 
 				</nav>
@@ -126,7 +70,11 @@
 			</main>
 		</div>
 		
+		<?php if(app()->config->environment == 'development'): ?>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js" integrity="sha256-ufGElb3TnOtzl5E4c/qQnZFGP+FYEZj5kbSEdJNrw0A=" crossorigin="anonymous"></script>
+		<?php else: ?>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
+		<?php endif; ?>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js" integrity="sha256-r/vPIUvTobCpYZsMmvU7HM58cNd4D6/vdICqDFapV7Y=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
 		<script type="module" src="/App/Index.js"></script>

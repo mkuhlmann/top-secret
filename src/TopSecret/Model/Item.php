@@ -10,4 +10,8 @@ class Item extends SimpleModel  {
     public static function slugExists($slug) : bool {
         return R::count('item', 'slug = ?', [$slug]) > 0;
     }
+
+    public function delete() {
+        
+    }
 }

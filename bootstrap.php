@@ -15,36 +15,36 @@ $container->delegate(
 $app = new \Areus\Application($appPath, $container);
 
 $request = \Areus\Http\RequestFactory::fromGlobals();
-$container->add(\Areus\Http\Request::class, $request)->setShared();
+$container->add(\Areus\Http\Request::class, $request)->setShared(true);
 
 $container
 	->add(\Areus\Application::class, $app)
 	->addTag('app')
-	->setShared();
+	->setShared(true);
 $container
 	->add(\Areus\Config::class)
 	->addArgument($app->path('/config'))
 	->addTag('config')
-	->setShared();
+	->setShared(true);
 $container
 	->add(\Areus\Router::class)
 	->addArgument(\Areus\Application::class)
 	->addTag('router')
-	->setShared();
+	->setShared(true);
 $container
 	->add(\Areus\Session::class)
 	->addArgument(\Areus\Application::class)
 	->addTag('session')
-	->setShared();
+	->setShared(true);
 $container
 	->add(Areus\View\Factory::class)
 	->addArgument($app->path('/views'))	
 	->addTag('view')
-	->setShared();
+	->setShared(true);
 $container
 	->add(\Psr\Http\Message\ServerRequestInterface::class, $request)
 	->addTag('request')
-	->setShared();
+	->setShared(true);
 
 define('READBEAN_MODEL_PREFIX',  '\\TopSecret\\Model');
 \R::setup('sqlite:'.$appPath.'/storage/database.db');
