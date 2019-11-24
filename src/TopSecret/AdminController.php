@@ -75,12 +75,13 @@ class AdminController extends \Areus\ApplicationModule {
 
 		$sql .= ''
 			. ' WHERE (i.last_hit_at IS NULL AND julianday() - julianday(i.created_at) > ?)'
-			. ' OR (julianday() - julianday(i.last_hit_at) > 60)';
+			. ' OR (julianday() - julianday(i.last_hit_at) > ?)';
 
 		if($this->app->config->get('retentionOnlyUntagged')) {
 			$sql .= ' AND it.id IS NULL';
 		}
 
+		$params[] = $this->app->config->get('retentionDays');
 		$params[] = $this->app->config->get('retentionDays');
 
 		return [$sql, $params];
