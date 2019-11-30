@@ -40,7 +40,7 @@ class ApiController extends \Areus\ApplicationModule {
 			}
 			$item->sharedTagList = $tags;
 
-			\R::store($item);
+			R::store($item);
 			return new JsonResponse($item);
 		} else {
 			return new JsonResponse(['error' => '404 file not found'], 404);
@@ -54,20 +54,20 @@ class ApiController extends \Areus\ApplicationModule {
 		$tag->name = $_tag['name'];
 		$tag->color = $_tag['color'];
 
-		\R::store($tag);
+		R::store($tag);
 		return new JsonResponse($tag);
 	}
 
 	public function tagDelete($tagId, Request $req) {
 		$tag = R::findOne('tag', 'id = ?', [$tagId]);
-		\R::trash($tag);
+		R::trash($tag);
 		return new JsonResponse('ok');
 	}
 
 	public function tagCreate() {
 		$tag = R::dispense('tag');
 		$tag->name = 'Unbenannt';
-		\R::store($tag);
+		R::store($tag);
 		return new JsonResponse($tag);
 	}
 
@@ -141,7 +141,7 @@ class ApiController extends \Areus\ApplicationModule {
 		$item->path = $url;
 		$item->created_at = date('Y-m-d H:i:s');
 
-		\R::store($item);
+		R::store($item);
 
 		return new JsonResponse(['slug' => $item->slug]);
 	}
@@ -242,7 +242,7 @@ class ApiController extends \Areus\ApplicationModule {
 			$item->type = 'binary';
 		}
 
-		\R::store($item);
+		R::store($item);
 
 		return $item;
 	}

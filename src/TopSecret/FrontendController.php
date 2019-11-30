@@ -43,7 +43,7 @@ class FrontendController extends \Areus\ApplicationModule {
 			if(!isset($item->clicks)) $item->clicks = 0;
 			$item->clicks++;
 			$item->last_hit_at = date('Y-m-d H:i:s');
-			\R::store($item);
+			R::store($item);
 
 			if($this->app->config->piwikEnableTracking) {
 				$data = [

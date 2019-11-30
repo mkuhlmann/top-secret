@@ -25,12 +25,13 @@ class Item extends SimpleModel  {
 			return [0, 0];
 		}
 
-		if(!$this->width || !$this->height) {
-			list($this->width, $this->height) = getimagesize($this->getFullPath());
+		if(!$this->imageWidth || !$this->imageHeight) {
+			list($this->imageWidth, $this->imageHeight) = getimagesize($this->getFullPath());
+			R::store($this);
 		}
 
-		$width = $this->width;
-		$height = $this->height;
+		$width = $this->imageWidth;
+		$height = $this->imageHeight;
 
 		if($maxSize != null) {
 			$ratio = $width / $height;

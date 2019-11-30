@@ -17,7 +17,7 @@ class Helper {
 	}
 
 	public static function itemDelete($slug) {
-		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		$item = R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			// delete physical files
 			if(isset($item->path) && file_exists(app()->path('/storage').'/uploads'.$item->path)) {
@@ -26,7 +26,7 @@ class Helper {
 					unlink(app()->path('/storage').'/thumb/'.$item->slug.'.jpg');
 				}
 			}
-			\R::trash($item);
+			R::trash($item);
 			return true;
 		}
 		return false;
@@ -109,7 +109,7 @@ class Helper {
 
 		$slug = $text;
 		$i = 1;
-		while(\R::count('item', 'slug = ?', [$slug]) > 0) {
+		while(R::count('item', 'slug = ?', [$slug]) > 0) {
 			$slug = $text.'-'.$i++;
 		}
 
