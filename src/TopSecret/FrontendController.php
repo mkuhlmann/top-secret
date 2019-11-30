@@ -3,15 +3,31 @@
 namespace TopSecret;
 
 use Areus\Http\Request;
+use RedBeanPHP\R;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
+use TopSecret\Model\Item;
+
 class FrontendController extends \Areus\ApplicationModule {
+	public function openGraphSlug($slug, Request $req) : Response {
+		/** @var Item $item */
+		$item = R::findOne('item', 'slug = ?', [$slug]);
+		if($item == null) {
+			return new JsonResponse(['error' => '404 file not found'], 404);
+		}
+
+		return viewResponse('opengraph', [
+			'item' => $item, 
+			'thumbSize' => $item->getResolution(1200)
+		]);
+	}
+
 	public function handleSlug($slug, Request $req) {
-		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		$item = R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
@@ -55,10 +71,7 @@ class FrontendController extends \Areus\ApplicationModule {
 
 		if($this->app->config->richPreview && $item->type == 'image') {
 			if(strpos($req->getHeader('User-Agent')[0], 'WhatsApp/') === 0) {
-				return viewResponse('opengraph', [
-					'item' => $item, 
-					'thumbSize' => \TopSecret\Helper::calculateImageSizeGd($this->app->path('/storage').'/uploads'.$item->path, 300)
-				]);
+				return $this->openGraphSlug($item->slug, $req);
 			}
 		}
 
@@ -106,7 +119,8 @@ class FrontendController extends \Areus\ApplicationModule {
 				->withHeader('Cache-Control', 'public, max-age=1800')
 				->withHeader('ETag', $etag)
 				->withHeader('Last-Modified', $lastModifiedGm);
-			if (strtotime($this->app->request->header('If-Modified-Since')) == $lastModified || $this->app->request->header('If-None-Match') == $etag) {
+
+			if (strtotime($this->app->request->header('If-Modified-Since')) >= $lastModified || $this->app->request->header('If-None-Match') == $etag) {
 				$response = $response->withStatus(304);
 			} else {
 				$response = $response
@@ -119,10 +133,12 @@ class FrontendController extends \Areus\ApplicationModule {
 	}
 
 	public function handleThumbSlug($slug, Request $res) {
-		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		/** @var Item $item */
+		$item = R::findOne('item', 'slug = ?', [$slug]);
 		if($item == null) {
 			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
+
 
 		if($item->type != 'image') {
 			$color = $res->query('dark') ? '#ddd' : '#333';
@@ -132,12 +148,14 @@ class FrontendController extends \Areus\ApplicationModule {
 			return new RedirectResponse('/' . $item->slug);
 		}
 
-		$thumbPath = $this->app->path('/storage').'/thumb/'.$item->slug.'.jpg';
-		if(!file_exists($thumbPath)) {
-			if(!file_exists($this->app->path('/storage').'/thumb')) {
-				mkdir($this->app->path('/storage').'/thumb', $this->app->config->defaultChmod, true);
-			}
-			\TopSecret\Helper::resizeImage($this->app->path('/storage').'/uploads'.$item->path, $thumbPath, 300);
+		$thumbPath = $item->getFullThumbnailPath(300);
+		
+		if($res->query('s')
+			&& hash_equals(
+				hash_hmac('sha256', $item->slug . $res->query('s'), app()->config->loginSecret),
+				$res->query('h')
+				)) {
+			$thumbPath = $item->getFullThumbnailPath($res->query('s'));
 		}
 
 		$response = new Response();
@@ -148,7 +166,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		if(false && $this->app->config->serveMethod == 'nginx') {
 			$response = $response->withHeader('X-Accel-Redirect', '/protected_thumbs'.$item->path);
 		} else {
-			$response = $response->withBody(new Stream($this->app->path('/storage').'/thumb/'.$item->slug.'.jpg'));
+			$response = $response->withBody(new Stream($thumbPath));
 		}
 
 		return $response;

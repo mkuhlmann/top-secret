@@ -1,4 +1,6 @@
-<?php
+<?php declare(strict_types=1);
+
+use \RedBeanPHP\R;
 
 date_default_timezone_set('UTC');
 umask(0);
@@ -46,8 +48,9 @@ $container
 	->addTag('request')
 	->setShared(true);
 
-define('READBEAN_MODEL_PREFIX',  '\\TopSecret\\Model');
-\R::setup('sqlite:'.$appPath.'/storage/database.db');
+define('REDBEAN_MODEL_PREFIX',  '\\TopSecret\\Model\\'); 
+R::setup('sqlite:'.$appPath.'/storage/database.db');
+R::useFeatureSet( 'novice/latest' );
 
 require 'helpers.php';
 require 'filters.php';

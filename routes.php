@@ -41,6 +41,7 @@ $router->get('/api/v1/taskerLast', ['before' => 'auth.api', 'uses' => 'TopSecret
 /// Frontend
 ///
 $router->get('/thumbs?/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleThumbSlug']);
+$router->get('/og/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@openGraphSlug']);
 $router->get('/{slug}([/\.].*)?', ['uses' => 'TopSecret\FrontendController@handleSlug']);
 
 $router->get('/404', ['as' => '404', 'uses' => function(Response $res) {

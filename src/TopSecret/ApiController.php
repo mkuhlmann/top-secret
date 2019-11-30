@@ -6,12 +6,13 @@ use Areus\Http\Request;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\TextResponse;
+use RedBeanPHP\R;
 
 use TopSecret\Model\Item;
 
 class ApiController extends \Areus\ApplicationModule {
 	public function stats() {
-		$stats = \R::getRow('SELECT count(id) as total_count, sum(size) as total_size FROM item');
+		$stats = R::getRow('SELECT count(id) as total_count, sum(size) as total_size FROM item');
 		return new JsonResponse($stats);
 	}
 
@@ -24,7 +25,7 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function itemUpdate($slug, Request $req) {
-		$item = \R::findOne('item', 'slug = ?', [$slug]);
+		$item = R::findOne('item', 'slug = ?', [$slug]);
 		if($item != null) {
 			$_item = $req->input('item');
 
@@ -34,7 +35,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 			$tags = [];
 			foreach(explode(',', $_item['tags']) as $tag) {
-				$tag = \R::findOne('tag', 'id = ?', [$tag]);
+				$tag = R::findOne('tag', 'id = ?', [$tag]);
 				if($tag != null) $tags[] = $tag;
 			}
 			$item->sharedTagList = $tags;
@@ -47,7 +48,7 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function tagUpdate($tagId, Request $req) {
-		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
+		$tag = R::findOne('tag', 'id = ?', [$tagId]);
 		$_tag = $req->input('tag');
 
 		$tag->name = $_tag['name'];
@@ -58,20 +59,20 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function tagDelete($tagId, Request $req) {
-		$tag = \R::findOne('tag', 'id = ?', [$tagId]);
+		$tag = R::findOne('tag', 'id = ?', [$tagId]);
 		\R::trash($tag);
 		return new JsonResponse('ok');
 	}
 
 	public function tagCreate() {
-		$tag = \R::dispense('tag');
+		$tag = R::dispense('tag');
 		$tag->name = 'Unbenannt';
 		\R::store($tag);
 		return new JsonResponse($tag);
 	}
 
 	public function tags() {
-		$tags = \R::findAll('tag');
+		$tags = R::findAll('tag');
 		return new JsonResponse($tags);
 	}
 
@@ -101,7 +102,7 @@ class ApiController extends \Areus\ApplicationModule {
 			$sql .= ' WHERE ' . implode(' AND ', $where);
 		}
 
-		$itemsCount = \R::getCell('SELECT COUNT(i.id) ' . $sql, $params);
+		$itemsCount = R::getCell('SELECT COUNT(i.id) ' . $sql, $params);
 
 		$sql .= ' GROUP BY i.id ORDER BY i.created_at DESC';
 
@@ -110,7 +111,7 @@ class ApiController extends \Areus\ApplicationModule {
 			array_push($params, (int)$req->query('limit', 20) * (int)($req->query('page', 1)-1), $req->query('limit'));
 		}
 
-		$items = \R::getAll('SELECT i.*, group_concat(it.tag_id) as tags ' . $sql, $params);
+		$items = R::getAll('SELECT i.*, group_concat(it.tag_id) as tags ' . $sql, $params);
 		return new JsonResponse(['items' => $items, 'total' => $itemsCount]);
 	}
 
@@ -133,7 +134,7 @@ class ApiController extends \Areus\ApplicationModule {
 			return new JsonResponse(['error' => 'url cant be empty'], 400);
 		}
 
-		$item = \R::dispense('item');
+		$item = R::dispense('item');
 		$item->slug = $slug;
 		$item->title = $p['scheme'].'://'.$p['host'];
 		$item->type = 'url';
@@ -177,7 +178,7 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function taskerLast() {
-		$item = \R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
+		$item = R::findOne('item', 'ORDER BY created_at DESC LIMIT 1');
 		return new TextResponse($this->app->config->baseUrl.'/'.$item->slug);
 	}
 
@@ -201,17 +202,17 @@ class ApiController extends \Areus\ApplicationModule {
 		$item = null;
 		$request = $this->app->request;
 		if($request->input('overwriteSlug') != null) {
-			$item = \R::findOne('item', 'slug = ?', [$request->input('overwriteSlug')]);
+			$item = R::findOne('item', 'slug = ?', [$request->input('overwriteSlug')]);
 		}
 
 		if($item == null) {
-			$item = \R::dispense('item');
+			$item = R::dispense('item');
 			$item->slug = \TopSecret\Helper::generateSlug();
 
 			if($request->input('tags') !== null) {
 				$tags = [];
 				foreach(explode(',', $request->input('tags', '')) as $tag) {
-					$tag = \R::findOne('tag', 'id = ?', [$tag]);
+					$tag = R::findOne('tag', 'id = ?', [$tag]);
 					if($tag != null) $tags[] = $tag;
 				}
 				$item->sharedTagList = $tags;

@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-function app() {
+function app() : Areus\Application {
 	return \Areus\Application::getInstance();
 }
 
