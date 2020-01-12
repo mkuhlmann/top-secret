@@ -25,7 +25,11 @@ $container
 	->setShared(true);
 $container
 	->add(\Areus\Config::class)
-	->addArgument($app->path('/config'))
+	->addArgument([
+		$app->path('/config/default.php'),
+		$app->path('/config/local.php'), 
+		$app->path('/storage/config.php')
+	])
 	->addTag('config')
 	->setShared(true);
 $container

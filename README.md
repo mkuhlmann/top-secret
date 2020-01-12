@@ -1,6 +1,6 @@
 ## Installing
 
-Clone the repository, and either install composer dependencies manually or simply run `php update.php`. Then create a `config/local.php` file and with the same structure as the `config/default.php` file to configure the service.
+Clone the repository, and ether install composer dependencies manually or simply run `php update.php`. Then create a `storage/config.php` file and with the same structure as the `config/default.php` file to configure the service.
 
 Updating is as simple as running a `git clone`.
 
@@ -52,7 +52,6 @@ Run the container using the following command:
 
 ```bash
 docker run -d --name top-secret -p 9000:80 \
-  -v /path/to/local.php:/www/top-secret/config/local.php \
   -v /path/to/storage:/www/top-secret/storage \
   mkuhlmann/top-secret
 ```

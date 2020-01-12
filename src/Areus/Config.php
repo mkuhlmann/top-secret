@@ -3,12 +3,16 @@
 namespace Areus;
 
 class Config {
-	protected $config;
+	protected $config = [];
 
-	public function __construct($configPath) {
-		$this->config = require $configPath.'/default.php';
-		if(file_exists($configPath.'/local.php')) {
-			$this->config = $this->mergeArrayDeep([$this->config, require $configPath.'/local.php']);
+	/**
+	 * @var string[] $configFiles Full file paths to config files 
+	 */
+	public function __construct($configFiles) {
+		foreach($configFiles as $file) {
+			if(file_exists($file)) {
+				$this->config = $this->mergeArrayDeep([$this->config, require $file]);
+			}
 		}
 	}
 

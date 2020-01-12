@@ -40,4 +40,9 @@ if($tag == 0) {
 	R::trash($item);
 }
 
+
+if(file_exists("$appPath/config/local.php") && !file_exists("$appPath/storage/config.php")) {
+	rename("$appPath/config/local.php", "$appPath/storage/config.php");
+}
+
 echo 'Upgrade finished ...';

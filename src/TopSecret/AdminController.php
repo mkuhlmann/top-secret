@@ -47,8 +47,8 @@ class AdminController extends \Areus\ApplicationModule {
 		$config = $req->input('config', []);
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$localConfig = [];
-		if(file_exists($this->app->path('/config/local.php'))) {
-			$localConfig = require $this->app->path('/config/local.php');
+		if(file_exists($this->app->path('/storage/config.php'))) {
+			$localConfig = require $this->app->path('/storage/config.php');
 		}
 		$config['defaultChmod'] = octdec($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = $config['countHitIfLoggedIn'] == 'true';
@@ -56,7 +56,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$config['slugLength'] = intval($config['slugLength']);
 		$config = array_merge($localConfig, $config);
 
-		file_put_contents($this->app->path('/config/local.php'), '<?php return '."\n\n".var_export($config, true).';');
+		file_put_contents($this->app->path('/storage/config.php'), '<?php return '."\n\n".var_export($config, true).';');
 		sleep(2);
 		return new JsonResponse('ok');
 	}
