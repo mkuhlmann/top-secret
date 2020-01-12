@@ -52,7 +52,7 @@ Run the container using the following command:
 
 ```bash
 docker run -d --name top-secret -p 9000:80 \
-  -v /path/to/local.php:/www/top-secret/local.php \
+  -v /path/to/local.php:/www/top-secret/config/local.php \
   -v /path/to/storage:/www/top-secret/storage \
   mkuhlmann/top-secret
 ```
