@@ -1,5 +1,7 @@
 <?php
 
+use \RedBeanPHP\R;
+
 echo 'Downloading latest composer.phar ...'.PHP_EOL.PHP_EOL;
 copy('https://getcomposer.org/composer.phar', 'composer.phar');
 exec('php composer.phar install');
@@ -25,17 +27,17 @@ if(file_exists("$appPath/database.db")) {
 }
 
 
-\R::setup('sqlite:'.$appPath.'/storage/database.db');
+R::setup('sqlite:'.$appPath.'/storage/database.db');
 
-$tag = \R::count('tag');
+$tag = R::count('tag');
 if($tag == 0) {
-	$item = \R::dispense('item');
-	$tag = \R::dispense('tag');
+	$item = R::dispense('item');
+	$tag = R::dispense('tag');
 	$tag->name = 'Unkategorisiert';
 	$tag->color = 'grey';
 	$item->sharedTagList[] = $tag;
-	\R::store($item);
-	\R::trash($item);
+	R::store($item);
+	R::trash($item);
 }
 
 echo 'Upgrade finished ...';

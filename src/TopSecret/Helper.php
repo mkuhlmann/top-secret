@@ -2,6 +2,8 @@
 
 namespace TopSecret;
 
+use RedBeanPHP\R;
+
 class Helper {
 	static function isWin() {
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
@@ -16,23 +18,11 @@ class Helper {
 		return $randomString;
 	}
 
-	public static function itemDelete($slug) {
-		$item = R::findOne('item', 'slug = ?', [$slug]);
-		if($item != null) {
-			// delete physical files
-			if(isset($item->path) && file_exists(app()->path('/storage').'/uploads'.$item->path)) {
-				unlink(app()->path('/storage').'/uploads'.$item->path);
-				if(file_exists(app()->path('/storage').'/thumb/'.$item->slug.'.jpg')) {
-					unlink(app()->path('/storage').'/thumb/'.$item->slug.'.jpg');
-				}
-			}
-			R::trash($item);
-			return true;
-		}
-		return false;
-	}
-
 	public static function resizeImage($srcPath, $dstPath, $maxSize = 1000, $jpegQuality = 80) {
+		if(!file_exists(dirname($dstPath))) {
+			mkdir(dirname($dstPath), 0777, true);
+		}
+
 		if (app()->config->imageLibrary != 'imagemagick') {
 			self::resizeImageGd($srcPath, $dstPath, $maxSize, $jpegQuality);
 			return;

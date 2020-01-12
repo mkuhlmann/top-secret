@@ -7,6 +7,7 @@ use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
+use RedBeanPHP\R;
 
 class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'richPreview',
@@ -101,7 +102,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$items = R::getAll('SELECT i.* ' . $sql, $params);
 
 		foreach($items as $item) {
-			\TopSecret\Helper::itemDelete($item['slug']);
+			R::trash($item);
 		}
 
 		return new JsonResponse(['success' => true]);

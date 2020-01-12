@@ -2,6 +2,8 @@
 
 namespace TopSecret\Model;
 
+use FilesystemIterator;
+use GlobIterator;
 use RedBeanPHP\SimpleModel;
 use RedBeanPHP\R;
 
@@ -58,8 +60,20 @@ class Item extends SimpleModel  {
 		return $this->getResolution()[1];
 	}
 
+	/**
+	 * Will get automagically called by RedBeanPHP
+	 */
 	public function delete() {
-		
+		if(isset($this->path) && file_exists($this->getFullPath())) {
+			unlink($this->getFullPath());
+
+			// delete all generated thumbs
+			$iterator = new GlobIterator(app()->path('/storage/thumb/') . "/{$this->slug}-*.*", FilesystemIterator::KEY_AS_PATHNAME);			
+			/** @var \SplFileInfo $file */
+			foreach($iterator as $file) {
+				unlink($file->getPathname());
+			}
+		}
 	}
 
 	public function getFullThumbnailPath(int $maxSize = null) : string {

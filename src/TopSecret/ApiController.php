@@ -17,7 +17,9 @@ class ApiController extends \Areus\ApplicationModule {
 	}
 
 	public function itemDelete($slug) {
-		if(\TopSecret\Helper::itemDelete($slug)) {
+		$item = R::findOne('item', 'slug = ?', [$slug]);
+		if($item != null) {
+			R::trash($item);
 			return new JsonResponse('ok');
 		} else {
 			return new JsonResponse(['error' => '404 file not found'], 404);
