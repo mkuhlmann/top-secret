@@ -2,7 +2,7 @@
 FROM php:7.4-fpm-alpine
 
 RUN apk update
-RUN apk add nginx git bash openrc
+RUN apk add nginx git openrc
 
 RUN docker-php-ext-install opcache
 RUN { \
