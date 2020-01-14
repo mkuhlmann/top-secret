@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet" type="text/css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Sintony&display=swap" rel="stylesheet" type="text/css">
 		<title><?php echo app()->config->pageName; ?></title>
 		<style type="text/css">
 			body {
@@ -17,8 +18,14 @@
 			}
 			h1 {
 				font-size: 5em;
-				font-family: 'Sigmar One', sans-serif;
+				font-weight: 400;
+				font-family: 'Sintony', sans-serif;
 				opacity: 0.7;
+			}
+
+			#p {
+				width: 100%;
+				font-size: 3em;
 			}
 		</style>
 	</head>
@@ -29,7 +36,7 @@
 		</div>
 
 		<form method="post" action="/l" id="pf">
-			<input type="hidden" name="p" id="p">
+			<input type="hidden" name="p" id="p" placeholder="knock knock">
 		</form>
 		<script type="text/javascript">
 			var p = '';
@@ -40,6 +47,9 @@
 					document.getElementById('pf').submit();
 				}
 			}, false);
+			if(/Mobile|iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+				document.querySelector('#p').type = 'password';
+			}
 		</script>
 	</body>
 </html>

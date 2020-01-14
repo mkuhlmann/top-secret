@@ -27,15 +27,15 @@
 							<?php echo e(app()->config->pageName); ?> Admin <sup style="color: #888;">v2</sup>
 						</a>
 
-						<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-						<span aria-hidden="true"></span>
-						<span aria-hidden="true"></span>
-						<span aria-hidden="true"></span>
+						<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" v-on:click="navbarToggle()"  v-bind:class="{ 'is-active': navbarOpen }">
+							<span aria-hidden="true"></span>
+							<span aria-hidden="true"></span>
+							<span aria-hidden="true"></span>
 						</a>
 					</div>
 
-					<div class="navbar-menu">
-						<div class="navbar-start">
+					<div class="navbar-menu" v-bind:class="{ 'is-active': navbarOpen }">
+						<div class="navbar-start" v-on:click="navbarNavigate()">
 							<router-link to="/items" class="navbar-item" active-class="is-active">
 								<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
 								<span>Hochlads</span>
@@ -53,13 +53,15 @@
 								<span>Einstellungen</span>
 							</router-link>
 						</div>
-					</div>
 
-					<div class="navbar-end">
-						<a href="/tsa/logout" class="navbar-item">
-							<span class="icon is-medium"><i class="mdi mdi-logout"></i></span> 
-							<span>Logout</span>
-						</a>
+						
+						<div class="navbar-end">
+							<a href="/tsa/logout" class="navbar-item">
+								<span class="icon is-medium"><i class="mdi mdi-logout"></i></span> 
+								<span>Logout</span>
+							</a>
+						</div>
+
 					</div>
 
 				</nav>

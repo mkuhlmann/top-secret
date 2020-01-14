@@ -52,47 +52,49 @@ export default {
 				<div class="loader is-loading"></div>
             </div>
 			
-			<table v-if="q.dm == 't'" class="table is-fullwidth is-striped">
-				<thead>
-					<tr>
-						<th>Datei</th>
-						<th>Link</th>
-						<th>Tags</th>
-						<th>Hits</th>
-						<th>Typ</th>
-						<th>Hochgeladen</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="item in items">
-						<td>
-							<span v-if="item.type == 'image'">
-								<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
-							</span>
-							<span v-if="item.type == 'text' || item.type == 'binary'">
-								<a v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
-							</span>
-							<span v-if="item.type == 'url'">
-								<a v-bind:href="item.path">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
-							</span>
-						</td>
-						<td>{{ app.baseUrl + '/' + item.slug }}</td>
-						<td></td>
-						<td>{{ item.clicks || 0 }}</td>
-						<td>{{ item.type }}</td>
-						<td>{{ item.created_at }}</td>
+			<div class="table-container">
+				<table v-if="q.dm == 't'" class="table is-fullwidth is-striped">
+					<thead>
+						<tr>
+							<th>Datei</th>
+							<th>Link</th>
+							<th>Tags</th>
+							<th>Hits</th>
+							<th>Typ</th>
+							<th>Hochgeladen</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="item in items">
+							<td>
+								<span v-if="item.type == 'image'">
+									<a v-on:mouseleave="imageMouseLeave" v-on:mouseover="imageMouseOver(item)" v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
+								</span>
+								<span v-if="item.type == 'text' || item.type == 'binary'">
+									<a v-bind:href="'/' + item.slug + '/' + item.title">{{ item.title }}</a>
+								</span>
+								<span v-if="item.type == 'url'">
+									<a v-bind:href="item.path">{{ item.title }}<span v-if="item.type == 'url'">[...]</span></a>
+								</span>
+							</td>
+							<td>{{ app.baseUrl + '/' + item.slug }}</td>
+							<td></td>
+							<td>{{ item.clicks || 0 }}</td>
+							<td>{{ item.type }}</td>
+							<td>{{ item.created_at }}</td>
 
-						<td>
-							<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
-							<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
-							<a v-on:click="itemUpload(item)" v-if="item.path"><i class="mdi mdi-cloud-upload"></i></a>
-						</td>
+							<td>
+								<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
+								<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
+								<a v-on:click="itemUpload(item)" v-if="item.path"><i class="mdi mdi-cloud-upload"></i></a>
+							</td>
 
-					</tr>
-				</tbody>
-			</table>
-
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
 			<div v-if="q.dm == 'g'">
 				<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
 					<div class="tiles__item__toolbar">

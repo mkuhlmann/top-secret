@@ -47,7 +47,17 @@ const vueApp = new Vue({
 	router,
 	
 	data: {
-        
+		navbarOpen: false
+	},
+
+	methods: {
+		navbarToggle() {
+			this.navbarOpen = !this.navbarOpen;
+		},
+
+		navbarNavigate() {
+			if(this.navbarOpen) this.navbarOpen = false;
+		}
 	},
 	
 	created() {
