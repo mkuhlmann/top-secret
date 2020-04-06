@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Areus\Middleware;
 
-use Areus\Application;
-
+use Exception;
 use Psr\Http\Message\StreamInterface;
 
 use Psr\Http\Message\ResponseInterface;
@@ -21,7 +20,8 @@ class JsonPayload implements MiddlewareInterface {
 			$contentType = $request->getHeaderLine('Content-Type');
 
 			if(stripos($contentType, 'application/json') === 0) {
-				$request =& $request->withParsedBody($this->parse($request->getBody()));
+				$parsedRequest = $request->withParsedBody($this->parse($request->getBody()));
+				$request =& $parsedRequest; // set by reference, so the parsed body gets passed down the handler
 			}
 		}
 		return $handler->handle($request);
@@ -36,7 +36,7 @@ class JsonPayload implements MiddlewareInterface {
 		$data = json_decode($json, true, 512);
 
 		if (json_last_error() !== JSON_ERROR_NONE) {
-			throw new DomainException(json_last_error_msg());
+			throw new Exception(json_last_error_msg());
 		}
 
 		return $data ?? [];

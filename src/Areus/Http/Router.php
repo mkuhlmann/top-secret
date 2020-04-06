@@ -1,14 +1,17 @@
 <?php
 
-namespace Areus;
+namespace Areus\Http;
 
-
+use Laminas\Diactoros\Response;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Router extends \Areus\ApplicationModule {
 	private $routes = [];
 	private $filters = [];
-	private $group = null;
+	/** @var array */
+	private $groupStack = [];
+	private $groupStackMerged = [];
 
 	private $request;
 
@@ -16,56 +19,62 @@ class Router extends \Areus\ApplicationModule {
 		$this->filters[$key] = $func;
 	}
 
-	public function group($options, $function) {
-		if(isset($options['prefix'])) $options['prefix'] = $this->trim($options['prefix']);
+	public function group($options, $function) : void {
+		$options = $this->parseOptions($options);
 
-		$this->group = $options;
+		if(isset($options['prefix'])) $options['prefix'] = $this->trim($options['prefix']);
+		
+		array_push($this->groupStack, $options);
+		$this->groupStackMerged = array_merge(...$this->groupStack);
 		$function();
-		$this->group = null;
+		array_pop($this->groupStack);
+
+		if(count($this->groupStack) > 0)
+			$this->groupStackMerged = array_merge(...$this->groupStack);
+		else
+			$this->groupStackMerged = [];
 	}
 
 	public function get($route, $options) {
-		if(!is_array($options))	$options = ['uses' => $options];
+		$options = $this->parseOptions($options);
 		$options['method'] = 'get';
 		$this->any($route, $options);
 	}
 
 	public function post($route, $options) {
-		if(!is_array($options))	$options = ['uses' => $options];
+		$options = $this->parseOptions($options);
 		$options['method'] = 'post';
 		$this->any($route, $options);
 	}
 
 	public function put($route, $options) {
-		if(!is_array($options))	$options = ['uses' => $options];
+		$options = $this->parseOptions($options);
 		$options['method'] = 'put';
 		$this->any($route, $options);
 	}
 
 	public function patch($route, $options) {
-		if(!is_array($options))	$options = ['uses' => $options];
+		$options = $this->parseOptions($options);
 		$options['method'] = 'patch';
 		$this->any($route, $options);
 	}
 
 	public function delete($route, $options) {
-		if(!is_array($options))	$options = ['uses' => $options];
+		$options = $this->parseOptions($options);
 		$options['method'] = 'delete';
 		$this->any($route, $options);
 	}
 
 	public function any($route, $options) {
 		$route = $this->trim($route);
+		$options = $this->parseOptions($options);
 
-		if($this->group != null && isset($this->group['prefix']))
-			$route = $this->trim($this->group['prefix']).'/'.$route;
+		if(isset($this->groupStackMerged['prefix']))
+			$route = $this->trim($this->groupStackMerged['prefix']).'/'.$route;
 
-		if(!is_array($options)) {
-			$options = ['uses' => $options];
-		}
-		if($this->group != null) {
-			$options = array_merge($this->group, $options);
-		}
+
+		$options = array_merge($this->groupStackMerged, $options);
+		$options['_group'] = count($this->groupStack);
 
 		if(isset($options['as']) && isset($this->routes[$options['as']])) {
 			throw new \RuntimeException('Route with name ' .$options['as']. ' is already registered.');
@@ -78,6 +87,22 @@ class Router extends \Areus\ApplicationModule {
 		else
 			$this->routes[] = $options;
 	}
+
+	/**
+	 * 
+	 * @param array|string $options
+	 */
+	private function parseOptions($options) : array {
+		if(!is_array($options))	
+			$options = ['uses' => $options];
+
+		if(isset($options['before']) && !is_array($options['before'])) {
+			$options['before'] = [ $options['before'] ];
+		}
+
+		return $options;
+	}
+
 
 	private function compile($route) {
 		$pattern = $route['pattern'];
@@ -95,14 +120,14 @@ class Router extends \Areus\ApplicationModule {
 	}
 
 	private function callFilter($filter) {
-		$continue = true;
 
 		// handle multiple filters
 		if(is_array($filter)) {
 			foreach($filter as $f) {
-				$continue = $continue && $this->callFilter($f);
+				$result = $this->callFilter($f);
+				if($result !== null) { return $result; }
 			}
-			return $continue;
+			return null;
 		}
 
 		// execute single filter
@@ -116,12 +141,14 @@ class Router extends \Areus\ApplicationModule {
 
 		if($filterResult instanceof \Psr\Http\Message\ResponseInterface) {
 			return $filterResult;
+		} else if ($filterResult !== null) {
+			die('Middleware returned other than null');
 		} else {
 			return null;
 		}
 	}
 
-	private function callRoute($route, $args = []) {
+	private function callRoute($route, $args = []) : ResponseInterface {
 		$response = null;
 
 		if(isset($route['before'])) {
@@ -182,14 +209,14 @@ class Router extends \Areus\ApplicationModule {
 		return $fargs;
 	}
 
-	public function call404() {
+	public function call404() : ResponseInterface {
 		if(isset($this->routes['404']))
-			$this->callRoute($this->routes['404']);
+			return $this->callRoute($this->routes['404']);
 		else
 			throw new \RuntimeException('No action found for request: 404');
 	}
 
-	public function run(ServerRequestInterface $request) {
+	public function run(ServerRequestInterface $request) : ResponseInterface {
 		$this->request = $request;
 		$path = $request->getUri()->getPath();
 		
@@ -222,23 +249,23 @@ class Router extends \Areus\ApplicationModule {
 		}
 
 		if($missing) {
-			return $this->call404();
+			$response = $this->call404();
 		}
 
 		return $response;
 	}
 
-	public function dump() {
+	public function dump() : string {
 		$ret = '<pre>';
 		foreach($this->routes as $id => $route) {
-			$ret .= 'ANY '.$route['pattern']."\n";
+			$ret .= strtoupper($route['method']) . ' ' . $route['pattern']."\n";
 			$ret .= $this->dumpArray($route, "\t");
 		}
 		$ret .= '</pre>';
 		return $ret;
 	}
 
-	private function dumpArray($arr, $pre) {
+	private function dumpArray($arr, $pre) : string {
 		$ret = "";
 		foreach($arr as $k => $v) {
 			if($k == 'uses' && !is_string($v))

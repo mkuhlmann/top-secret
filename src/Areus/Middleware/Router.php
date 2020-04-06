@@ -20,6 +20,7 @@ class Router implements MiddlewareInterface {
 	
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
+		/** @var \Areus\Http\Router $router */
 		$router = $this->app->router;
 
 		$response = $router->run($request);

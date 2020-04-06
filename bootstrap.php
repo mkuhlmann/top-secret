@@ -33,7 +33,7 @@ $container
 	->addTag('config')
 	->setShared(true);
 $container
-	->add(\Areus\Router::class)
+	->add(\Areus\Http\Router::class)
 	->addArgument(\Areus\Application::class)
 	->addTag('router')
 	->setShared(true);
