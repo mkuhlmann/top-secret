@@ -3,6 +3,7 @@ const app = window.app = {
 	key: document.querySelector('meta[name="key"]').content,
 	csrf: document.querySelector('meta[name="csrf"]').content,
 	baseUrl: document.querySelector('meta[name="baseUrl"]').content,
+	uploadMaxFilesize: document.querySelector('meta[name="uploadMaxFilesize"]').content,
 
     fetch(input, init) {
         init = init || {};        

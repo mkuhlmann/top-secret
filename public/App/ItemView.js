@@ -206,11 +206,20 @@ export default {
 			var frmData = new FormData(frm);
 			var oReq = new XMLHttpRequest();
 			oReq.open('POST', '/api/v1/upload', true);
-			oReq.onload = function() {
+
+			
+
+			oReq.onload = _ => {
 				if (oReq.status == 200) {
 					self.loadItems();
 				} else {
-					alert('failed');
+					this.$buefy.snackbar.open({
+						message: `Upload failed. Please check max size (${app.uploadMaxFilesize})`,
+						position: 'is-bottom-right',
+						type: 'is-danger',
+						duration: 5000,
+						queue: false
+					});
 				}
 			};
 
