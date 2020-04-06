@@ -6,3 +6,4 @@ vendor
 composer.phar
 config/local.php
 _views
+.vscode

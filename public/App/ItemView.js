@@ -22,10 +22,10 @@ export default {
 				<div class="column is-narrow">
 					
 					<div class="buttons has-addons">
-						<button class="button" :class="{ 'is-active is-info': q.dm == 't' }" v-on:click="q.dm = 't'">
+						<button class="button" :class="{ 'is-active is-info': q.dm == 't' }" v-on:click="q.dm = 't'; loadItems()">
 							<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
 						</button>
-						<button class="button" :class="{ 'is-active is-info': q.dm == 'g' }" v-on:click="q.dm = 'g'">
+						<button class="button" :class="{ 'is-active is-info': q.dm == 'g' }" v-on:click="q.dm = 'g'; loadItems();">
 							<span class="icon is-medium"><i class="mdi mdi-image-multiple"></i></span>
 						</button>
 					</div>
@@ -50,7 +50,7 @@ export default {
 
 			<div class="loader-wrapper is-active" v-if="loading">
 				<div class="loader is-loading"></div>
-            </div>
+			</div>
 			
 			<div class="table-container">
 				<table v-if="q.dm == 't'" class="table is-fullwidth is-striped">
@@ -79,7 +79,21 @@ export default {
 								</span>
 							</td>
 							<td>{{ app.baseUrl + '/' + item.slug }}</td>
-							<td></td>
+							<td>
+							<b-taginput
+								v-model="item._tags"
+								:data="filteredTags"
+								autocomplete
+								:allow-new="false"
+								:open-on-focus="true"
+								field="name"
+								icon="label"
+								placeholder="Add a tag"
+								v-on:typing="computeFilteredTags"
+								@input="itemUpdate(item)"
+								>
+							</b-taginput>
+							</td>
 							<td>{{ item.clicks || 0 }}</td>
 							<td>{{ item.type }}</td>
 							<td>{{ item.created_at }}</td>
@@ -141,6 +155,10 @@ export default {
 			itemModal: null,
 			addLinkModal: false,
 
+			tags: [],
+			tagFilter: '',
+			filteredTags: [],
+
 			items: [],
 			itemsTotal: 0,
 			imageThumbPath: null,
@@ -162,11 +180,28 @@ export default {
 				this.q = JSON.parse(atob(this.$route.params.q));
 			} catch {}
 		}
-		this.loadItems();
+
+		app.fetch('/api/v2/tags')
+			.then(res => res.json())
+			.then(json => {
+				this.tags = json;
+				this.filteredTags = json;
+
+				this.loadItems();
+			});
+
 
 	},
 
 	methods: {
+		computeFilteredTags(text) {
+			if(!this.tags) return;
+			this.filteredTags = this.tags.filter(tag => {
+				return tag.name.toLowerCase().indexOf(text) !== -1;
+			});
+		},
+
+
 		loadItems() {
 			this.loading = true;
 
@@ -180,9 +215,20 @@ export default {
 					let q = btoa(JSON.stringify(this.q));
 					if(q != this.$route.params.q)
 						this.$router.push('/items/' + q);
-					this.items = json.items;
+					let items = json.items;
 					this.itemsTotal = json.total;
 					this.loading = false;
+
+					for(let item of items) {
+						item._tags = [];
+						if(!item.tags) continue;
+						for(let id of item.tags.split(',')) {
+							item._tags.push(this.tags.find(tag => id == tag.id));
+						}
+					}
+
+
+					this.items = items;
 				});
 		},
 
@@ -198,6 +244,23 @@ export default {
 		itemUpload(item) {
 			this.itemToUpload = item;
 			document.getElementById('itemUploadInput').click();
+		},
+
+		itemUpdate(item) {
+			item.tags = item._tags.map(tag => tag.id).join(',');
+			let clone = { ...item };
+			app.fetch(`/api/v1/item/${item.slug}`, {
+				method: 'PUT',
+				body: { item: clone }
+			}).then(res => {
+				this.$buefy.snackbar.open({
+					message: `Saved successfully.`,
+					position: 'is-bottom-right',
+					type: 'is-success',
+					duration: 1500,
+					queue: false
+				});
+			});
 		},
 
 		itemUploadDo() {

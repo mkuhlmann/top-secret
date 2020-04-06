@@ -78,6 +78,11 @@ class ApiController extends \Areus\ApplicationModule {
 		return new JsonResponse($tags);
 	}
 
+	public function tagsV2() {
+		$tags = R::findAll('tag');
+		return new JsonResponse(array_values($tags));
+	}
+
 	public function items(Request $req) {
 		$sql = 'FROM item i LEFT JOIN item_tag it ON it.item_id = i.id';
 		$params = [];

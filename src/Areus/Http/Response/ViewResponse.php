@@ -13,6 +13,6 @@ class ViewResponse extends HtmlResponse {
 			$view->render(),
 			$status,
 			$headers
-        );
+		);
 	}
 }

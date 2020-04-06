@@ -5,10 +5,10 @@ const app = window.app = {
 	baseUrl: document.querySelector('meta[name="baseUrl"]').content,
 	uploadMaxFilesize: document.querySelector('meta[name="uploadMaxFilesize"]').content,
 
-    fetch(input, init) {
-        init = init || {};        
-			init.headers = init.headers || {};
-			init.headers['Authorization'] = 'Bearer ' + app.key;
+	fetch(input, init) {
+		init = init || {};
+		init.headers = init.headers || {};
+		init.headers['Authorization'] = 'Bearer ' + app.key;
 			
 		if(init.method && init.method.toLowerCase() != 'get') {
 			if(!init.body || typeof init.body == 'object') {
