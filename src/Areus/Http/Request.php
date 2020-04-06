@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Areus\Http;
 
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 class Request extends ServerRequest {
 

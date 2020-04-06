@@ -74,5 +74,5 @@ foreach($middlewares as &$val) {
 $requestHandler = new \Areus\Http\Server\RequestHandler($middlewares);
 $response = $requestHandler->handle($app->request);
 
-$emitter = new \Zend\HttpHandlerRunner\Emitter\SapiStreamEmitter();
+$emitter = new \Laminas\HttpHandlerRunner\Emitter\SapiStreamEmitter();
 $emitter->emit($response);

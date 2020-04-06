@@ -4,11 +4,11 @@ namespace TopSecret;
 
 use Areus\Http\Request;
 use RedBeanPHP\R;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response\TextResponse;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Stream;
 
 use TopSecret\Model\Item;
 

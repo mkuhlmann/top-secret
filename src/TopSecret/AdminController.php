@@ -3,10 +3,10 @@
 namespace TopSecret;
 
 use Areus\Http\Request;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Stream;
 use RedBeanPHP\R;
 
 class AdminController extends \Areus\ApplicationModule {

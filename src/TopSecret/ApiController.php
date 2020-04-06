@@ -3,9 +3,9 @@
 namespace TopSecret;
 
 use Areus\Http\Request;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\TextResponse;
 use RedBeanPHP\R;
 
 use TopSecret\Model\Item;

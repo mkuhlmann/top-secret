@@ -1,8 +1,8 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 $app->router->filter('auth.admin', function(Request $request) {
 	if(app()->session->get('user_id') !== 1) {
