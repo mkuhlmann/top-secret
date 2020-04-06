@@ -96,18 +96,20 @@ export default {
 			</div>
 			
 			<div v-if="q.dm == 'g'">
-				<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
-					<div class="tiles__item__toolbar">
-					
-						<span class="tiles__item__buttons">
-							<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
-							<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
-							<a v-on:click="itemUpload(item)" v-if="item.path"><i class="mdi mdi-cloud-upload"></i></a>
-						</span>
-						<a :href="app.baseUrl + '/' + item.slug">
-							<span v-if="item.title.length < 64">{{ item.title }}</span>
-							<span v-else>{{ item.title.substring(0, 32) + '...' }}</span>
-						</a>
+				<div class="tiles">
+					<div v-for="item in items" class="tiles__item" v-bind:style="'background-image: url(/thumb/'+ item.slug">
+						<div class="tiles__item__toolbar">
+						
+							<span class="tiles__item__buttons">
+								<a v-on:click="itemModal = item"><i class="mdi mdi-information"></i></a>
+								<a v-on:click="itemDelete(item)"><i class="mdi mdi-delete"></i></a>
+								<a v-on:click="itemUpload(item)" v-if="item.path"><i class="mdi mdi-cloud-upload"></i></a>
+							</span>
+							<a :href="app.baseUrl + '/' + item.slug">
+								<span v-if="item.title.length < 64">{{ item.title }}</span>
+								<span v-else>{{ item.title.substring(0, 32) + '...' }}</span>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
