@@ -10,7 +10,7 @@ $router->get('/', 'TopSecret\FrontendController@index');
 $router->post('/l', 'TopSecret\AdminController@login');
 
 $router->group(['before' => 'auth.admin'], function() use ($router) {
-	$router->get('/tsa', 'TopSecret\AdminController@index');
+	$router->get('/tsa', 'TopSecret\AdminController@index2');
 	$router->get('/tsa2', 'TopSecret\AdminController@index2');
 	$router->get('/tsa/logout', 'TopSecret\AdminController@logout');
 	$router->get('/tsa/Tasker.prf.xml', 'TopSecret\AdminController@tasker');

@@ -15,11 +15,7 @@ class AdminController extends \Areus\ApplicationModule {
 									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
 									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged'];
 
-	public function index() {
-		return viewResponse('admin');
-	}
-
-	public function index2() {
+									public function index2() {
 		return viewResponse('admin2');
 	}
 
