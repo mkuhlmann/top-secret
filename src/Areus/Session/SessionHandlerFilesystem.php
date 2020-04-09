@@ -1,6 +1,6 @@
 <?php
 
-namespace Areus;
+namespace Areus\Session;
 
 class SessionHandlerFilesystem implements \SessionHandlerInterface {
 	protected $path;

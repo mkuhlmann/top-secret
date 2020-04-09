@@ -38,11 +38,6 @@ $container
 	->addTag('router')
 	->setShared(true);
 $container
-	->add(\Areus\Session::class)
-	->addArgument(\Areus\Application::class)
-	->addTag('session')
-	->setShared(true);
-$container
 	->add(Areus\View\Factory::class)
 	->addArgument($app->path('/views'))	
 	->addTag('view')
@@ -51,6 +46,8 @@ $container
 	->add(\Psr\Http\Message\ServerRequestInterface::class, $request)
 	->addTag('request')
 	->setShared(true);
+
+$container->addServiceProvider(Areus\Provider\SessionServiceProvider::class);
 
 define('REDBEAN_MODEL_PREFIX',  '\\TopSecret\\Model\\'); 
 R::setup('sqlite:'.$appPath.'/storage/database.db');
@@ -61,7 +58,7 @@ require 'filters.php';
 require 'routes.php';
 
 $middlewares = [
-	\Areus\Middleware\Session::class,
+	\Areus\Middleware\StartSession::class,
 	\Areus\Middleware\JsonPayload::class,
 	\Areus\Middleware\Router::class
 ];

@@ -1,13 +1,16 @@
 <?php
 
-namespace Areus;
+namespace Areus\Session;
 
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigRequestCookies;
+use Psr\Http\Message\ServerRequestInterface;
+use SessionHandlerInterface;
 
-class Session {
+class SessionManager {
 	protected $sessionHandler;
-	protected $app;
+	/** @var array */
+	protected $config;
 
 	protected $modified = false;
 	protected $cookieSent = false;
@@ -15,30 +18,18 @@ class Session {
 	protected $id;
 	protected $attributes;
 
-	public function __construct(\Areus\Application $app) {
-		$this->app = $app;
-		switch($app->config->get('areus.session.driver')) {
-			case 'file':
-				$this->sessionHandler = new \Areus\SessionHandlerFilesystem(
-					$app->path('storage/sessions'),
-					$app->config->get('areus.session.lifetime')
-				);
-				break;
-			default:
-				$this->sessionHandler = $app->get($app->config->get('areus.session.driver'));
-				break;
-		}
-
-		$this->start();
+	public function __construct(SessionHandlerInterface $sessionHandler, array $config) {
+		$this->config = $config;
+		$this->sessionHandler = $sessionHandler;
 	}
 
-	public function start() {
-		$cookie = FigRequestCookies::get($this->app->request, $this->app->config->get('areus.session.cookie'));
+	public function start(ServerRequestInterface $request) {
+		$cookie = FigRequestCookies::get($request, $this->config['cookie']);
 		$this->id = $cookie->getValue();
 
-		$lottery = $this->app->config->get('areus.session.lottery');
+		$lottery = $this->config['lottery'];
 		if(mt_rand(1, $lottery[1]) <= $lottery[0]) {
-			$this->sessionHandler->gc($this->app->config->get('areus.session.lifetime'));
+			$this->sessionHandler->gc($this->config['lifetime']);
 		}
 
 		if($this->id !== null) {
@@ -96,7 +87,7 @@ class Session {
 			$this->save();
 		}
 
-		$config = $this->app->config->get('areus.session');
+		$config = $this->config;
 
 		return SetCookie::create($config['cookie'])
 			->withValue($this->id)
