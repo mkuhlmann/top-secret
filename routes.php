@@ -18,6 +18,7 @@ $router->group(['before' => 'auth.admin'], function() use ($router) {
 	$router->post('/tsa/saveConfig', 'TopSecret\AdminController@saveConfig');
 	$router->get('/tsa/retentionDryRun', 'TopSecret\AdminController@retentionDryRun');
 	$router->post('/tsa/retentionRun', 'TopSecret\AdminController@retentionRun');
+	$router->get('/tsa/sharexPreset', 'TopSecret\AdminController@downloadSharexPreset');
 });
 
 //

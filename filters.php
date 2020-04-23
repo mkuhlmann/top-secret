@@ -16,11 +16,17 @@ $app->router->filter('auth.admin', function(Request $request) {
 });
 
 $app->router->filter('auth.api', function(Request $request) {
-	if($request->query('key') !== app()->config->apiKey && app()->session->get('user_id') !== 1) {
+	$key = $request->getQueryParams()['key'] ?? null;
+	
+	if($request->hasHeader('Authorization')) {
+		$key = str_replace('Bearer ', '', $request->getHeader('Authorization')[0]);
+	}
+
+	if($key !== app()->config->apiKey && app()->session->get('user_id') !== 1) {
 		return new JsonResponse(['error' => '401 unauthorized'], 401);
 	}
 
-	if($request->query('key') != app()->config->apiKey && !$request->getMethod() == 'GET' && app()->session->token() != $request->getParsedBody()['_csrf']) {
+	if($key != app()->config->apiKey && !$request->getMethod() == 'GET' && app()->session->token() != $request->getParsedBody()['_csrf']) {
 		return new JsonResponse(['error' => '403 invalid csrf token'], 403);
 	}
 });

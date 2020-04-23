@@ -103,4 +103,24 @@ class AdminController extends \Areus\ApplicationModule {
 
 		return new JsonResponse(['success' => true]);
 	}
+
+	public function downloadSharexPreset()
+	{
+		$preset = [
+			'Version' => '13.1.0',
+			'Name' => app()->config->pageName,
+			'DestinationType' => 'ImageUploader, TextUploader, FileUploader',
+			'RequestMethod' => 'POST',
+			'RequestURL' => app()->config->baseUrl . '/api/v1/upload',
+			'Headers' => [ 'Authorization' => 'Bearer ' . app()->config->apiKey ],
+			'Body' => 'MultipartFormData',
+			'FileFormName' => 'file',
+			'URL' => '$json:baseUrl$/$json:slug$',
+			'ThumbnailURL' => '$json:baseUrl$/thumb/$json:slug$',
+		];
+
+		return (new JsonResponse($preset, 200))->withHeader('Content-Disposition', 'attachment; filename="Preset.sxcu"');
+
+
+	}
 }

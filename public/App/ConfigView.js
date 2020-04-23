@@ -11,6 +11,8 @@ export default {
 			<div v-if="!loading">
 
 			<h2>Allgemein</h2>
+
+			
 			<div class="columns">
 				<div class="field column">
 					<label class="label">Seiten URL</label>
@@ -177,6 +179,7 @@ export default {
 
 			<div class="field">
 				<div class="control">
+					<a href="/tsa/sharexPreset" class="button is-secondary is-pulled-right">Download ShareX preset</a>
 					<button class="button is-primary" v-on:click="save()">Speichern</button>
 				</div>
 			</div>

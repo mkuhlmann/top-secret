@@ -12,7 +12,7 @@ export default {
 				<div class="column">
 					<div class="field">
 						<div class="control has-icons-left">
-							<input class="input" type="text" placeholder="Suchen ...">
+							<input class="input" type="text" placeholder="Suchen ..." v-on:keyup="loadItems()" v-model="q.q">
 							<span class="icon is-medium is-left">
 								<i class="mdi mdi-magnify"></i>
 							</span>
@@ -48,12 +48,10 @@ export default {
 				</div>
 			</div>
 
-			<div class="loader-wrapper is-active" v-if="loading">
-				<div class="loader is-loading"></div>
-			</div>
-			
-			<div class="table-container">
-				<table v-if="q.dm == 't'" class="table is-fullwidth is-striped">
+			<div style="margin-bottom: 1em;">
+
+			<div class="table-container" v-if="q.dm == 't'">
+				<table class="table is-fullwidth is-striped">
 					<thead>
 						<tr>
 							<th>Datei</th>
@@ -127,6 +125,7 @@ export default {
 					</div>
 				</div>
 			</div>
+			</div>
 
 			<nav class="pagination" role="navigation" aria-label="pagination">
 				<ul class="pagination-list">
@@ -164,13 +163,15 @@ export default {
 			imageThumbPath: null,
 			itemToUpload: {slug: null, url: null},
 
+			fetchController: new AbortController(),
+			itemsLoading: false,
+
 			q: { 
 				dm: 'g',
 				p: 1, // page
 				l: 25, // limit
-				s: '', // search
-			},
-			loading: true
+				q: '', // search query
+			}
 		}
 	},
 
@@ -203,21 +204,26 @@ export default {
 
 
 		loadItems() {
-			this.loading = true;
+			if(this.itemsLoading) {
+				this.fetchController.abort();
+				this.fetchController = new AbortController();
+			}
+			this.itemsLoading = true;
 
 			let url = '/api/v1/items?_t=' + (Date.now() / 1000 | 0);
 			
-			url += `&page=${this.q.p}&limit=${this.q.l}`;
+			url += `&page=${this.q.p}&limit=${this.q.l}&q=${this.q.q}`;
 
-			app.fetch(url)
+			app.fetch(url, {signal: this.fetchController.signal})
 				.then(res => res.json())
 				.then(json => {
+
 					let q = btoa(JSON.stringify(this.q));
 					if(q != this.$route.params.q)
 						this.$router.push('/items/' + q);
 					let items = json.items;
 					this.itemsTotal = json.total;
-					this.loading = false;
+					this.itemsLoading = false;
 
 					for(let item of items) {
 						item._tags = [];
@@ -229,7 +235,8 @@ export default {
 
 
 					this.items = items;
-				});
+				})
+				.catch(_ => {});
 		},
 
 		itemDelete(item) {

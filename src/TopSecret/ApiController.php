@@ -158,7 +158,7 @@ class ApiController extends \Areus\ApplicationModule {
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $this->app->path('/storage/'.$_FILES['file']['name']))) {
 			$item = $this->handleUpload($this->app->path('/storage/' .$_FILES['file']['name']));
-			return new JsonResponse(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item]);
+			return new JsonResponse(['slug' => $item->slug, 'title' => $item->title, 'extension' => $item->extension, 'extensionIfImage' => ($item->type == 'image') ? '.'.$item->extension:'', 'item' => $item, 'baseUrl' => app()->config->baseUrl]);
 		}
 		return new JsonResponse(['error'=>'500 internal server error'], 500);
 	}

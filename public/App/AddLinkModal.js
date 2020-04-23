@@ -12,23 +12,23 @@ export default {
 						<div v-if="error" class="notification is-danger">
 							{{ error }}
 						</div>
-                        <div class="field">
-                            <label class="label">Uri</label>
-                            <div class="control">
-                                <input class="input" v-model="url" type="text" placeholder="https://...">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">Slug</label>
-                            <div class="control">
-                                <input class="input" v-model="slug" type="text" placeholder="abc">
-                            </div>
-                            <p class="help">optional</p>
-                        </div>
+						<div class="field">
+							<label class="label">Uri</label>
+							<div class="control">
+								<input class="input" v-model="url" type="text" placeholder="https://...">
+							</div>
+						</div>
+						<div class="field">
+							<label class="label">Slug</label>
+							<div class="control">
+								<input class="input" v-model="slug" type="text" placeholder="abc">
+							</div>
+							<p class="help">optional</p>
+						</div>
 					</section>
 					<footer class="modal-card-foot">
-                        <button class="button is-primary" :class="{'is-loading': loading}" v-on:click="save()">Speichern</button>
-                        <button class="button is-secondary" v-on:click="$emit('close')">Schließen</button>
+						<button class="button is-primary" :class="{'is-loading': loading}" v-on:click="save()">Speichern</button>
+						<button class="button is-secondary" v-on:click="$emit('close')">Schließen</button>
 					</footer>
 				</div>
 			</div>
@@ -65,7 +65,7 @@ export default {
 				.then(r => {
 					this.loading = false;
 					if(!r.error) {
-						$emit('close');
+						this.$emit('close');
 					} else {
 						this.error = r.error;
 					}
