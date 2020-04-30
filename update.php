@@ -2,10 +2,6 @@
 
 use \RedBeanPHP\R;
 
-echo 'Downloading latest composer.phar ...'.PHP_EOL.PHP_EOL;
-copy('https://getcomposer.org/composer.phar', 'composer.phar');
-exec('php composer.phar install');
-
 require 'vendor/autoload.php';
 
 $appPath = dirname(__FILE__);

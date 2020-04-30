@@ -1,4 +1,12 @@
 
+# Usage
+
+Install manually or via docker (preferred) and open op the web ui. Enter "password#" to login (there is no visible password field, just type it and hit enter). 
+
+⚠️ Be sure to change apiKey and login password after first login! ⚠️
+
+#  Installing 
+
 ## Docker
 
 Run the container using the following command:
@@ -9,11 +17,12 @@ docker run -d --name top-secret -p 9000:80 \
   mkuhlmann/top-secret
 ```
 
-Open up http://localhost:9000 and enter "password#" to login. Be sure to change api key and password after first login!
 
-## Installing from scratch
+## From scratch
 
-Clone the repository, and ether install composer dependencies manually or simply run `php update.php`. Then create a `storage/config.php` file and with the same structure as the `config/default.php` file to configure the service.
+Clone the repository, install the dependencies via `composer install` or simply run `php update.php`. 
+
+Optionally, you are able to preconfigure any settings by creating a `storage/config.php` file with the same structure as the `config/default.php` file to configure the service. Everything should be configurable trough the web ui though. Defalt password is "password#", just type it in on the landing page.
 
 Updating is as simple as running a `git clone`.
 
@@ -61,10 +70,12 @@ server {
 ```
 
 
-## Developing
+# Developing
 
 Install as seen above and start the development server with
 
 ```bash
 php -S 127.0.0.1:8080 -t public server.php
 ```
+
+Pull requests are *very* welcome.
