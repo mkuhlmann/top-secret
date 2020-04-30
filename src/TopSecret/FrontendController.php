@@ -20,10 +20,17 @@ class FrontendController extends \Areus\ApplicationModule {
 			return new JsonResponse(['error' => '404 file not found'], 404);
 		}
 
-		return viewResponse('opengraph', [
-			'item' => $item, 
-			'thumbSize' => $item->getResolution(1200)
-		]);
+		$response = new RedirectResponse('/' . $item->slug);
+
+		$ua = $req->getHeaderLine('User-Agent');
+		if(strpos($ua, 'WhatsApp/') === 0 || strpos($ua, 'TelegramBot') === 0) {
+			$response = viewResponse('opengraph', [
+				'item' => $item, 
+				'thumbSize' => $item->getResolution(1200)
+			]);
+		}
+
+		return $response->withHeader('Cache-Control', 'no-cache');
 	}
 
 	public function handleSlug($slug, Request $req) {

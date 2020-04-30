@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PLEASE DO NOT MODIFY THIS FILE, BUT INSTEAD CREATE A 'local.php' TO OVERRIDE CONFIGURATION.
+ * PLEASE DO NOT MODIFY THIS FILE, BUT INSTEAD CREATE A 'storage/config.php' TO OVERRIDE CONFIGURATION.
  **/
 return [
 	'environment' => 'production',
@@ -9,7 +9,7 @@ return [
 	'pageName' => 'Top Secret!',
 	'baseUrl' => 'https://top-secret.site',
 
-	'adminPassword' => 'generate with password_hash("xyz", PASSWORD_BCRYPT)', // then just enter this on the index page and the admin interface will magically open
+	'adminPassword' => '$2y$10$2nlqKDYSbmYNgS8JmNHV6ufJ1UoEzU3z7281Gc/zDo.y.V8AJ1RY6', // = "password#" then just enter this on the index page and the admin interface will magically open
 	'loginSecret' => 'qwertzuiop', // used internally to forge admin cookie
 	'apiKey' => '12457890qwertzuiop', // i think you use this to protect the upload api
 

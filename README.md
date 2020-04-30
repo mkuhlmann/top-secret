@@ -1,10 +1,24 @@
-## Installing
+
+## Docker
+
+Run the container using the following command:
+
+```bash
+docker run -d --name top-secret -p 9000:80 \
+  -v /path/to/storage:/www/top-secret/storage \
+  mkuhlmann/top-secret
+```
+
+Open up http://localhost:9000 and enter "password#" to login. Be sure to change api key and password after first login!
+
+## Installing from scratch
 
 Clone the repository, and ether install composer dependencies manually or simply run `php update.php`. Then create a `storage/config.php` file and with the same structure as the `config/default.php` file to configure the service.
 
 Updating is as simple as running a `git clone`.
 
 Sample nginx configuration with https.
+
 ```
 server {
         listen 80;
@@ -46,15 +60,6 @@ server {
 }
 ```
 
-## Docker
-
-Run the container using the following command:
-
-```bash
-docker run -d --name top-secret -p 9000:80 \
-  -v /path/to/storage:/www/top-secret/storage \
-  mkuhlmann/top-secret
-```
 
 ## Developing
 

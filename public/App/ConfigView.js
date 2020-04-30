@@ -10,6 +10,30 @@ export default {
 
 			<div v-if="!loading">
 
+			<h2>Auth</h2>
+
+			<div class="columns">
+				<div class="field column">
+					<label class="label">Api Key</label>
+					<div class="control">
+						{{ config.apiKey }}
+						<button class="button is-primary is-small" @click="regenerateApiKey">Regenerate</button>
+					</div>
+				</div>
+				<div class="field column">
+					<label class="label">New password</label>
+					<div class="control">
+						<input class="input" type="password" v-model="config._password">
+					</div>
+				</div>
+				<div class="field column">
+					<label class="label">Repeat new password</label>
+					<div class="control">
+						<input class="input" type="password" v-model="config._passwordRepeat">
+					</div>
+				</div>
+			</div>
+
 			<h2>Allgemein</h2>
 
 			
@@ -209,7 +233,42 @@ export default {
 				});
 		},
 
+		regenerateApiKey() {
+			app.fetch('/tsa/regenerateApiKey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					_csrf: app.csrf
+				})
+			})
+				.then(r => r.json())
+				.then(r => {
+					this.config.apiKey = r.apiKey;
+				});
+		},
+
 		save() {
+			if(this.config._password && this.config._password.length > 0) {
+				let error = null;
+
+				if(this.config._password.length < 5) {
+					error = `Password is too short.`;
+				} else if(this.config._password != this.config._passwordRepeat) {
+					error = `Passwords don't match!`;
+				} else 
+
+				if(error) {
+					this.$buefy.snackbar.open({
+						message: error,
+						position: 'is-bottom',
+						type: 'is-error',
+						duration: 2000,
+						queue: false
+					});
+					return;
+				}
+			}
+
 			this.loading = true;
 			app.fetch('/tsa/saveConfig', {
 				method: 'POST',

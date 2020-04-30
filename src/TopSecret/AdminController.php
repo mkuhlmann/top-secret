@@ -13,7 +13,7 @@ class AdminController extends \Areus\ApplicationModule {
 	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'richPreview',
 	 								'imageLibrary', 'countHitIfLoggedIn', 'slugLength',
 									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
-									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged'];
+									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged', '_password'];
 
 									public function index2() {
 		return viewResponse('admin2');
@@ -31,7 +31,7 @@ class AdminController extends \Areus\ApplicationModule {
 
 	public function getConfig() {
 		$config = $this->app->config->asArray();
-		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
+		//$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = ($config['countHitIfLoggedIn']) ? 'true' : 'false';
 		$config['richPreview'] = ($config['richPreview']) ? 'true' : 'false';
@@ -39,9 +39,21 @@ class AdminController extends \Areus\ApplicationModule {
 		return new JsonResponse($config);
 	}
 
+	public function regenerateApiKey() {
+		$config = ['apiKey' => md5(uniqid('', true))];
+		$this->mergeToLocalConfig($config);
+		return new JsonResponse($config);
+	}
+
 	public function saveConfig(Request $req) {
 		$config = $req->input('config', []);
 		$config = \Areus\Arr::only($config, $this->allowedConfigKeys);
+
+		if(isset($config['_password']) && !empty($config['_password'])) {
+			$config['adminPassword'] = password_hash($config['_password'], PASSWORD_BCRYPT);
+			unset($config['_password']);
+		}
+
 		$localConfig = [];
 		if(file_exists($this->app->path('/storage/config.php'))) {
 			$localConfig = require $this->app->path('/storage/config.php');
@@ -50,11 +62,22 @@ class AdminController extends \Areus\ApplicationModule {
 		$config['countHitIfLoggedIn'] = $config['countHitIfLoggedIn'] == 'true';
 		$config['richPreview'] = $config['richPreview'] == 'true';
 		$config['slugLength'] = intval($config['slugLength']);
-		$config = array_merge($localConfig, $config);
+		
+		$this->mergeToLocalConfig($config);
 
-		file_put_contents($this->app->path('/storage/config.php'), '<?php return '."\n\n".var_export($config, true).';');
 		sleep(2);
 		return new JsonResponse('ok');
+	}
+
+	private function mergeToLocalConfig(array $arr = []) {
+		$localConfig = [];
+		if(file_exists($this->app->path('/storage/config.php'))) {
+			$localConfig = require $this->app->path('/storage/config.php');
+		}
+		$config = array_merge($localConfig, $arr);
+
+
+		file_put_contents($this->app->path('/storage/config.php'), '<?php return '."\n\n".var_export($config, true).';');
 	}
 
 	public function login(Request $request) {
