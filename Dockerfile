@@ -1,7 +1,7 @@
 # build stage
 FROM alpine:3.11
 
-RUN apk add --no-cache nginx openrc zip curl
+RUN apk add --no-cache nginx git openrc zip openssh curl
 
 RUN apk add --no-cache \
   php7-cli php7-apcu php7-ctype php7-curl php7-fileinfo php7-fpm php7-gd php7-iconv php7-intl php7-json php7-mbstring \

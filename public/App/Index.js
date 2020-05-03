@@ -56,21 +56,6 @@ const vueApp = new Vue({
 	i18n,
 	router,
 	
-	data: {
-		navbarOpen: false
-	},
-
-	methods: {
-		navbarToggle() {
-			this.navbarOpen = !this.navbarOpen;
-		},
-
-		navbarNavigate() {
-			if(this.navbarOpen) this.navbarOpen = false;
-		}
-	},
-	
-	created() {
-		
-	}
+	template: '<App />',
+	components: { App: () => import('./App.js') }
 }).$mount('#app');

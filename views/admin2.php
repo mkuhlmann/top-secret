@@ -19,65 +19,14 @@
 	</head>
 	
 	<body>
-		
-		<div id="app" class="page-wrap">
-			<header>
-				<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-					<div class="navbar-brand">
-						<a class="navbar-item has-text-primary" href="/tsa2">
-							<?php echo e(app()->config->pageName); ?> Admin <sup style="color: #888;">v2</sup>
-						</a>
-
-						<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" v-on:click="navbarToggle()"  v-bind:class="{ 'is-active': navbarOpen }">
-							<span aria-hidden="true"></span>
-							<span aria-hidden="true"></span>
-							<span aria-hidden="true"></span>
-						</a>
-					</div>
-
-					<div class="navbar-menu" v-bind:class="{ 'is-active': navbarOpen }">
-						<div class="navbar-start" v-on:click="navbarNavigate()">
-							<router-link to="/items" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-view-list"></i></span>
-								<span>Hochlads</span>
-							</router-link>
-							<router-link to="/tags" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-tag-multiple"></i></span>
-								<span>Tags</span>
-							</router-link>
-							<router-link to="/retention" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-history"></i></span>
-								<span>Aufbewahrung</span>
-							</router-link>
-							<router-link to="/config" class="navbar-item" active-class="is-active">
-								<span class="icon is-medium"><i class="mdi mdi-settings"></i></span>
-								<span>Einstellungen</span>
-							</router-link>
-						</div>
-
-						
-						<div class="navbar-end">
-							<a href="/tsa/logout" class="navbar-item">
-								<span class="icon is-medium"><i class="mdi mdi-logout"></i></span> 
-								<span>Logout</span>
-							</a>
-						</div>
-
-					</div>
-
-				</nav>
-			</header>
-
-			<main>
-				<router-view></router-view>
-			</main>
-		</div>
+		<div id="app"></div>
 		
 		<?php if(app()->config->environment == 'development'): ?>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js" integrity="sha256-ufGElb3TnOtzl5E4c/qQnZFGP+FYEZj5kbSEdJNrw0A=" crossorigin="anonymous"></script>
 		<?php else: ?>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
 		<?php endif; ?>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-i18n/8.17.4/vue-i18n.min.js" integrity="sha256-nNm7R+HTeuAIJA3rTufGjoe3r6y6iIYEu4QWm1y+yNY=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js" integrity="sha256-r/vPIUvTobCpYZsMmvU7HM58cNd4D6/vdICqDFapV7Y=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
 		<script src="https://unpkg.com/buefy@0.8.13/dist/buefy.min.js" integrity="sha256-4b3psIbMGiTsSFoLwsUdnfJ+NxNf6C/wLsXgzRQ87d8=" crossorigin="anonymous"></script>
