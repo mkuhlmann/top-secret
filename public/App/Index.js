@@ -1,4 +1,6 @@
 
+import i18nMessages from './I18nMessages.js';
+
 const app = window.app = {
 	key: document.querySelector('meta[name="key"]').content,
 	csrf: document.querySelector('meta[name="csrf"]').content,
@@ -30,6 +32,12 @@ const app = window.app = {
 	}
 };
 
+const i18n = new VueI18n({
+	locale: (navigator.language || navigator.userLanguage).split('-')[0],
+	fallbackLocale: 'en',
+	messages: i18nMessages
+});
+
 const router = new VueRouter({
 	//mode: 'history',
 	routes: [
@@ -45,7 +53,7 @@ Vue.filter('formatUnix', t => moment.unix(t).format('DD.MM.YYYY HH:mm:SS'));
 Vue.prototype.app = app;
 
 const vueApp = new Vue({
-	el: '#app',
+	i18n,
 	router,
 	
 	data: {
@@ -65,4 +73,4 @@ const vueApp = new Vue({
 	created() {
 		
 	}
-});
+}).$mount('#app');
