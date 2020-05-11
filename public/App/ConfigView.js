@@ -91,6 +91,40 @@ export default {
 			</div>
 
 			<div class="columns">
+	
+				<div class="field column">
+					<label class="label">Rich Preview (disable cache may be needed)</label>
+					<div class="control  has-icons-left">
+						<div class="select is-fullwidth">
+							<select v-model="config.richPreview">
+								<option value="true">{{ $t('config.yes') }}</option>
+								<option value="false">{{ $t('config.no') }}</option>
+							</select>
+						</div>
+						<div class="icon is-medium is-left">
+							<i class="mdi mdi-file-find"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="field column">
+					<label class="label">{{ $t('config.disableCacheHeaders') }}</label>
+					<div class="control has-icons-left">
+						<div class="select is-fullwidth">
+							<select v-model="config.disableCacheHeaders">
+								<option value="true">{{ $t('config.yes') }}</option>
+								<option value="false">{{ $t('config.no') }}</option>
+							</select>
+						</div>
+						<div class="icon is-medium is-left">
+							<i class="mdi mdi-file-find"></i>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="columns">
 				<div class="field column is-two-thirds">
 					<label class="label">Slug Charset</label>
 					<div class="control">
@@ -118,26 +152,12 @@ export default {
 					<div class="control has-icons-left">
 						<div class="select is-fullwidth">
 							<select v-model="config.countHitIfLoggedIn">
-								<option value="true">Ja</option>
-								<option value="false">Nein</option>
+								<option value="true">{{ $t('config.yes') }}</option>
+								<option value="false">{{ $t('config.no') }}</option>
 							</select>
 						</div>
 						<div class="icon is-medium is-left">
 							<i class="mdi mdi-target-account"></i>
-						</div>
-					</div>
-				</div>
-				<div class="field column">
-					<label class="label">Rich Preview (Beta)</label>
-					<div class="control  has-icons-left">
-						<div class="select is-fullwidth">
-							<select v-model="config.richPreview">
-								<option value="true">Ja</option>
-								<option value="false">Nein</option>
-							</select>
-						</div>
-						<div class="icon is-medium is-left">
-							<i class="mdi mdi-file-find"></i>
 						</div>
 					</div>
 				</div>
@@ -149,8 +169,8 @@ export default {
 					<div class="control has-icons-left">
 						<div class="select is-fullwidth">
 							<select v-model="config.piwikEnableTracking">
-								<option value="true">Ja</option>
-								<option value="false">Nein</option>
+								<option value="true">{{ $t('config.yes') }}</option>
+								<option value="false">{{ $t('config.no') }}</option>
 							</select>
 						</div>
 						<div class="icon is-medium is-left">
@@ -191,8 +211,8 @@ export default {
 					<div class="control">
 						<div class="select is-fullwidth">
 							<select v-model="config.retentionOnlyUntagged">
-								<option value="true">Ja</option>
-								<option value="false">Nein</option>
+								<option value="true">{{ $t('config.yes') }}</option>
+								<option value="false">{{ $t('config.no') }}</option>
 							</select>
 						</div>
 					</div>

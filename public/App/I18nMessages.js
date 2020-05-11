@@ -11,6 +11,11 @@ export default {
 			run: "Ausführen",
 			confirm: "Löschung bestätigen",
 			status: "Es stehen {0} Items ({1} MiB) zum Löschen an. Du kannst die Richtlinie unter Einstellungen ändern."
+		},
+		config: {
+			yes: "Ja",
+			no: "Nein",
+			disableCacheHeaders: "Caching deaktivieren"
 		}
 	},
 	en: {
@@ -25,6 +30,11 @@ export default {
 			run: "Run",
 			confirm: "Confirm deletion",
 			status: "There are {0} items to be deleted ({1} MiB). You can change the retention policity under settings."
+		},
+		config: {
+			yes: "Yes",
+			no: "No",
+			disableCacheHeaders: "Disable caching"
 		}
 	}
 };

@@ -108,6 +108,8 @@ class FrontendController extends \Areus\ApplicationModule {
 	}
 
 	private function sendFile($path, $mime, $size, $fileName, $lastModified, $disposition = 'inline') {
+		$disableCache = $this->app->config->disableCacheHeaders;
+
 		$lastModifiedGm = gmdate('r', $lastModified);
 
 		$response = new Response();
@@ -116,18 +118,28 @@ class FrontendController extends \Areus\ApplicationModule {
 			->withHeader('Content-Type', $mime)
 			->withHeader('Content-Disposition', $disposition.'; filename="'.$fileName.'"');
 
+		if($disableCache) {
+			$response = $response
+				->withHeader('Expires', 'Mon, 01 Jan 2000 00:00:00 GMT')
+				->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+				->withHeader('Pragma', 'no-cache');
+		}
+
 		if($this->app->config->serveMethod == 'nginx') {
 			$response = $response
 				->withHeader('Content-Length', $size)
 				->withHeader('X-Accel-Redirect', '/protected_uploads'.$path);
 		} else {
 			$etag = md5($lastModified.$fileName);
-			$response = $response
-				->withHeader('Cache-Control', 'public, max-age=1800')
-				->withHeader('ETag', $etag)
-				->withHeader('Last-Modified', $lastModifiedGm);
 
-			if (strtotime($this->app->request->header('If-Modified-Since')) >= $lastModified || $this->app->request->header('If-None-Match') == $etag) {
+			if(!$disableCache) {
+				$response = $response
+					->withHeader('Cache-Control', 'public, max-age=1800')
+					->withHeader('ETag', $etag)
+					->withHeader('Last-Modified', $lastModifiedGm);
+			}
+			
+			if (!$disableCache && strtotime($this->app->request->header('If-Modified-Since')) >= $lastModified || $this->app->request->header('If-None-Match') == $etag) {
 				$response = $response->withStatus(304);
 			} else {
 				$response = $response

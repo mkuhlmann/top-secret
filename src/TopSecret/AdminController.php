@@ -10,7 +10,7 @@ use Laminas\Diactoros\Stream;
 use RedBeanPHP\R;
 
 class AdminController extends \Areus\ApplicationModule {
-	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'richPreview',
+	private $allowedConfigKeys = 	['defaultChmod', 'baseUrl', 'pageName', 'serveMethod', 'richPreview', 'disableCacheHeaders',
 	 								'imageLibrary', 'countHitIfLoggedIn', 'slugLength',
 									'slugCharset', 'piwikEnableTracking', 'piwikIdSite',
 									'piwikUrl', 'piwikAuthToken', 'retentionDays', 'retentionOnlyUntagged', '_password'];
@@ -35,6 +35,7 @@ class AdminController extends \Areus\ApplicationModule {
 		$config['defaultChmod'] = decoct($config['defaultChmod']);
 		$config['countHitIfLoggedIn'] = ($config['countHitIfLoggedIn']) ? 'true' : 'false';
 		$config['richPreview'] = ($config['richPreview']) ? 'true' : 'false';
+		$config['disableCacheHeaders'] = ($config['disableCacheHeaders']) ? 'true' : 'false';
 
 		return new JsonResponse($config);
 	}

@@ -34,6 +34,7 @@ return [
 	'retentionOnlyUntagged' => true,
 
 	'richPreview' => true,
+	'disableCacheHeaders' => false,
 
 	'areus' => [
 		// session configuration (same as https://github.com/laravel/laravel/blob/master/config/session.php)
