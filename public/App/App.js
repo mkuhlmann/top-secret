@@ -2,6 +2,7 @@
 export default {
 	template: /*html*/
 `
+<div>
 <header>
 	<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
 		<div class="navbar-brand">
@@ -52,6 +53,7 @@ export default {
 <main>
 	<router-view></router-view>
 </main>
+</div>
 `,
 	data() { return {
 		navbarOpen: false
