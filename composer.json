@@ -1,13 +1,13 @@
 {
     "require": {
         "league/container": "^3.3",
-        "cebe/markdown": "^1.1",
-        "laminas/laminas-diactoros": "^2.1",
-        "laminas/laminas-httphandlerrunner": "^1.1",
+        "cebe/markdown": "^1.2",
+        "laminas/laminas-diactoros": "^2.4",
+        "laminas/laminas-httphandlerrunner": "^1.2",
         "psr/http-server-middleware": "^1.0",
         "psr/http-server-handler": "^1.0",
         "dflydev/fig-cookies": "^2.0",
-        "gabordemooij/redbean": "dev-master"
+        "gabordemooij/redbean": "^5.5"
     },
     "autoload": {
         "psr-4": {

@@ -13,8 +13,7 @@
 	<body>
 		<header><?php echo e($item->title); ?> [ <a href="?raw=1">Raw</a> | <a href="?dl=1">Download</a> ]</header>
 		<pre><code><?php echo e(file_get_contents(app()->path('/storage/uploads'.$item->path))); ?></code></pre>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js" integrity="sha256-1zu+3BnLYV9LdiY85uXMzii3bdrkelyp37e0ZyTAQh0=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js" integrity="sha512-tHQeqtcNWlZtEh8As/4MmZ5qpy0wj04svWFK7MIzLmUVIzaHXS8eod9OmHxyBL1UET5Rchvw7Ih4ZDv5JojZww==" crossorigin="anonymous"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
 	</body>
 </html>

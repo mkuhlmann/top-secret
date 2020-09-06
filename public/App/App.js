@@ -1,8 +1,7 @@
 
 export default {
-	template: /*html*/
-`
-<div>
+	template: /*html*/`
+<div id="app">
 <header>
 	<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
 		<div class="navbar-brand">

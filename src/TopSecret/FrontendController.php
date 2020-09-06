@@ -30,7 +30,9 @@ class FrontendController extends \Areus\ApplicationModule {
 			]);
 		}
 
-		return $response->withHeader('Cache-Control', 'no-cache');
+		return $response
+			->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+			->withHeader('Pragma', 'no-cache');
 	}
 
 	public function handleSlug($slug, Request $req) {
@@ -41,8 +43,10 @@ class FrontendController extends \Areus\ApplicationModule {
 
 		if($item->type != 'url' && $this->app->config->redirectFileName) {
 			$url = '/'.$item->slug.'/'.urlencode($item->title);
-			if($req->path() != $url) {
-				return new RedirectResponse($url);
+			if($req->getUri()->getPath() != $url) {
+				return (new RedirectResponse($url))
+					->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+					->withHeader('Pragma', 'no-cache');
 			}
 		}
 
@@ -63,7 +67,7 @@ class FrontendController extends \Areus\ApplicationModule {
 					'action_name' => $item->title,
 					'ua' => $_SERVER['HTTP_USER_AGENT'],
 					'cip' => ($this->app->config->behindTrustedProxy && isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-								? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],				
+								? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
 					'urlref' => $_SERVER['HTTP_REFERER']
 				];
 
