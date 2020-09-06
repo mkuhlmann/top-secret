@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use \RedBeanPHP\R;
 
@@ -22,23 +22,13 @@ if(file_exists("$appPath/database.db")) {
 	rename("$appPath/database.db", "$appPath/storage/database.db");
 }
 
-
-R::setup('sqlite:'.$appPath.'/storage/database.db');
-
-$tag = R::count('tag');
-if($tag == 0) {
-	$item = R::dispense('item');
-	$tag = R::dispense('tag');
-	$tag->name = 'Unkategorisiert';
-	$tag->color = 'grey';
-	$item->sharedTagList[] = $tag;
-	R::store($item);
-	R::trash($item);
-}
-
-
 if(file_exists("$appPath/config/local.php") && !file_exists("$appPath/storage/config.php")) {
 	rename("$appPath/config/local.php", "$appPath/storage/config.php");
 }
+
+
+$db = \ParagonIE\EasyDB\Factory::create("sqlite:$appPath/storage/database.db");
+$migrationRunner = new \TopSecret\Migration\MigrationRunner($db);
+$migrationRunner->migrate();
 
 echo 'Upgrade finished ...';

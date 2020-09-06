@@ -47,11 +47,17 @@ $container
 	->addTag('request')
 	->setShared(true);
 
+
 $container->addServiceProvider(Areus\Provider\SessionServiceProvider::class);
 
 define('REDBEAN_MODEL_PREFIX',  '\\TopSecret\\Model\\'); 
-R::setup('sqlite:'.$appPath.'/storage/database.db');
+R::setup("sqlite:$appPath/storage/database.db");
 R::useFeatureSet( 'novice/latest' );
+
+$db = new \ParagonIE\EasyDB\EasyDB(R::getPDO(), 'sqlite');
+$container
+	->add(\ParagonIE\EasyDB\EasyDB::class, $db, true)
+	->addTag('db');
 
 require 'helpers.php';
 require 'filters.php';
