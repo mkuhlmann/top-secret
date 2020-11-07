@@ -23,6 +23,8 @@ export default {
 									<tr><th>Dateiname</th><td>{{ item.name }}</td></tr>
 									<tr><th>Mime</th><td>{{ item.mime }} (.{{ item.extension }})</td></tr>
 
+									<tr><th>{{ $t('general.size') }}</th><td>{{ item.size | humanFileSize }} MiB</td></tr>
+
 									<tr><th>Letzer Aufruf</th><td>{{ item.last_hit_at }}</td></tr>
 									<tr><th>Hits</th><td>{{ item.clicks }}</td></tr>
 

@@ -1,5 +1,8 @@
 export default {
 	de: {
+		general: {
+			"size": "Größe",
+		},
 		menu: {
 			"uploads": "Hochlads",
 			"tags": "Stichwörter",
@@ -19,6 +22,9 @@ export default {
 		}
 	},
 	en: {
+		general: {
+			"size": "Size",
+		},
 		menu: {
 			"uploads": "Uploads",
 			"tags": "Tags",
