@@ -180,6 +180,12 @@ export default {
 			try {
 				this.q = JSON.parse(atob(this.$route.params.q));
 			} catch {}
+		} else if(localStorage.getItem('q') !== null) {
+			try {
+				this.q = JSON.parse(atob(localStorage.getItem('q')));
+				this.q.q = '';
+				this.q.p = 1;
+			} catch {}
 		}
 
 		app.fetch('/api/v2/tags')
@@ -219,8 +225,10 @@ export default {
 				.then(json => {
 
 					let q = btoa(JSON.stringify(this.q));
-					if(q != this.$route.params.q)
+					if(q != this.$route.params.q) {
 						this.$router.push('/items/' + q);
+						localStorage.setItem('q', q);
+					}						
 					let items = json.items;
 					this.itemsTotal = json.total;
 					this.itemsLoading = false;

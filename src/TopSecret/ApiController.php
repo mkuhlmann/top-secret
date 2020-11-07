@@ -32,7 +32,8 @@ class ApiController extends \Areus\ApplicationModule {
 			$_item = $req->input('item');
 
 			if($_item['slug'] != null && $_item['slug'] != $item->slug) {
-				$item->slug = \TopSecret\Helper::normalizeSlug($_item['slug']);
+				$slug = \TopSecret\Helper::normalizeSlug($_item['slug']);
+				$item->slug = Item::generateSlug($slug);
 			}
 
 			$tags = [];

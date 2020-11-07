@@ -9,6 +9,19 @@ use RedBeanPHP\R;
 
 
 class Item extends SimpleModel  {
+
+	public static function generateSlug(string $preferredSlug) : string {
+		if(!$preferredSlug) {
+			$preferredSlug = \TopSecret\Helper::generateSlug();
+		}
+
+		$slug = $preferredSlug;
+		while(self::slugExists($slug)) {
+			$slug = $preferredSlug . '-' . \TopSecret\Helper::generateRandomString(2);
+		}
+
+		return $slug;
+	}
 	
 	public static function slugExists($slug) : bool {
 		return R::count('item', 'slug = ?', [$slug]) > 0;
