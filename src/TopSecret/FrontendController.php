@@ -13,6 +13,20 @@ use Laminas\Diactoros\Stream;
 use TopSecret\Model\Item;
 
 class FrontendController extends \Areus\ApplicationModule {
+	private function isBrowser($userAgent) {
+		$userAgent = strtolower($userAgent);
+
+		static $browsers = ['opera', 'edge', 'chrome', 'safari', 'firefox', 'msie', 'wget', 'curl'];
+		foreach($browsers as $browser) {
+			if(strpos($userAgent, $browser) !== false) {
+				return true;
+				break;
+			}
+		}
+		return false;
+	}
+
+
 	public function openGraphSlug($slug, Request $req) : Response {
 		/** @var Item $item */
 		$item = R::findOne('item', 'slug = ?', [$slug]);
@@ -22,8 +36,7 @@ class FrontendController extends \Areus\ApplicationModule {
 
 		$response = new RedirectResponse('/' . $item->slug);
 
-		$ua = $req->getHeaderLine('User-Agent');
-		if(strpos($ua, 'WhatsApp/') === 0 || strpos($ua, 'TelegramBot') === 0) {
+		if(!$this->isBrowser($req->getHeaderLine('User-Agent'))) {
 			$response = viewResponse('opengraph', [
 				'item' => $item, 
 				'thumbSize' => $item->getResolution(1200)
@@ -81,7 +94,7 @@ class FrontendController extends \Areus\ApplicationModule {
 		}
 
 		if($this->app->config->richPreview && $item->type == 'image') {
-			if(strpos($req->getHeader('User-Agent')[0], 'WhatsApp/') === 0) {
+			if(!$this->isBrowser($req->getHeaderLine('User-Agent'))) {
 				return $this->openGraphSlug($item->slug, $req);
 			}
 		}

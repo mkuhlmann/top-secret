@@ -27,8 +27,8 @@ if(file_exists("$appPath/config/local.php") && !file_exists("$appPath/storage/co
 }
 
 
-$db = \ParagonIE\EasyDB\Factory::create("sqlite:$appPath/storage/database.db");
+/*$db = \ParagonIE\EasyDB\Factory::create("sqlite:$appPath/storage/database.db");
 $migrationRunner = new \TopSecret\Migration\MigrationRunner($db);
-$migrationRunner->migrate();
+$migrationRunner->migrate();*/
 
 echo 'Upgrade finished ...';
