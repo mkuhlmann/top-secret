@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "95b37b47fa96220a10b16b867704e6a3",
+    "content-hash": "b38e20d08b3fd5bcc79b2d02f2bc2eb5",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -119,6 +119,54 @@
                 "psr7"
             ],
             "time": "2020-01-02T16:13:22+00:00"
+        },
+        {
+            "name": "dmhendricks/file-icon-vectors",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dmhendricks/file-icon-vectors.git",
+                "reference": "3db48be71c19332dec85c0cae863f8f44ccdf855"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dmhendricks/file-icon-vectors/zipball/3db48be71c19332dec85c0cae863f8f44ccdf855",
+                "reference": "3db48be71c19332dec85c0cae863f8f44ccdf855",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "name": "file-icon-vectors",
+                    "files": [
+                        "css/**",
+                        "icons/**"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel M. Hendricks",
+                    "homepage": "https://danhendricks.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A collection of file type icons in SVG format.",
+            "keywords": [
+                "css",
+                "file",
+                "icon",
+                "svg"
+            ],
+            "support": {
+                "issues": "https://github.com/dmhendricks/dmhendricks/file-icon-vectors",
+                "source": "https://github.com/dmhendricks/file-icon-vectors/tree/master"
+            },
+            "time": "2018-08-05T20:19:58+00:00"
         },
         {
             "name": "gabordemooij/redbean",
@@ -792,5 +840,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }

@@ -16,6 +16,7 @@ class FrontendController extends \Areus\ApplicationModule {
 	private function isBrowser($userAgent) {
 		$userAgent = strtolower($userAgent);
 
+
 		static $browsers = ['opera', 'edge', 'chrome', 'safari', 'firefox', 'msie', 'wget', 'curl'];
 		foreach($browsers as $browser) {
 			if(strpos($userAgent, $browser) !== false) {
@@ -178,7 +179,7 @@ class FrontendController extends \Areus\ApplicationModule {
 
 		if($item->type != 'image') {
 			$color = $res->query('dark') ? '#ddd' : '#333';
-			return (new TextResponse(FileTypeSvg::get($item->type, $color)))
+			return (new TextResponse(FileTypeSvg::get($item, $color)))
 					->withHeader('Content-type', 'image/svg+xml');
 		} else if($item->mime == 'image/svg+xml') {
 			return new RedirectResponse('/' . $item->slug);
