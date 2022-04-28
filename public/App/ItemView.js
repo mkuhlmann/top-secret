@@ -169,7 +169,7 @@ export default {
 			q: { 
 				dm: 'g',
 				p: 1, // page
-				l: 25, // limit
+				l: 40, // limit
 				q: '', // search query
 			}
 		}

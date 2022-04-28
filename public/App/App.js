@@ -31,7 +31,7 @@ export default {
 					<span>{{ $t('menu.retention') }}</span>
 				</router-link>
 				<router-link to="/config" class="navbar-item" active-class="is-active">
-					<span class="icon is-medium"><i class="mdi mdi-settings"></i></span>
+					<span class="icon is-medium"><i class="mdi mdi-cog"></i></span>
 					<span>{{ $t('menu.settings') }}</span>
 				</router-link>
 			</div>

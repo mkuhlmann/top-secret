@@ -11,6 +11,9 @@ class MigrationManager {
 
 	private $migrationTableName = '_migrations';
 
+	/**
+	 * @param MigrationInterface[] $availableMigrations
+	 */
 	public function __construct(PDO $pdo, array $availableMigrations)
 	{
 		$this->pdo = $pdo;
@@ -36,16 +39,15 @@ class MigrationManager {
 		return $migrations;
 	}
 
-	public function runMigration($migrationClass) {
-		/** @var MigrationInterface */
+	public function runMigration(MigrationInterface $migrationClass) {
 		$migration = new $migrationClass();
-		$migration->up();
+		$migration->up($this->pdo);
 
-		$statement = $this->pdo->prepare("INSERT INTO {$this->migrationTableName} (name, class_name, created_unix) VALUES (:name, :class_name, :unix)");
+		$statement = $this->pdo->prepare("INSERT INTO {$this->migrationTableName} (name, class_name, created_t) VALUES (:name, :class_name, :unix)");
 		$statement->execute([
 			':class_name' => $migrationClass,
 			':name' => (new \ReflectionClass($migration))->getShortName(),
-			':unix' => time()
+			':created_t' => time()
 		]);
 	}
 
@@ -57,7 +59,7 @@ class MigrationManager {
 
 	private function ensureMigrationTable() {
 		if(!$this->tableExists($this->pod, $this->migrationTableName)) {
-			$this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->migrationTableName} (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255) NOT NULL, class_name VARCHAR(255) NOT NULL, created_unix INTEGER NOT NULL)");
+			$this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->migrationTableName} (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255) NOT NULL, class_name VARCHAR(255) NOT NULL, created_t INTEGER NOT NULL)");
 		}
 	}
 

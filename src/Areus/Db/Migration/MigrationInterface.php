@@ -2,7 +2,9 @@
 
 namespace Areus\Db\Migration;
 
+use PDO;
+
 interface MigrationInterface {
-	public function up() : void;
-	public function down() : void;
+	public function up(PDO $pdo);
+	public function down(PDO $pdo);
 }
