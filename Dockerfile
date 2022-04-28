@@ -1,20 +1,21 @@
 # build stage
-FROM alpine:3.11
+FROM alpine:3.15
 
 RUN apk add --no-cache nginx git openrc zip openssh curl
 
 RUN apk add --no-cache \
-  php7-cli php7-apcu php7-ctype php7-curl php7-fileinfo php7-fpm php7-gd php7-iconv php7-intl php7-json php7-mbstring \
-  php7-opcache php7-openssl php7-pdo php7-pdo_sqlite php7-phar php7-posix php7-simplexml php7-session php7-soap php7-tokenizer php7-zip php7-imagick
+  php8-cli php8-ctype php8-curl php8-fileinfo php8-fpm php8-gd php8-json php8-mbstring \
+  php8-opcache php8-openssl php8-pdo php8-pdo_sqlite php8-phar php8-posix php8-simplexml php8-session php8-tokenizer php8-zip php8-pecl-imagick
 
+RUN ln -s php8 /usr/bin/php
 # install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # make sure php runs with same uid as nginx
-RUN sed -i 's/user = .*/user = nginx/g' /etc/php7/php-fpm.d/www.conf && \
-  sed -i 's/group = .*/group = nginx/g' /etc/php7/php-fpm.d/www.conf && \
-  sed -i 's/upload_max_filesize = .*/upload_max_filesize = 50M/g' /etc/php7/php.ini && \
-  sed -i 's/post_max_size = .*/post_max_size = 50M/g' /etc/php7/php.ini
+RUN sed -i 's/user = .*/user = nginx/g' /etc/php8/php-fpm.d/www.conf && \
+  sed -i 's/group = .*/group = nginx/g' /etc/php8/php-fpm.d/www.conf && \
+  sed -i 's/upload_max_filesize = .*/upload_max_filesize = 50M/g' /etc/php8/php.ini && \
+  sed -i 's/post_max_size = .*/post_max_size = 50M/g' /etc/php8/php.ini
 
 COPY ./docker/site.conf /etc/nginx/conf.d/default.conf
 COPY ./docker/entrypoint.sh /etc/entrypoint.sh
