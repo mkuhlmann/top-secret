@@ -119,7 +119,10 @@ class AdminController extends \Areus\ApplicationModule {
 	public function retentionRun() {
 		list($sql, $params) = $this->retentionSql();
 
+
 		$items = R::getAll('SELECT i.* ' . $sql, $params);
+		$items = R::convertToBeans('Item', $items);
+
 
 		foreach($items as $item) {
 			R::trash($item);
