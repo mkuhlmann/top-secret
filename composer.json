@@ -1,20 +1,20 @@
 {
-    "require": {
-        "league/container": "^3.3",
-        "cebe/markdown": "^1.2",
-        "laminas/laminas-diactoros": "^2.4",
-        "laminas/laminas-httphandlerrunner": "^1.2",
-        "psr/http-server-middleware": "^1.0",
-        "psr/http-server-handler": "^1.0",
-        "dflydev/fig-cookies": "^3.0",
+	"require": {
+		"league/container": "^4.1",
+		"cebe/markdown": "^1.2",
+		"laminas/laminas-diactoros": "^2.4",
+		"laminas/laminas-httphandlerrunner": "^1.2",
+		"psr/http-server-middleware": "^1.0",
+		"psr/http-server-handler": "^1.0",
+		"dflydev/fig-cookies": "^3.0",
 		"paragonie/easydb": "^2.11",
 		"gabordemooij/redbean": "^5.5",
-        "dmhendricks/file-icon-vectors": "^1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Areus\\": "src/Areus",
-            "TopSecret\\": "src/TopSecret"
-        }
-    }
+		"dmhendricks/file-icon-vectors": "^1.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Areus\\": "src/Areus",
+			"TopSecret\\": "src/TopSecret"
+		}
+	}
 }

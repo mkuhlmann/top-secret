@@ -2,13 +2,14 @@
 
 namespace Areus\Provider;
 
-class SessionServiceProvider extends ApplicationServiceProvider {
-	
-	protected $provides = [
-		\Areus\Session\SessionManager::class
-	];
+class SessionServiceProvider extends ApplicationServiceProvider
+{
+	public function provides(string $id): bool
+	{
+		return $id == 'session' || $id == \Areus\Session\SessionManager::class;
+	}
 
-	public function register()
+	public function register(): void
 	{
 		/** @var \League\Container\Container */
 		$container = $this->getContainer();
@@ -16,7 +17,7 @@ class SessionServiceProvider extends ApplicationServiceProvider {
 
 		$sessionHandler = null;
 
-		switch($app->config->get('areus.session.driver')) {
+		switch ($app->config->get('areus.session.driver')) {
 			case 'file':
 				$sessionHandler = new \Areus\Session\SessionHandlerFilesystem(
 					$app->path('storage/sessions'),

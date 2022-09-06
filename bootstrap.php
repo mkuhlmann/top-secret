@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use \RedBeanPHP\R;
 
@@ -9,10 +11,8 @@ require 'vendor/autoload.php';
 
 $appPath = dirname(__FILE__);
 
-$container = new \League\Container\Container();
-$container->delegate(
-	new \League\Container\ReflectionContainer()
-);
+$container = new \Areus\Container();
+$container->delegate(new \League\Container\ReflectionContainer());
 
 $app = new \Areus\Application($appPath, $container);
 
@@ -27,7 +27,7 @@ $container
 	->add(\Areus\Config::class)
 	->addArgument([
 		$app->path('/config/default.php'),
-		$app->path('/config/local.php'), 
+		$app->path('/config/local.php'),
 		$app->path('/storage/config.php')
 	])
 	->addTag('config')
@@ -39,7 +39,7 @@ $container
 	->setShared(true);
 $container
 	->add(Areus\View\Factory::class)
-	->addArgument($app->path('/views'))	
+	->addArgument($app->path('/views'))
 	->addTag('view')
 	->setShared(true);
 $container
@@ -48,11 +48,11 @@ $container
 	->setShared(true);
 
 
-$container->addServiceProvider(Areus\Provider\SessionServiceProvider::class);
+$container->addServiceProvider(new Areus\Provider\SessionServiceProvider());
 
-define('REDBEAN_MODEL_PREFIX',  '\\TopSecret\\Model\\'); 
+define('REDBEAN_MODEL_PREFIX',  '\\TopSecret\\Model\\');
 R::setup("sqlite:$appPath/storage/database.db");
-R::useFeatureSet( 'novice/latest' );
+R::useFeatureSet('novice/latest');
 
 $db = new \ParagonIE\EasyDB\EasyDB(R::getPDO(), 'sqlite');
 $container
@@ -69,7 +69,7 @@ $middlewares = [
 	\Areus\Middleware\Router::class
 ];
 
-foreach($middlewares as &$val) {
+foreach ($middlewares as &$val) {
 	$val = $app->container->get($val);
 }
 

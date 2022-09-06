@@ -1,65 +1,70 @@
 <?php
 
-namespace Areus\Db\Migration;
+declare(strict_types=1);
 
+namespace Areus\Db;
+
+use App\Db\Migrations\MigrationRunner;
 use PDO;
 
-class MigrationManager {
-
+class MigrationManager
+{
 	private $pdo;
 	private $availableMigrations;
+	private $migrationRunner;
 
 	private $migrationTableName = '_migrations';
 
-	/**
-	 * @param MigrationInterface[] $availableMigrations
-	 */
-	public function __construct(PDO $pdo, array $availableMigrations)
+	public function __construct(MigrationRunnerInterface $runner, PDO $pdo, array $availableMigrations)
 	{
+		$this->migrationRunner = $runner;
 		$this->pdo = $pdo;
 		$this->availableMigrations = $availableMigrations;
 	}
 
-	public function migrate() {
+	public function migrate()
+	{
 		$migrations = $this->getPendingMigrations();
 
-		foreach($migrations as $migration) {
+		foreach ($migrations as $migration) {
 			$this->runMigration($migration);
 		}
 	}
 
-	public function getPendingMigrations() {
+	public function getPendingMigrations()
+	{
 		$this->ensureMigrationTable();
 		$migrations = $this->availableMigrations;
 		$currentMigration = $this->getCurrentMigration();
-
-		while($migrations[0] != $currentMigration) {
+		while ($currentMigration && count($migrations) > 0 && $migrations[0] != $currentMigration) {
 			array_shift($migrations);
 		}
 		return $migrations;
 	}
 
-	public function runMigration(MigrationInterface $migrationClass) {
-		$migration = new $migrationClass();
-		$migration->up($this->pdo);
+	public function runMigration($migrationClass)
+	{
+		$this->migrationRunner->run($migrationClass);
 
-		$statement = $this->pdo->prepare("INSERT INTO {$this->migrationTableName} (name, class_name, created_t) VALUES (:name, :class_name, :unix)");
+		$statement = $this->pdo->prepare("INSERT INTO {$this->migrationTableName} (name, class_name, created_unix) VALUES (:name, :class_name, :unix)");
 		$statement->execute([
 			':class_name' => $migrationClass,
-			':name' => (new \ReflectionClass($migration))->getShortName(),
-			':created_t' => time()
+			':name' => (new \ReflectionClass($migrationClass))->getShortName(),
+			':unix' => time()
 		]);
 	}
 
-	private function getCurrentMigration() {
+	private function getCurrentMigration()
+	{
 		$result = $this->pdo->query("SELECT * FROM {$this->migrationTableName} ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-		return $result['name'];
+		return $result ?? $result['name'];
 	}
 
 
-	private function ensureMigrationTable() {
-		if(!$this->tableExists($this->pod, $this->migrationTableName)) {
-			$this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->migrationTableName} (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255) NOT NULL, class_name VARCHAR(255) NOT NULL, created_t INTEGER NOT NULL)");
+	private function ensureMigrationTable()
+	{
+		if (!$this->tableExists($this->pdo, $this->migrationTableName)) {
+			$this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->migrationTableName} (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255) NOT NULL, class_name VARCHAR(255) NOT NULL, created_unix INTEGER NOT NULL)");
 		}
 	}
 
@@ -67,7 +72,7 @@ class MigrationManager {
 	 * Set the value of migrationTableName
 	 *
 	 * @return self
-	 */ 
+	 */
 	public function setMigrationTableName($migrationTableName)
 	{
 		$this->migrationTableName = $migrationTableName;
@@ -82,7 +87,8 @@ class MigrationManager {
 	 * @param string $table Table to search for.
 	 * @return bool TRUE if table exists, FALSE if no table found.
 	 */
-	private function tableExists($pdo, $table) {
+	private function tableExists($pdo, $table)
+	{
 		// Try a select statement against the table
 		// Run it in try/catch in case PDO is in ERRMODE_EXCEPTION.
 		try {
