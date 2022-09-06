@@ -17,7 +17,7 @@ RUN sed -i 's/user = .*/user = nginx/g' /etc/php8/php-fpm.d/www.conf && \
   sed -i 's/upload_max_filesize = .*/upload_max_filesize = 50M/g' /etc/php8/php.ini && \
   sed -i 's/post_max_size = .*/post_max_size = 50M/g' /etc/php8/php.ini
 
-COPY ./docker/site.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/site.conf /etc/nginx/http.d/default.conf
 COPY ./docker/entrypoint.sh /etc/entrypoint.sh
 
 RUN chmod +x /etc/entrypoint.sh
